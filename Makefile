@@ -2,19 +2,23 @@
 .PHONY: clean, mrproper
 
 #Variables
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror -std=c99
+CC=gcc
+CFLAGS=-Wall -Wextra -Werror -std=c99
+LDFLAGS=-lSDL -lSDLmain -lSDL_image
+EXEC=Program
 
 #Main
-all: main.o   #add required .o files
-	$(CC) $^ -o Program $(CFLAGS)
+all: $(EXEC)
+
+$(EXEC): main.o   #add required .o files
+	$(CC) $^ -o $(EXEC) $(CFLAGS) $(LDFLAGS) 
 
 #Headers
 
 
 #Object files
 %.o: %.c
-	$(CC) -c $< -o $@ $(CFLAGS)
+	$(CC) -c $< -o $@ $(CFLAGS) 
 
 #Clean
 clean:
@@ -22,4 +26,4 @@ clean:
 
 #Mrproper
 mrproper: clean
-	rm -rf Program
+	rm -rf $(EXEC)
