@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-
-int main(void)
+#include "filters.h"
+int main(int argc, char *argv[])
 {
     /*-----------SDL initialization---------*/
 
@@ -28,13 +28,14 @@ int main(void)
     /*--------Principal code start--------*/
     
     SDL_Surface *text = NULL;
-    text = IMG_Load("images/text.png"); //Loading the image we will work on
+    text = IMG_Load(argv[argc - 1]); //Loading the image we will work on
     
     SDL_Rect position; //Position of the image
     position.x = ecran->w / 2 - text->w / 2;
     position.y = ecran->h / 2 - text->h / 2;
     SDL_BlitSurface(text, NULL, ecran, &position); //Display the image
 
+    greyScale(text);
     int continuer = 1;
     SDL_Event event;
     while (continuer) //Update loop
