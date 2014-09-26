@@ -64,6 +64,65 @@ void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
     }
 }
 
+void sortArray(Uint32 array[], int size)
+{
+    int i;
+    for(i = 0; i < size; i++)
+    {
+	Uint32 temp = array[i];
+	int j = i;
+	while(j >= 0 && array[j-1] > temp)
+	{
+	    array[j] = array[j-1];
+	    j -= 1;
+	}
+	array[j] = temp;
+    }
+}
+
+void noiseRemove(SDL_Surface *surface)
+{
+    Uint8 grey;
+    SDL_LockSurface(surface);
+    int i;
+    for(i = 0; i < surface->w; i++)
+    {
+	int j;
+	for(j = 0; j < surface->h; j++)
+	{
+	    Uint32 pixelMatrix[9];
+	    Uint32 pixel = getPixel(surface, i, j);
+	    SDL_GetRGB(pixel, surface->format, &grey, &grey, &grey);
+	    if(i > 0 && i < (surface->w - 1) && j > 0 && j < (surface->h - 1) )
+	    {
+		SDL_GetRGB(getPixel(surface, i-1, j-1), surface->format, &grey, &grey, &grey);
+		pixelMatrix[0] = grey;
+		SDL_GetRGB(getPixel(surface, i-1, j), surface->format, &grey, &grey, &grey);
+		pixelMatrix[1] = grey;
+		SDL_GetRGB(getPixel(surface, i-1, j+1), surface->format, &grey, &grey, &grey);
+		pixelMatrix[2] = grey;
+		SDL_GetRGB(getPixel(surface, i, j-1), surface->format, &grey, &grey, &grey);
+		pixelMatrix[3] = grey;
+		SDL_GetRGB(getPixel(surface, i, j), surface->format, &grey, &grey, &grey);
+		pixelMatrix[4] = grey;
+		SDL_GetRGB(getPixel(surface, i, j+1), surface->format, &grey, &grey, &grey);
+		pixelMatrix[5] = grey;
+		SDL_GetRGB(getPixel(surface, i+1, j-1), surface->format, &grey, &grey, &grey);
+		pixelMatrix[6] = grey;
+		SDL_GetRGB(getPixel(surface, i+1, j), surface->format, &grey, &grey, &grey);
+		pixelMatrix[7] = grey;
+		SDL_GetRGB(getPixel(surface, i+1, j+1), surface->format, &grey, &grey, &grey);
+		pixelMatrix[8] = grey;
+	    }
+	    sortArray(pixelMatrix, 9);
+	    grey = pixelMatrix[4];
+	    pixel = SDL_MapRGB(surface->format, grey, grey, grey);
+	    setPixel(surface, i, j, pixel);
+	}
+    }
+    SDL_UnlockSurface(surface);
+}
+
 void greyScale(SDL_Surface *surface)
 {
     Uint8 r, g, b, grey;
@@ -86,7 +145,7 @@ void greyScale(SDL_Surface *surface)
 
 void binarize(SDL_Surface *surface)
 {
-    Uint8 r, g, b;
+    Uint8 grey;
     SDL_LockSurface(surface);
     int i;
     for(i = 0; i < surface->w; i++)
@@ -95,20 +154,12 @@ void binarize(SDL_Surface *surface)
 	for(j = 0; j < surface->h; j++)
 	{  
 	    Uint32 pixel = getPixel(surface, i, j);
-	    SDL_GetRGB(pixel, surface->format, &r, &g, &b);
-	    if (r > 127) //r = g = b
-	    {
-		r = 255;
-		g = r;
-		b = g;
-	    }
+	    SDL_GetRGB(pixel, surface->format, &grey, &grey, &grey);
+	    if (grey > 170)
+		grey = 255;
 	    else
-	    {
-		r = 0;
-		g = r;
-		b = g;
-	    }
-	    pixel = SDL_MapRGB(surface->format, r, g, b);
+		grey = 0;
+	    pixel = SDL_MapRGB(surface->format, grey, grey, grey);
 	    setPixel(surface, i, j, pixel);
 	}
     }
