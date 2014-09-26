@@ -79,13 +79,37 @@ void greyScale(SDL_Surface *surface)
 	    grey = r * 0.3 + g * 0.59 + b * 0.11;
 	    pixel = SDL_MapRGB(surface->format, grey, grey, grey);
 	    setPixel(surface, i, j, pixel);
-	    if (i == 0 && j == 0)
+	}
+    }
+    SDL_UnlockSurface(surface);
+}
+
+void binarize(SDL_Surface *surface)
+{
+    Uint8 r, g, b;
+    SDL_LockSurface(surface);
+    int i;
+    for(i = 0; i < surface->w; i++)
+    {
+	int j;
+	for(j = 0; j < surface->h; j++)
+	{  
+	    Uint32 pixel = getPixel(surface, i, j);
+	    SDL_GetRGB(pixel, surface->format, &r, &g, &b);
+	    if (r > 127) //r = g = b
 	    {
-		int re = (int)r;
-		int ge = (int)g;
-		int be = (int)b;
-		printf("r: %d g: %d b: %d", re, ge, be);
+		r = 255;
+		g = r;
+		b = g;
 	    }
+	    else
+	    {
+		r = 0;
+		g = r;
+		b = g;
+	    }
+	    pixel = SDL_MapRGB(surface->format, r, g, b);
+	    setPixel(surface, i, j, pixel);
 	}
     }
     SDL_UnlockSurface(surface);
