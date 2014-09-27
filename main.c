@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
     greyScale(text);
     //noiseRemove(text); /*only if there is noise*/
-    binarize(text);
+    //binarize(text); /*temporary fixed threshold*/
     int continuer = 1;
     SDL_Event event;
     while (continuer) //Update loop
