@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     SDL_BlitSurface(text, NULL, ecran, &position); //Display the image
 
     greyScale(text);
-    //noiseRemove(text); /*only if there is noise*/
+    noiseRemove(text); /*only if there is noise*/
     //binarize(text); /*temporary fixed threshold*/
     int continuer = 1;
     SDL_Event event;
