@@ -3,11 +3,12 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include "filters.h"
+
 int main(int argc, char *argv[])
 {
     /*-----------SDL initialization---------*/
 
-    if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error :
+    if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
     {
 	fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
 	exit(EXIT_FAILURE); //Exit the program
@@ -16,7 +17,7 @@ int main(int argc, char *argv[])
     SDL_Surface *ecran = NULL; //The pointer representing the screen itself, the "background"
     ecran = SDL_SetVideoMode(700, 700, 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //Opening the window by giving its size
 
-    if (ecran == NULL) //If the opening failed :
+    if (ecran == NULL) //If the opening failed
     {
 	fprintf(stderr, "Impossible to load video mode : %s\n", SDL_GetError());
 	exit(EXIT_FAILURE);
@@ -37,8 +38,8 @@ int main(int argc, char *argv[])
     SDL_BlitSurface(text, NULL, ecran, &position); //Display the image
 
     greyScale(text);
-    noiseRemove(text); /*only if there is noise*/
-    //binarize(text); /*temporary fixed threshold*/
+    noiseRemove(text);
+    binarize(text);
     int continuer = 1;
     SDL_Event event;
     while (continuer) //Update loop
