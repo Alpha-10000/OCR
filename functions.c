@@ -19,7 +19,7 @@ void sortArray(Uint32 array[], int size)
 	array[j] = temp;
     }
 }
-/*
+
 SDL_Surface *copySurface(SDL_Surface *surface)
 {
     SDL_Surface *copy = NULL;
@@ -36,4 +36,3 @@ SDL_Surface *copySurface(SDL_Surface *surface)
 
     return SDL_DisplayFormatAlpha(surface);
 }
-*/

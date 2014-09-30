@@ -155,11 +155,12 @@ void binarize(SDL_Surface *surface)
     SDL_Surface *copy;
     //copy = copySurface(surface);
     copy = SDL_ConvertSurface(surface, surface->format, SDL_HWSURFACE);
-    //Uint32 contrastMatrix[9] = {0, -1, 0, -1, 5, -1, 0, -1, 0}; Convolution matrix
+    //Uint32 contrastMatrix[9] = {0, -1, 0, -1, 5, -1, 0, -1, 0};
     if(surface != NULL && copy != NULL)
     {
 	Uint8 grey;
 	SDL_LockSurface(surface);
+	SDL_LockSurface(copy);
 	int i;
 	for(i = 0; i < surface->w; i++)
 	{
@@ -205,21 +206,22 @@ void binarize(SDL_Surface *surface)
 		variance = sum / 9;
 		Uint32 stdDeviation = sqrt(variance);
 
-		Uint32 threshold = average * (1 + 0.2 * ((stdDeviation / 128) - 1)); 
+		Uint32 threshold = average * (1 + 0.2 * ((stdDeviation / 128) - 1));		
 		if(grey > threshold)
 		    grey = 255;
 		else
 		    grey = 0;
 
-               /*Uint32 sum = 0; //Convolution matrix method
-		Uint32 coef = 0;
-		int x;
-		for(x = 0; x < 9; x++)
-		{
-		    sum += pixelMatrix[x] * noiseMatrix[x];
-		    coef += noiseMatrix[x];
-		}
-		grey = sum/coef;*/
+                /* Uint32 sum = 0; //Convolution matrix method */
+		/* Uint32 coef = 0; */
+		/* int x; */
+		/* for(x = 0; x < 9; x++) */
+		/* { */
+		/*     sum += pixelMatrix[x] * contrastMatrix[x]; */
+		/*     coef += contrastMatrix[x]; */
+		/* } */
+		/* grey = sum/coef; */
+		
 		pixel = SDL_MapRGB(copy->format, grey, grey, grey);
 		setPixel(surface, i, j, pixel);
 	    }
