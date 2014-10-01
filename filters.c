@@ -130,8 +130,8 @@ void noiseRemove(SDL_Surface *surface)
 		    SDL_GetRGB(getPixel(copy, i+1, j+1), copy->format, &grey, &grey, &grey);
 		    pixelMatrix[8] = grey;
 		}
-		Uint32 sum = 0;
-		Uint32 coef = 0;
+		Uint16 sum = 0;
+		Uint16 coef = 0;
 		int x;
 		for(x = 0; x < 9; x++)
 		{
@@ -167,7 +167,7 @@ void binarize(SDL_Surface *surface)
 	    int j;
 	    for(j = 0; j < surface->h; j++)
 	    {
-		Uint32 pixelMatrix[9];
+		Uint8 pixelMatrix[9];
 		Uint32 pixel = getPixel(surface, i, j);
 		SDL_GetRGB(pixel, surface->format, &grey, &grey, &grey);
 		if(i > 0 && i < (surface->w - 1) && j > 0 && j < (surface->h - 1))
@@ -192,36 +192,28 @@ void binarize(SDL_Surface *surface)
 		    pixelMatrix[8] = grey;
 		}
 		
-		Uint32 sum = 0;
-		Uint32 average;
+		Uint16 sum = 0;
+		Uint8 average;
 		int x;
 		for(x = 0; x < 9; x++)
 		    sum += pixelMatrix[x];
 		average = sum / 9;
 		
-		Uint32 variance = 0;
+		Uint8 variance = 0;
 		sum = 0;
 		for(x = 0; x < 9; x++)
 		    sum += pow(pixelMatrix[x] - average, 2);
 		variance = sum / 9;
-		Uint32 stdDeviation = sqrt(variance);
+		Uint8 stdDeviation = sqrt(variance);
 
-		Uint32 threshold = average * (1 + 0.2 * ((stdDeviation / 128) - 1));		
+		Uint8 threshold = average * (1 + 0.2 * ((stdDeviation / 128) - 1));
+		//SDL_GetRGB(getPixel(copy, 1, 1), copy->format, &threshold, &threshold, &threshold);
 		if(grey > threshold)
+		    //if(grey - 10 >= threshold || grey > 150)
 		    grey = 255;
 		else
 		    grey = 0;
 
-                /* Uint32 sum = 0; //Convolution matrix method */
-		/* Uint32 coef = 0; */
-		/* int x; */
-		/* for(x = 0; x < 9; x++) */
-		/* { */
-		/*     sum += pixelMatrix[x] * contrastMatrix[x]; */
-		/*     coef += contrastMatrix[x]; */
-		/* } */
-		/* grey = sum/coef; */
-		
 		pixel = SDL_MapRGB(copy->format, grey, grey, grey);
 		setPixel(surface, i, j, pixel);
 	    }
