@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OCRulus</title><link>/</link><description></description><atom:link href="/feeds/benzaiten.rss.xml" rel="self"></atom:link><lastBuildDate>Sun, 28 Sep 2014 00:00:00 +0200</lastBuildDate><item><title>Syntaxe</title><link>/syntax.html</link><description>&lt;p&gt;Voici un exemple.&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OCRulus</title><link>http://alpha-10000.github.io/OCR/</link><description></description><atom:link href="http://alpha-10000.github.io/OCR/feeds/benzaiten.rss.xml" rel="self"></atom:link><lastBuildDate>Sun, 28 Sep 2014 00:00:00 +0200</lastBuildDate><item><title>Syntaxe</title><link>http://alpha-10000.github.io/OCR/syntax.html</link><description>&lt;p&gt;Voici un exemple.&lt;/p&gt;
 &lt;h1&gt;Titre 1&lt;/h1&gt;
 &lt;p&gt;Exemple de bloc de code :&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include &amp;lt;stdio.h&amp;gt;&lt;/span&gt;
@@ -14,4 +14,4 @@
 
 &lt;h2&gt;Titre 2&lt;/h2&gt;
 &lt;p&gt;Il est possible d'afficher les articles dans la langue souhaitée.
-Pour cela il faut faire un autre article du même nom avec lang !=.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Benzaiten</dc:creator><pubDate>Sun, 28 Sep 2014 00:00:00 +0200</pubDate><guid>tag:,2014-09-28:syntax.html</guid><category>thats</category><category>awesome</category></item></channel></rss>
+Pour cela il faut faire un autre article du même nom avec lang !=.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Benzaiten</dc:creator><pubDate>Sun, 28 Sep 2014 00:00:00 +0200</pubDate><guid>tag:alpha-10000.github.io,2014-09-28:OCR/syntax.html</guid><category>thats</category><category>awesome</category></item></channel></rss>
