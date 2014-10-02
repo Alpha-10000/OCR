@@ -1,7 +1,22 @@
-Title: About us
+Title: Notre groupe
 Date: 2014-09-28
-Category: About
 Slug: about
 Lang: fr
 
-We are RIFT.
+Nous sommes Rift, un groupe d'étudiants en INFO-SPÉ d'ÉPITA.
+
+# ABDOULAYE Alpha
+
+<pres>
+
+# CARTON Nicolas
+
+<pres>
+
+# MOUTOUCOMARAPOULÉ Sarasvati
+
+<pres>
+
+# ORFILA Cyprien
+
+<pres>
