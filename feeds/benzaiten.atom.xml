@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>OCRulus</title><link href="http://alpha-10000.github.io/OCR/" rel="alternate"></link><link href="http://alpha-10000.github.io/OCR/feeds/benzaiten.atom.xml" rel="self"></link><id>http://alpha-10000.github.io/OCR/</id><updated>2014-09-28T00:00:00+02:00</updated><entry><title>Syntaxe</title><link href="http://alpha-10000.github.io/OCR/syntax.html" rel="alternate"></link><updated>2014-09-28T00:00:00+02:00</updated><author><name>Benzaiten</name></author><id>tag:alpha-10000.github.io,2014-09-28:OCR/syntax.html</id><summary type="html">&lt;p&gt;Voici un exemple.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>OCRulus</title><link href="/" rel="alternate"></link><link href="/feeds/benzaiten.atom.xml" rel="self"></link><id>/</id><updated>2014-09-28T00:00:00+02:00</updated><entry><title>Syntaxe</title><link href="/syntax.html" rel="alternate"></link><updated>2014-09-28T00:00:00+02:00</updated><author><name>Benzaiten</name></author><id>tag:,2014-09-28:syntax.html</id><summary type="html">&lt;p&gt;Voici un exemple.&lt;/p&gt;
 &lt;h1&gt;Titre 1&lt;/h1&gt;
 &lt;p&gt;Exemple de bloc de code :&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include &amp;lt;stdio.h&amp;gt;&lt;/span&gt;
