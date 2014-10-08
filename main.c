@@ -31,6 +31,11 @@ int main(int argc, char *argv[])
     
     SDL_Surface *text = NULL;
     text = IMG_Load(argv[argc - 1]); //Loading the image we will work on
+    if (text == NULL)
+    {
+	fprintf(stderr, "Give to the program an image as argument\n");
+	exit(EXIT_FAILURE);
+    }
     ecran = SDL_SetVideoMode(text->w, 640, 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //Resize window to fit the image size
     SDL_Rect position; //Position of the image
     position.x = ecran->w / 2 - text->w / 2;
