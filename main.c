@@ -3,10 +3,14 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include "filters.h"
+#include "neuronalNetwork.h"
 
 int main(int argc, char *argv[])
 {
     /*-----------SDL initialization---------*/
+	neuron test;
+	Initialize(&test);
+	FreeMemory(&test);
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
     {
