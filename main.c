@@ -8,15 +8,15 @@
 int main(int argc, char *argv[])
 {
     /*-----------SDL initialization---------*/
-	neuron *test = initialize(2);
-	int tests[4][2] = {{0,0},{0,1},{1,0},{1,1}};
-	int results[4] = {0,1,1,1};
-	learn(test, tests, results, 4);
-	test->entries[0] = 1;
-	test->entries[1] = 1;
-	calculateOutput(test);
-	printf("output: %d\n", test->output);
-	freeMemory(test);
+    neuron *test = initNeuron(2);
+    int tests[4][2] = {{0,0},{0,1},{1,0},{1,1}};
+    int results[4] = {0,1,1,1};
+    learn(test, tests, results, 4);
+    test->entries[0] = 1;
+    test->entries[1] = 1;
+    calculateOutput(test);
+    printf("output: %d\n", test->output);
+    freeMemory(test);
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
     {
