@@ -8,9 +8,26 @@
 int main(int argc, char *argv[])
 {
     /*-----------SDL initialization---------*/
-	neuron test;
-	Initialize(&test);
-	FreeMemory(&test);
+	neuron *test = Initialize(2);
+	Learn(test);
+	test->entries[0] = 0;
+	test->entries[1] = 0;
+	CalculateOutput(test);
+	printf("Output on OR function: %d\n", test->output);
+	test->entries[0] = 0;
+	test->entries[1] = 1;
+	CalculateOutput(test);
+	printf("Output on OR function: %d\n", test->output);
+	test->entries[0] = 1;
+	test->entries[1] = 0;
+	CalculateOutput(test);
+	printf("Output on OR function: %d\n", test->output);
+	test->entries[0] = 1;
+	test->entries[1] = 1;
+	CalculateOutput(test);
+	printf("Output on OR function: %d\n", test->output);
+
+	FreeMemory(test);
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
     {
