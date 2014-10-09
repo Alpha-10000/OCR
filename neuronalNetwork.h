@@ -13,9 +13,9 @@ struct neuron
 	double epsilon;
 };
 
-void CalculateOutput(neuron *neuron);
+void calculateOutput(neuron *neuron);
 
-neuron *Initialize(int nb_Entries)
+neuron *initialize(int nb_Entries)
 {
 	neuron *test = malloc(sizeof(neuron));
 
@@ -36,78 +36,31 @@ neuron *Initialize(int nb_Entries)
 	return test;
 }
 
-void Learn(neuron *neuron)
+void learn(neuron *neuron, int inputs[][2], int expected[], int size)
 {
-	int testVector[2];
-
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < 10; i++) //Test Number
 	{
-
-		testVector[0] = 0;
-		testVector[1] = 0;
-
-		for(int i = 0; i < neuron->nbEntries; i++)
+		for(int j = 0; j < size; j++) //We do each different test
 		{
-			neuron->entries[i] = testVector[i];	
-		}
-		CalculateOutput(neuron);
-		neuron->bias = neuron->bias + neuron->epsilon*(0-neuron->output)*1;
-		for(int i = 0; i < neuron->nbEntries; i++)
-		{
-			neuron->weight[i] = neuron->weight[i] 
-				+ neuron->epsilon*(0-neuron->output)*neuron->entries[i];
-		}
-
-		testVector[0] = 1;
-		testVector[1] = 0;
-
-		for(int i = 0; i < neuron->nbEntries; i++)
-		{
-			neuron->entries[i] = testVector[i];	
-		}
-		CalculateOutput(neuron);
-		neuron->bias = neuron->bias + neuron->epsilon*(0-neuron->output)*1;
-		for(int i = 0; i < neuron->nbEntries; i++)
-		{
-			neuron->weight[i] = neuron->weight[i] 
-				+ neuron->epsilon*(0-neuron->output)*neuron->entries[i];
-		}
-
-		testVector[0] = 0;
-		testVector[1] = 1;
-
-		for(int i = 0; i < neuron->nbEntries; i++)
-		{
-			neuron->entries[i] = testVector[i];	
-		}
-		CalculateOutput(neuron);
-		neuron->bias = neuron->bias + neuron->epsilon*(0-neuron->output)*1;
-		for(int i = 0; i < neuron->nbEntries; i++)
-		{
-			neuron->weight[i] = neuron->weight[i] 
-				+ neuron->epsilon*(0-neuron->output)*neuron->entries[i];
-		}
-
-		testVector[0] = 1;
-		testVector[1] = 1;
-
-		for(int i = 0; i < neuron->nbEntries; i++)
-		{
-			neuron->entries[i] = testVector[i];	
-		}
-		CalculateOutput(neuron);
-		neuron->bias = neuron->bias + neuron->epsilon*(1-neuron->output)*1;
-		for(int i = 0; i < neuron->nbEntries; i++)
-		{
-			neuron->weight[i] = neuron->weight[i] 
-				+ neuron->epsilon*(1-neuron->output)*neuron->entries[i];
+			for(int k = 0; k < neuron->nbEntries; k++)
+			{
+				neuron->entries[k] = inputs[j][k];
+			}
+			calculateOutput(neuron);
+			neuron->bias = neuron->bias 
+				+ neuron->epsilon*(expected[j]-neuron->output)*1;
+			for(int l = 0; l < neuron->nbEntries; l++)
+			{
+				neuron->weight[l] = neuron->weight[l] 
+				+ neuron->epsilon*(expected[j]-neuron->output)*neuron->entries[l];
+			}
 		}
 	}
 	printf("Done learning\n");
 
 }
 
-void CalculateOutput(neuron *neuron)
+void calculateOutput(neuron *neuron)
 {
 	double sum = 1*neuron->bias;
 	for(int i = 0; i < neuron->nbEntries; i++)
@@ -117,7 +70,7 @@ void CalculateOutput(neuron *neuron)
 	neuron->output = sum > 0 ? 1 : 0;
 }
 
-void FreeMemory(neuron *entry)
+void freeMemory(neuron *entry)
 {
 	free(entry->weight);
 	free(entry->entries);
