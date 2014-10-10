@@ -11,26 +11,29 @@ int main(int argc, char *argv[])
 {
     /*-----------SDL initialization---------*/
     /*
-    neuron *test = initNeuron(2);
-    int tests[4][2] = {{0,0},{0,1},{1,0},{1,1}};
-    int results[4] = {0,1,1,1};
-    learn(test, tests, results, 4);
-    test->entries[0] = 1;
-    test->entries[1] = 1;
-    calculateOutput(test);
-    printf("output: %d\n", test->output);
-    freeMemory(test);
-    */
+       neuron *test = initNeuron(2);
+       int tests[4][2] = {{0,0},{0,1},{1,0},{1,1}};
+       int results[4] = {0,1,1,1};
+       learn(test, tests, results, 4);
+       test->entries[0] = 1;
+       test->entries[1] = 1;
+       calculateOutput(test);
+       printf("output: %d\n", test->output);
+       freeMemory(test);
+       */
     layer *test = initLayer(4,2);
     freeLayer(test);
     network *test2 = initNetwork(3,4,2);
+    printEverything(test2);
+    int entry[2] = {1,1};
+    computeOutput(entry, 2, test2);
     printEverything(test2);
     freeNetwork(test2);
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
     {
-	fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
-	exit(EXIT_FAILURE); //Exit the program
+        fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
+        exit(EXIT_FAILURE); //Exit the program
     }
 
     SDL_Surface *ecran = NULL; //The pointer representing the screen itself, the "background"
@@ -38,22 +41,22 @@ int main(int argc, char *argv[])
 
     if (ecran == NULL) //If the opening failed
     {
-	fprintf(stderr, "Impossible to load video mode : %s\n", SDL_GetError());
-	exit(EXIT_FAILURE);
+        fprintf(stderr, "Impossible to load video mode : %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
     }
-    
+
     SDL_WM_SetCaption("OCR", NULL); //Window title
     SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 101, 148, 240)); //Color of the "background".
     SDL_EnableKeyRepeat(10, 10);
-    
+
     /*--------Principal code start--------*/
-    
+
     SDL_Surface *text = NULL;
     text = IMG_Load(argv[argc - 1]); //Loading the image we will work on
     if (text == NULL)
     {
-	fprintf(stderr, "Give to the program an image as argument\n");
-	exit(EXIT_FAILURE);
+        fprintf(stderr, "Give to the program an image as argument\n");
+        exit(EXIT_FAILURE);
     }
     ecran = SDL_SetVideoMode(text->w, 640, 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //Resize window to fit the image size
     SDL_Rect position; //Position of the image
@@ -68,43 +71,43 @@ int main(int argc, char *argv[])
     SDL_Event event;
     while (continuer) //Update loop
     {
-	SDL_WaitEvent(&event);
-	switch(event.type)
-	{
-	    case SDL_QUIT:
-		continuer = 0;
-		break;
-	    case SDL_KEYDOWN:
-		switch(event.key.keysym.sym)
-		{
-		    case SDLK_UP:
-			position.y += 5;
-			break;
-		    case SDLK_DOWN:
-			position.y -= 5;
-			break;
-		    default:
-			break;
-		}
-	    case SDL_MOUSEBUTTONUP:
-		switch(event.button.button)
-		{
-		    case SDL_BUTTON_WHEELUP:
-			position.y += 10;
-			break;
-		    case SDL_BUTTON_WHEELDOWN:
-			position.y -= 10;
-			break;
-		} 
-	    default:
-		break;
-	}
-    
-	SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 101, 148, 240)); //Clear the screen
-	SDL_BlitSurface(text, NULL, ecran, &position); //Redraw each surface after update
-	SDL_Flip(ecran); //Display new state of all elements after update
+        SDL_WaitEvent(&event);
+        switch(event.type)
+        {
+            case SDL_QUIT:
+                continuer = 0;
+                break;
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym)
+                {
+                    case SDLK_UP:
+                        position.y += 5;
+                        break;
+                    case SDLK_DOWN:
+                        position.y -= 5;
+                        break;
+                    default:
+                        break;
+                }
+            case SDL_MOUSEBUTTONUP:
+                switch(event.button.button)
+                {
+                    case SDL_BUTTON_WHEELUP:
+                        position.y += 10;
+                        break;
+                    case SDL_BUTTON_WHEELDOWN:
+                        position.y -= 10;
+                        break;
+                } 
+            default:
+                break;
+        }
+
+        SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 101, 148, 240)); //Clear the screen
+        SDL_BlitSurface(text, NULL, ecran, &position); //Redraw each surface after update
+        SDL_Flip(ecran); //Display new state of all elements after update
     }
-    
+
     /*--------Principal code end-------*/
 
     SDL_FreeSurface(text); //Free surface's memory
