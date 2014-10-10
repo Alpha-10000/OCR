@@ -3,11 +3,14 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include "filters.h"
-#include "neuronalNetwork.h"
+#include "neuron.h"
+#include "layer.h"
+#include "network.h"
 
 int main(int argc, char *argv[])
 {
     /*-----------SDL initialization---------*/
+    /*
     neuron *test = initNeuron(2);
     int tests[4][2] = {{0,0},{0,1},{1,0},{1,1}};
     int results[4] = {0,1,1,1};
@@ -17,6 +20,12 @@ int main(int argc, char *argv[])
     calculateOutput(test);
     printf("output: %d\n", test->output);
     freeMemory(test);
+    */
+    layer *test = initLayer(4,2);
+    freeLayer(test);
+    network *test2 = initNetwork(3,4,2);
+    printEverything(test2);
+    freeNetwork(test2);
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
     {

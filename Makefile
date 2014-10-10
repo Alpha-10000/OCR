@@ -17,7 +17,7 @@ $(EXEC): $(OBJ)
 
 #Headers
 
-main.o : filters.h functions.h neuronalNetwork.h
+main.o : filters.h functions.h neuron.h layer.h network.h
 
 #Object files
 %.o: %.c
