@@ -25,7 +25,7 @@ main.o : filters.h functions.h neuron.h layer.h network.h
 
 #Clean
 clean:
-	rm -rf *.o
+	rm -rf *.o *~ *# *.swp
 
 #Mrproper
 mrproper: clean
