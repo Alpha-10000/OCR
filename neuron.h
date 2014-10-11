@@ -9,7 +9,7 @@ typedef struct neuron neuron;
 struct neuron
 {
     int nbEntries;
-    int *entries;
+    double *entries;
     double *weight;
     double output;
     double epsilon;

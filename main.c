@@ -21,13 +21,20 @@ int main(int argc, char *argv[])
        printf("output: %d\n", test->output);
        freeMemory(test);
        */
-    layer *test = initLayer(4,2);
-    freeLayer(test);
     network *test2 = initNetwork(3,4,2);
+
     printEverything(test2);
-    int entry[2] = {1,1};
-    computeOutput(entry, 2, test2);
+    int entry[4][2] = {{1,1}, {1,0},{0,1},{0,0}};
+    int expected[4] = {0,1,1,0};
+
+    learnNetwork(entry, expected, test2);
     printEverything(test2);
+
+    computeOutput(entry[3],2,test2);
+    printOutput(test2);
+    computeOutput(entry[1],2,test2);
+    printOutput(test2);
+
     freeNetwork(test2);
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
