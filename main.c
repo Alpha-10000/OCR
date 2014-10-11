@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
        printf("output: %d\n", test->output);
        freeMemory(test);
        */
-    network *test2 = initNetwork(3,4,2);
+    network *test2 = initNetwork(3,2,2);
 
     printEverything(test2);
     int entry[4][2] = {{1,1}, {1,0},{0,1},{0,0}};
@@ -30,9 +30,13 @@ int main(int argc, char *argv[])
     learnNetwork(entry, expected, test2);
     printEverything(test2);
 
-    computeOutput(entry[3],2,test2);
+    computeOutput(entry[0],2,test2);
     printOutput(test2);
     computeOutput(entry[1],2,test2);
+    printOutput(test2);
+    computeOutput(entry[2],2,test2);
+    printOutput(test2);
+    computeOutput(entry[3],2,test2);
     printOutput(test2);
 
     freeNetwork(test2);

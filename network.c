@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "network.h"
 
 network *initNetwork(int nbLayers, int nbNeurons, int entryPerNeurons)
@@ -37,18 +38,21 @@ void printEverything(network *network)
 
 void printOutput(network *network)
 {
-    printf("final output=%f\n", network->layers[network->nbLayers-1]->
-            neurons[0]->output);
+    printf("final output=%f\n", network->output);
 }
 
 void learnNetwork(int entry[4][2], int expected[4], network *network)
 {
-    for (int nbTest = 0; nbTest < 10; nbTest++)
+    int sizeA = 0;
+    double savedOutput = 0;
+    double error = 0;
+    for (int nbTest = 0; nbTest < 1; nbTest++)
     {
-        for (int sizeA = 0; sizeA < 4; sizeA++)
+        error = 0;
+        for (sizeA = 0; sizeA < 4; sizeA++)
         {
             computeOutput(entry[sizeA], 2, network);
-            double savedOutput = network->output;
+            savedOutput = network->layers[network->nbLayers-1]->neurons[0]->output;
             for (int i = 0; i < network->layers[network->nbLayers-1]->nbNeurons; i++)
             {
                 network->layers[network->nbLayers-1]->neurons[i]->delta =
@@ -64,7 +68,9 @@ void learnNetwork(int entry[4][2], int expected[4], network *network)
                             network->layers[i+1]->neurons[k]->weight[j];
 
                     network->layers[i]->neurons[j]->delta =
-                        savedOutput*(1-savedOutput)*backPropCoef;
+                        network->layers[i]->neurons[j]->output
+                        *(1-network->layers[i]->neurons[j]->output)
+                        *backPropCoef;
                 }
             }
             for (int i = 0; i < network->nbLayers; i++)
@@ -79,7 +85,14 @@ void learnNetwork(int entry[4][2], int expected[4], network *network)
                     }
                 }
             }
+            error += fabs(savedOutput - expected[sizeA]);
+            printf("Test=%d expected=%d got=%f error=%f\n",sizeA, expected[sizeA],
+                    savedOutput,
+                    fabs((expected[sizeA]-savedOutput)));
+
         }
+            if (error > 0.4)
+                nbTest--;
     }
 }
 
@@ -111,13 +124,12 @@ void computeOutput(int *entry, int size, network *network)
         }
     }
     network->output = network->layers[network->nbLayers-1]->neurons[0]->output;
+    if (network->output > 0.5)
+        network->output = 1;
+    else
+        network->output = 0;
 }
-/*
-   void learnNetwork(network *network)
-   {
 
-   }
-   */
 void freeNetwork(network *network)
 {
     for (int i = 0; i < network->nbLayers; i++)
