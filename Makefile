@@ -3,7 +3,7 @@
 
 #Variables
 CC=gcc
-CFLAGS=-Wall -Wextra -Werror -std=c99
+CFLAGS=-Wall -Wextra -Werror -std=c99 -O2
 LDFLAGS=-lSDL -lSDLmain -lSDL_image -lm
 EXEC=Program
 SRC=$(wildcard *.c)

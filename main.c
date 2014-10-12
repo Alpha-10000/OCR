@@ -6,6 +6,7 @@
 #include "neuron.h"
 #include "layer.h"
 #include "network.h"
+#include "detection.h"
 
 int main(int argc, char *argv[])
 {
@@ -78,6 +79,11 @@ int main(int argc, char *argv[])
     greyScale(text);
     //noiseRemove(text);
     binarize(text);
+
+	Uint16 hist[text->h];
+	vertical_hist(text, hist);
+	print_tab(hist, text->h);
+
     int continuer = 1;
     SDL_Event event;
     while (continuer) //Update loop
