@@ -13,6 +13,7 @@ void vertical_hist(SDL_Surface *surface, Uint16 *hist)
 	// Y coordinate
 	for(int j = 0; j < surface->h; j++)
 	{
+		hist[j] = 0;
 		// X coordinate
 	    for(int i = 0; i < surface->w; i++)
 		{
@@ -48,8 +49,14 @@ SDL_Rect *find_lines(SDL_Surface *surface)
 	
 	// Create lines array
 	int size = 20;
-	SDL_Rect *lines = malloc(size * sizeof(SDL_Rect));
-	
+	SDL_Rect test;
+	test.x = 1;
+	test.y = 2;
+	test.h = 3;
+	test.w = 4;
+	//SDL_Rect *lines = malloc(size * sizeof(SDL_Rect));
+	SDL_Rect *lines = &test;
+
 	// Bool -> on a line ? 
 	// threshold at which we consider a line pixel as a part of a text line
 	int onLine = 0, threshold = 3;
@@ -70,11 +77,11 @@ SDL_Rect *find_lines(SDL_Surface *surface)
 			{
 				// New line begins
 				onLine = 1;
-				lines[j].x = 0;
+				/*lines[j].x = 0;
 				lines[j].w = surface->w;
 				lines[j].y = i;
-				lines[j].h = 1;
-				//Draw_HLine(surface, 0, i, surface->w);
+				*/
+				Draw_HLine(surface, 0, i, surface->w);
 			}
 		}
 
@@ -84,9 +91,9 @@ SDL_Rect *find_lines(SDL_Surface *surface)
 			{
 				//Line reached end 
 				onLine = 0;
-				lines[j].h = i;
-				//Draw_HLine(surface, 0, i, surface->w);
-				j++;
+				//lines[j].h = i;
+				Draw_HLine(surface, 0, i, surface->w);
+				//j++;
 			}
 		}
 	}
