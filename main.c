@@ -79,11 +79,12 @@ int main(int argc, char *argv[])
     greyScale(text);
     //noiseRemove(text);
     binarize(text);
-    SDL_Rect *lines = find_lines(text);
-    printf("Test lines[0] :\nx = %d\ny = %d\nw = %d\nh = %d\n", 
-           lines[0].x, lines[0].y, lines[0].w, lines[0].h);
-    //free(lines);
-
+    
+    //SDL_Rect *lines = find_lines(text);
+    //printf("Test lines[0] :\nx = %d\ny = %d\nw = %d\nh = %d\n", 
+    //       lines[0].x, lines[0].y, lines[0].w, lines[0].h);
+    //free(lines); 
+    
     int continuer = 1;
     SDL_Event event;
     while (continuer) //Update loop
@@ -127,6 +128,7 @@ int main(int argc, char *argv[])
 
     /*--------Principal code end-------*/
 
+   
     SDL_FreeSurface(text); //Free surface's memory
     SDL_Quit(); //Exit SDL
 
