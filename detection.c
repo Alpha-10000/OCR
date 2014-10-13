@@ -134,12 +134,21 @@ void horizontal_hist(SDL_Surface *surface, Uint16 *hist, SDL_Rect *line)
 }
 
 //Draw a vertical blue line from x0 to x1 at y0 on surface 
-void Draw_Vline (SDL_Surface *surface, int x0, int y0, int x1)
+void Draw_Vline (SDL_Surface *surface, int x0, int y0, int y1)
 {
 	SDL_Rect rect;
 	rect.x = x0;
-	rect.h = x1;
+	rect.h = y1;
 	rect.y = y0;
 	rect.w = 1;
 	SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 0, 0, 255));
+}
+
+
+//Return array of matrix of struct Cell containing each character of a line
+Cell *char_line(SDL_Surface *surface, SDL_Rect line)
+{
+	Uint16 hist[line->w];
+	horizontal_hist(surface, hist);
+	return NULL;
 }
