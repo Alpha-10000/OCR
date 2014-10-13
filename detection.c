@@ -1,6 +1,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "filters.h"
 
 
@@ -40,6 +41,12 @@ void Draw_HLine(SDL_Surface *surface, int x0, int y0, int x1)
 	SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 255, 0, 0));
 }
 
+void print_alloc_error()
+{
+    printf("Error : alloc fail");
+    exit(EXIT_FAILURE);
+}
+
 // Return SDL_Rect array containing each text line
 SDL_Rect *find_lines(SDL_Surface *surface)
 {
@@ -48,20 +55,19 @@ SDL_Rect *find_lines(SDL_Surface *surface)
 	vertical_hist(surface, hist);
 	
 	// Create lines array
-	int size = 20;
-	SDL_Rect test;
-	test.x = 1;
-	test.y = 2;
-	test.h = 3;
-	test.w = 4;
-	//SDL_Rect *lines = malloc(size * sizeof(SDL_Rect));
-	SDL_Rect *lines = &test;
+	size_t size = 20 * sizeof(SDL_Rect);
+	SDL_Rect *lines = malloc(size);
+    SDL_Rect *lines_realloc = NULL;
+
+    if (lines == NULL){
+        print_alloc_error();
+    }
 
 	// Bool -> on a line ? 
 	// threshold at which we consider a line pixel as a part of a text line
 	int onLine = 0, threshold = 3;
 	
-	int j = 0;
+	size_t j = 0;
 	for (int i = 0; i < surface->h; i++)
 	{
 		// Double array size when needed
@@ -69,6 +75,10 @@ SDL_Rect *find_lines(SDL_Surface *surface)
 		{
 			size *= 2;
 			lines = realloc(lines, size);
+            if (lines_realloc != NULL)
+                lines = lines_realloc;
+            else
+                print_alloc_error();
 		}
 
 		if (!onLine)
@@ -77,10 +87,10 @@ SDL_Rect *find_lines(SDL_Surface *surface)
 			{
 				// New line begins
 				onLine = 1;
-				/*lines[j].x = 0;
+				lines[j].x = 0;
 				lines[j].w = surface->w;
 				lines[j].y = i;
-				*/
+				
 				Draw_HLine(surface, 0, i, surface->w);
 			}
 		}
@@ -91,9 +101,9 @@ SDL_Rect *find_lines(SDL_Surface *surface)
 			{
 				//Line reached end 
 				onLine = 0;
-				//lines[j].h = i;
+				lines[j].h = i;
 				Draw_HLine(surface, 0, i, surface->w);
-				//j++;
+				j++;
 			}
 		}
 	}
