@@ -2,7 +2,7 @@
 .PHONY: clean, mrproper
 
 #Variables
-CC=gcc
+CC=clang
 CFLAGS=-Wall -Wextra -Werror -std=c99 -O2
 LDFLAGS=-lSDL -lSDLmain -lSDL_image -lm
 EXEC=Program
@@ -17,7 +17,7 @@ $(EXEC): $(OBJ)
 
 #Headers
 
-main.o : filters.h functions.h neuron.h layer.h network.h
+main.o : filters.h functions.h neuron.h layer.h network.h detection.h
 
 #Object files
 %.o: %.c

@@ -17,5 +17,5 @@ struct Cell
 	int width;
 	int height;
 	//Matrixe of 0 and 1 for black and white pixels
-	int char_matrix [][];
-}
+	Uint8 **char_matrix;
+};

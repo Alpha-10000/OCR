@@ -11,17 +11,6 @@
 int main(int argc, char *argv[])
 {
     /*-----------SDL initialization---------*/
-    /*
-       neuron *test = initNeuron(2);
-       int tests[4][2] = {{0,0},{0,1},{1,0},{1,1}};
-       int results[4] = {0,1,1,1};
-       learn(test, tests, results, 4);
-       test->entries[0] = 1;
-       test->entries[1] = 1;
-       calculateOutput(test);
-       printf("output: %d\n", test->output);
-       freeMemory(test);
-       */
     network *test2 = initNetwork(3,2,2);
 
     printEverything(test2);
@@ -80,10 +69,10 @@ int main(int argc, char *argv[])
     //noiseRemove(text);
     binarize(text);
     
-    //SDL_Rect *lines = find_lines(text);
-    //printf("Test lines[0] :\nx = %d\ny = %d\nw = %d\nh = %d\n", 
-    //       lines[0].x, lines[0].y, lines[0].w, lines[0].h);
-    //free(lines); 
+    SDL_Rect *lines = find_lines(text);
+    printf("Test lines[0] :\nx = %d\ny = %d\nw = %d\nh = %d\n", 
+           lines[0].x, lines[0].y, lines[0].w, lines[0].h);
+    free(lines); 
     
     int continuer = 1;
     SDL_Event event;
