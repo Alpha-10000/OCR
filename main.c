@@ -13,12 +13,10 @@ int main(int argc, char *argv[])
     /*-----------SDL initialization---------*/
     network *test2 = initNetwork(3,2,2);
 
-    printEverything(test2);
     int entry[4][2] = {{1,1}, {1,0},{0,1},{0,0}};
     int expected[4] = {0,1,1,0};
 
     learnNetwork(entry, expected, test2);
-    printEverything(test2);
 
     computeOutput(entry[0],2,test2);
     printOutput(test2);
@@ -59,7 +57,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Give to the program an image as argument\n");
         exit(EXIT_FAILURE);
     }
-    ecran = SDL_SetVideoMode(text->w, 640, 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //Resize window to fit the image size
+    ecran = SDL_SetVideoMode(text->w, text->h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //Resize window to fit the image size
     SDL_Rect position; //Position of the image
     position.x = ecran->w / 2 - text->w / 2;
     position.y = ecran->h / 2 - text->h / 2;

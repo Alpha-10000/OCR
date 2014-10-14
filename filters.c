@@ -208,7 +208,7 @@ void binarize(SDL_Surface *surface)
 
 		Uint8 threshold = average * (1 + 0.2 * ((stdDeviation / 128) - 1));
 		//SDL_GetRGB(getPixel(copy, 1, 1), copy->format, &threshold, &threshold, &threshold);
-		if(grey > threshold)
+		if(grey > threshold - threshold + 170)
 		    //if(grey - 10 >= threshold || grey > 150)
 		    grey = 255;
 		else

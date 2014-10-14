@@ -43,7 +43,7 @@ void printOutput(network *network)
 
 void learnNetwork(int entry[4][2], int expected[4], network *network)
 {
-    int sizeA = 0;
+    int sizeA = 0, testCounter = 0;
     double savedOutput = 0;
     double error = 0;
     for (int nbTest = 0; nbTest < 1; nbTest++)
@@ -86,14 +86,18 @@ void learnNetwork(int entry[4][2], int expected[4], network *network)
                 }
             }
             error += fabs(savedOutput - expected[sizeA]);
-            printf("Test=%d expected=%d got=%f error=%f\n",sizeA, expected[sizeA],
-                    savedOutput,
-                    fabs((expected[sizeA]-savedOutput)));
+            //printf("Test=%d expected=%d got=%f error=%f\n",sizeA, expected[sizeA],
+            //      savedOutput,
+            //      fabs((expected[sizeA]-savedOutput)));
 
         }
+            testCounter++;
             if (error > 0.4)
                 nbTest--;
+            if (testCounter > 1000000)
+                nbTest++;
     }
+    printf("\e[0;33m\nLearn sequence terminated with %d tests.\e[1;37m\n\n", testCounter);
 }
 
 void computeOutput(int *entry, int size, network *network)
