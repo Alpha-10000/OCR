@@ -115,18 +115,19 @@ void print_tab(Uint16 *tab, int size)
 }
 
 // Create horizontal histograme of line
-void horizontal_hist(SDL_Surface *surface, Uint16 *hist, SDL_Rect *line)
+int horizontal_hist(SDL_Surface *surface, Uint16 *hist, SDL_Rect *line)
 {
 	//Needed for GetPixel
 	SDL_LockSurface(surface);
-
+	int columns = 0;
+	int onaCol = 0;
 	//X coordinate of a line
 	for(int i = 0; i < line->w; i++)
 	{
 		hist[i] = 0;
-
+		int j = 0;
 		//Y coordinate of a line
-		for(int j = 0; j < line->h; j++)
+		while(j < line->h && hist[i] == 0)
 		{
 			//Get color at pos(i,j)
 			Uint8 color;
@@ -134,10 +135,22 @@ void horizontal_hist(SDL_Surface *surface, Uint16 *hist, SDL_Rect *line)
 					&color, &color, &color);
 			//Is it black ?
 			if (color == 0)
+			{
 				hist[i]++;
+				if (!onaCol)
+				{
+					columns++;
+					onaCol = 1;
+				}
+			}
+			j++;
 		}
+		if (j == line->h)
+			onaCol = 0;
+		
 	}
 	SDL_UnlockSurface(surface);
+	return columns;
 }
 
 //Draw a vertical blue line from x0 to x1 at y0 on surface 
