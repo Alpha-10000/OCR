@@ -2,15 +2,27 @@
 #include <stdlib.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <gtk/gtk.h>
 #include "filters.h"
-#include "neuron.h"
-#include "layer.h"
 #include "network.h"
 #include "detection.h"
+#include "gui.h"
 
 int main(int argc, char *argv[])
 {
-    /*-----------SDL initialization---------*/
+    /*------Init GTK+-------*/
+    gtk_init(&argc, &argv);
+
+    /*------Main Window-------*/
+    GtkWidget *mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    g_signal_connect(G_OBJECT (mainWindow), "destroy", G_CALLBACK (cb_quit), NULL);
+    gtk_widget_show(mainWindow);
+
+    /*------Main GTK loop-------*/
+    gtk_main();
+
+    
+    /*-------SDL initialization-------*/
     network *test2 = initNetwork(3,2,2);
 
     int entry[4][2] = {{1,1}, {1,0},{0,1},{0,0}};
