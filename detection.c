@@ -6,41 +6,39 @@
 
 
 // Create vertical histograme of surface
-int vertical_hist(SDL_Surface *surface, Uint16 *hist)
+void vertical_hist(SDL_Surface *surface, Uint16 *hist, int *nbLines)
 {
 	// Needed for getPixel
 	SDL_LockSurface(surface);
-	int lines = 0;
+	*nbLines = 0;
 	int onaLine = 0;
 	// Y coordinate
 	for(int j = 0; j < surface->h; j++)
 	{
 		hist[j] = 0;
 		// X coordinate
-		int i = 0;
-		while(i < surface->w && hist[j] == 0)
+        int i;
+		for (i = 0; i < surface->w && !hist[j]; i++)
 		{
 			// Get color at pos(i,j)
 			Uint8 color;
 			SDL_GetRGB(getPixel(surface, i, j), surface->format, 
-					&color, &color, &color);
+					    &color, &color, &color);
 			// Is it black ?
-			if (color == 0)
+			if (!color)
 			{
 				hist[j]++;
 				if (!onaLine)
 				{
-					lines++;
+					(*nbLines)++;
 					onaLine = 1;
 				}
 			}
-			i++;
 		}
 		if (i == surface->w)
 			onaLine = 0;
 	}
 	SDL_UnlockSurface(surface);
-	return lines;
 }
 
 // Draw an horizontal red line from x0 to x1 at y0 on surface
@@ -61,39 +59,25 @@ void print_alloc_error()
 }
 
 // Return SDL_Rect array containing each text line
-SDL_Rect *find_lines(SDL_Surface *surface)
+SDL_Rect *find_lines(SDL_Surface *surface, int *nbLines)
 {
 	// Get surface vertical hist'
 	Uint16 hist[surface->h];
-	int size = vertical_hist(surface, hist);
+	vertical_hist(surface, hist, nbLines);
 
 	// Create lines array
-	//size_t size = 20 * sizeof(SDL_Rect);
-	SDL_Rect *lines = malloc(size * sizeof(SDL_Rect));
-	//SDL_Rect *lines_realloc = NULL;
-
+	SDL_Rect *lines = malloc(*nbLines * sizeof(SDL_Rect));
+	
 	if (lines == NULL){
 		print_alloc_error();
 	}
 
 	// Bool -> on a line ? 
 	// threshold at which we consider a line pixel as a part of a text line
-	int onLine = 0, threshold = 1;
+	int onLine = 0, threshold = 1, j = 0;
 
-	size_t j = 0;
 	for (int i = 0; i < surface->h; i++)
 	{
-		// Double array size when needed
-		/*if (j >= size)
-		{
-			size *= 2;
-			lines_realloc = realloc(lines, size);
-			if (lines_realloc != NULL)
-				lines = lines_realloc;
-			else
-				print_alloc_error();
-		}*/
-
 		if (!onLine)
 		{
 			if (hist[i] >= threshold)

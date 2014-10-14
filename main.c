@@ -69,8 +69,10 @@ int main(int argc, char *argv[])
     //noiseRemove(text);
     binarize(text);
     
-    SDL_Rect *lines = find_lines(text);
-    printf("Test lines[0] :\nx = %d\ny = %d\nw = %d\nh = %d\n", 
+    int nbLines;
+    SDL_Rect *lines = find_lines(text, &nbLines);
+    printf("Test lines : nbLines = %d\n", nbLines); 
+    printf("lines[0] :\nx = %d\ny = %d\nw = %d\nh = %d\n", 
            lines[0].x, lines[0].y, lines[0].w, lines[0].h);
     free(lines); 
     
