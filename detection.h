@@ -1,21 +1,18 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
-void vertical_hist(SDL_Surface *surface, Uint16 *hist, int *nbLines);
-void horizontal_hist(SDL_Surface *surface, Uint16 *hist, SDL_Rect *line);
-void Draw_HLine(SDL_Surface *surface, int x0, int y0, int x1);
-SDL_Rect *find_lines(SDL_Surface *surface, int* nbLines);
-void print_tab(Uint16 *tab, int size);
-
-typedef struct Cell Cell;
-struct Cell
+typedef struct Block Block;
+struct Block
 {
-	//Coordinates of the top-left corner of the rectangle
-	int x;
-	int y;
-	//Dimensions
-	int width;
-	int height;
-	//Matrixe of 0 and 1 for black and white pixels
-	Uint8 **char_matrix;
+    //For the line
+    SDL_Rect line;
+    int nbChars;
+    SDL_Rect *characters;
 };
+
+void vertical_hist(SDL_Surface *surface, Uint16 *hist, int *nbLines);
+int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block);
+void Draw_HLine(SDL_Surface *surface, int x0, int y0, int x1);
+Block *find_blocks(SDL_Surface *surface, int* nbLines);
+void find_chars(SDL_Surface *surface, Block *blocks, int nbLines);
+void print_tab(Uint16 *tab, int size);
