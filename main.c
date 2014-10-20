@@ -10,18 +10,10 @@
 
 int main(int argc, char *argv[])
 {
-    /*------Init GTK+-------*/
+    /*-----Initialize Graphical User Interface-----*/
     gtk_init(&argc, &argv);
-
-    /*------Main Window-------*/
-    GtkWidget *mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    g_signal_connect(G_OBJECT (mainWindow), "destroy", G_CALLBACK (cb_quit), NULL);
-    gtk_widget_show(mainWindow);
-
-    /*------Main GTK loop-------*/
-    gtk_main();
-
-    
+    guiInit();
+ 
     /*-------SDL initialization-------*/
     network *test2 = initNetwork(3,2,2);
 
