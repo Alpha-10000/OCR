@@ -94,8 +94,8 @@ void learnNetwork(int entry[4][2], int expected[4], network *network)
             testCounter++;
             if (error > 0.4)
                 nbTest--;
-            if (testCounter > 1000000)
-                nbTest++;
+            /*if (testCounter > 1000000)
+	      nbTest++;*/
     }
     printf("\e[0;33m\nLearn sequence terminated with %d tests.\e[1;37m\n\n", testCounter);
 }

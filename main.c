@@ -11,8 +11,8 @@
 int main(int argc, char *argv[])
 {
     /*-----Initialize Graphical User Interface-----*/
-    gtk_init(&argc, &argv);
-    guiInit();
+    /*gtk_init(&argc, &argv);
+      guiInit();*/ //Annoying for debug
  
     /*-------SDL initialization-------*/
     network *test2 = initNetwork(3,2,2);
