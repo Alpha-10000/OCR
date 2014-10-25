@@ -136,7 +136,7 @@ int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block)
     //Needed for GetPixel
     SDL_LockSurface(surface);
 
-    int columns = 0, onChar = 0;
+    int nbChars = 0, onChar = 0;
 
     //X coordinate of a line
     for(int i = 0; i < block->line.w; i++)
@@ -147,7 +147,7 @@ int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block)
         int j;
         for(j = 0; j < block->line.h && !hist[i]; j++)
         {
-            //Get color at pos(i,j)
+            //Get color at pos(x+i, y+j)
             Uint8 color;
             SDL_GetRGB(getPixel(surface, block->line.x + i, block->line.y + j),
                     surface->format, &color, &color, &color);
@@ -159,7 +159,7 @@ int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block)
 
                 if (!onChar)
                 {
-                    columns++;
+                    nbChars++;
                     onChar = 1;
                 }
             }
@@ -171,7 +171,7 @@ int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block)
     }
 
     SDL_UnlockSurface(surface);
-    return columns;
+    return nbChars;
 }
 
 //Draw a vertical green line from y of length h at x on surface 
@@ -189,12 +189,14 @@ void find_chars(SDL_Surface *surface, Block *blocks, int nbLines)
 {
     for(int cur_Line = 0; cur_Line < nbLines; cur_Line++)
     {
-        //Vertical hist for this line
+        // Vertical hist for this line
         Uint16 hist[blocks[cur_Line].line.w];
         blocks[cur_Line].nbChars = horizontal_hist(surface, hist, 
                 &blocks[cur_Line]);
 
-        printf("%d\n", blocks[cur_Line].nbChars);
+        // Testing
+        print_tab(hist, blocks[cur_Line].line.w);
+        printf("Line %d nb chars : %d\n", cur_Line, blocks[cur_Line].nbChars);
 
         // Create chars array
         blocks[cur_Line].chars = malloc(blocks[cur_Line].nbChars *
@@ -218,7 +220,7 @@ void find_chars(SDL_Surface *surface, Block *blocks, int nbLines)
                         blocks[cur_Line].line.h;
 
                     Draw_Vline(surface, k, blocks[cur_Line].line.y,
-                            blocks[cur_Line].line.h - blocks[cur_Line].line.y);
+                            blocks[cur_Line].line.h);
                 }
             }
             else
