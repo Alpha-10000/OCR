@@ -93,7 +93,7 @@ Block *find_blocks(SDL_Surface *surface, int *nbLines)
                 blocks[j].line.w = surface->w;
                 blocks[j].line.y = i;
 
-                Draw_HLine(surface, 0, i, surface->w);
+               // Draw_HLine(surface, 0, i, surface->w);
             }
         }
         else
@@ -105,7 +105,7 @@ Block *find_blocks(SDL_Surface *surface, int *nbLines)
                 blocks[j].line.h = i - blocks[j].line.y;
                 j++;
 
-                Draw_HLine(surface, 0, i, surface->w);
+              //  Draw_HLine(surface, 0, i, surface->w);
             }
         }
     }
