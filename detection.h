@@ -9,7 +9,7 @@ struct Block
     //For the line
     SDL_Rect line;
     int nbChars;
-    SDL_Rect *characters;
+    SDL_Rect *chars;
 };
 
 void vertical_hist(SDL_Surface *surface, Uint16 *hist, int *nbLines);
