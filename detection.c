@@ -119,6 +119,17 @@ void print_tab(Uint16 *tab, int size)
         printf("tab[%d] = %d\n", i, tab[i]);
 }
 
+// Check find blocks
+void print_blocks(Block *blocks, int size)
+{
+    for(int i = 0; i < size; i++)
+    {
+        printf("line %d : x = %d; w = %d; y = %d; h = %d\n", i,
+                blocks[i].line.x, blocks[i].line.w,
+                blocks[i].line.y, blocks[i].line.h);
+    }
+}
+
 // Create horizontal histogram of line
 int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block)
 {
@@ -128,18 +139,18 @@ int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block)
     int columns = 0, onChar = 0;
 
     //X coordinate of a line
-    for(int i = block->line.x; i < block->line.w; i++)
+    for(int i = 0; i < block->line.w; i++)
     {
         hist[i] = 0;
         
         //Y coordinate of a line
         int j;
-        for(j = block->line.y; j < block->line.h && !hist[i]; j++)
+        for(j = 0; j < block->line.h && !hist[i]; j++)
         {
             //Get color at pos(i,j)
             Uint8 color;
-            SDL_GetRGB(getPixel(surface, i, j), surface->format,
-                    &color, &color, &color);
+            SDL_GetRGB(getPixel(surface, block->line.x + i, block->line.y + j),
+                    surface->format, &color, &color, &color);
 
             //Is it black ?
             if (!color)
@@ -183,7 +194,7 @@ void find_chars(SDL_Surface *surface, Block *blocks, int nbLines)
         blocks[cur_Line].nbChars = horizontal_hist(surface, hist, 
                 &blocks[cur_Line]);
 
-        //printf("%d\n", blocks[cur_Line].nbChars);
+        printf("%d\n", blocks[cur_Line].nbChars);
 
         // Create chars array
         blocks[cur_Line].chars = malloc(blocks[cur_Line].nbChars *
@@ -221,7 +232,7 @@ void find_chars(SDL_Surface *surface, Block *blocks, int nbLines)
                     cur_Char++;
 
                     Draw_Vline(surface, k, blocks[cur_Line].line.y,
-                            blocks[cur_Line].line.h - blocks[cur_Line].line.y);
+                            blocks[cur_Line].line.h);
                 }
             }
         }
