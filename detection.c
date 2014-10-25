@@ -93,7 +93,7 @@ Block *find_blocks(SDL_Surface *surface, int *nbLines)
                 blocks[j].line.w = surface->w;
                 blocks[j].line.y = i;
 
-               // Draw_HLine(surface, 0, i, surface->w);
+                //Draw_HLine(surface, 0, i, surface->w);
             }
         }
         else
@@ -105,7 +105,7 @@ Block *find_blocks(SDL_Surface *surface, int *nbLines)
                 blocks[j].line.h = i - blocks[j].line.y;
                 j++;
 
-              //  Draw_HLine(surface, 0, i, surface->w);
+                //Draw_HLine(surface, 0, i, surface->w);
             }
         }
     }
@@ -195,8 +195,8 @@ void find_chars(SDL_Surface *surface, Block *blocks, int nbLines)
                 &blocks[cur_Line]);
 
         // Testing
-        print_tab(hist, blocks[cur_Line].line.w);
-        printf("Line %d nb chars : %d\n", cur_Line, blocks[cur_Line].nbChars);
+        //print_tab(hist, blocks[cur_Line].line.w);
+      //printf("Line %d nb chars : %d\n", cur_Line, blocks[cur_Line].nbChars);
 
         // Create chars array
         blocks[cur_Line].chars = malloc(blocks[cur_Line].nbChars *
