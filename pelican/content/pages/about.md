@@ -5,18 +5,18 @@ Lang: fr
 
 Nous sommes Rift, un groupe d'étudiants en INFO-SPÉ d'ÉPITA.
 
-# ABDOULAYE Alpha
+## ABDOULAYE Alpha
 
 <pres>
 
-# CARTON Nicolas
+## CARTON Nicolas
 
 <pres>
 
-# MOUTOUCOMARAPOULÉ Sarasvati
+## MOUTOUCOMARAPOULÉ Sarasvati
 
 <pres>
 
-# ORFILA Cyprien
+## ORFILA Cyprien
 
 <pres>

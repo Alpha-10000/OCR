@@ -26,7 +26,7 @@ void vertical_hist(SDL_Surface *surface, Uint16 *hist, int *nbLines)
             Uint8 color;
             SDL_GetRGB(getPixel(surface, i, j), surface->format, 
                     &color, &color, &color);
-            
+
             // Is it black ?
             if (!color)
             {
@@ -54,7 +54,7 @@ void Draw_HLine(SDL_Surface *surface, int x, int y, int w)
     rect.w = w;
     rect.y = y;
     rect.h = 1;
-    SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 255, 0, 0));
+    SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 232, 0, 52));
 }
 
 void print_alloc_error()
@@ -92,8 +92,6 @@ Block *find_blocks(SDL_Surface *surface, int *nbLines)
                 blocks[j].line.x = 0;
                 blocks[j].line.w = surface->w;
                 blocks[j].line.y = i;
-
-                //Draw_HLine(surface, 0, i, surface->w);
             }
         }
         else
@@ -104,8 +102,6 @@ Block *find_blocks(SDL_Surface *surface, int *nbLines)
                 onLine = 0;
                 blocks[j].line.h = i - blocks[j].line.y;
                 j++;
-
-                //Draw_HLine(surface, 0, i, surface->w);
             }
         }
     }
@@ -142,7 +138,7 @@ int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block)
     for(int i = 0; i < block->line.w; i++)
     {
         hist[i] = 0;
-        
+
         //Y coordinate of a line
         int j;
         for(j = 0; j < block->line.h && !hist[i]; j++)
@@ -174,7 +170,7 @@ int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block)
     return nbChars;
 }
 
-//Draw a vertical green line from y of length h at x on surface 
+//Draw a vertical blue line from y of length h at x on surface 
 void Draw_Vline (SDL_Surface *surface, int x, int y, int h)
 {
     SDL_Rect rect;
@@ -182,7 +178,7 @@ void Draw_Vline (SDL_Surface *surface, int x, int y, int h)
     rect.h = h;
     rect.y = y;
     rect.w = 1;
-    SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 0, 255, 0));
+    SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 5, 199, 206));
 }
 
 void find_chars(SDL_Surface *surface, Block *blocks, int nbLines)
@@ -196,7 +192,7 @@ void find_chars(SDL_Surface *surface, Block *blocks, int nbLines)
 
         // Testing
         //print_tab(hist, blocks[cur_Line].line.w);
-      //printf("Line %d nb chars : %d\n", cur_Line, blocks[cur_Line].nbChars);
+        //printf("Line %d nb chars : %d\n", cur_Line, blocks[cur_Line].nbChars);
 
         // Create chars array
         blocks[cur_Line].chars = malloc(blocks[cur_Line].nbChars *
@@ -218,9 +214,6 @@ void find_chars(SDL_Surface *surface, Block *blocks, int nbLines)
                         blocks[cur_Line].line.y;
                     blocks[cur_Line].chars[cur_Char].h =
                         blocks[cur_Line].line.h;
-
-                    Draw_Vline(surface, k, blocks[cur_Line].line.y,
-                            blocks[cur_Line].line.h);
                 }
             }
             else
@@ -232,11 +225,25 @@ void find_chars(SDL_Surface *surface, Block *blocks, int nbLines)
                     blocks[cur_Line].chars[cur_Char].w =
                         k - blocks[cur_Line].chars[cur_Char].x;
                     cur_Char++;
-
-                    Draw_Vline(surface, k, blocks[cur_Line].line.y,
-                            blocks[cur_Line].line.h);
                 }
             }
+        }
+    }
+}
+
+void draw_lines_chars(SDL_Surface *surface, Block *blocks, int nbLines)
+{
+    for(int i = 0; i < nbLines; i++)
+    {
+        SDL_Rect line = blocks[i].line;
+        Draw_HLine(surface, line.x, line.y, line.w);
+        Draw_HLine(surface, line.x, line.y + line.h, line.w);
+
+        for(int j = 0; j < blocks[i].nbChars; j++)
+        {
+            SDL_Rect ch = blocks[i].chars[j];
+            Draw_Vline(surface, ch.x, ch.y, ch.h);
+            Draw_Vline(surface, ch.x + ch.w, ch.y, ch.h);
         }
     }
 }

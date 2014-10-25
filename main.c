@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
     Block *blocks = find_blocks(text, &nbLines);
     //print_blocks(blocks, nbLines);
     find_chars(text, blocks, nbLines);
+    draw_lines_chars(text, blocks, nbLines);
     free(blocks);
 
     int continuer = 1;
