@@ -23,27 +23,6 @@ neuron *initNeuron(int nbEntries)
     return test;
 }
 
-void learn(neuron *neuron, int inputs[][2], int expected[], int size)
-{
-    for(int i = 0; i < 10; i++) //Test Number
-    {
-        for(int j = 0; j < size; j++) //We do each different test
-        {
-            for(int k = 0; k < neuron->nbEntries; k++)
-            {
-                neuron->entries[k] = inputs[j][k];
-            }
-            calculateOutput(neuron);
-            for(int l = 0; l < neuron->nbEntries; l++)
-            {
-                neuron->weight[l] = neuron->weight[l] 
-                    + neuron->epsilon*(expected[j]-neuron->output)*neuron->entries[l];
-            }
-        }
-    }
-    printf("Done learning\n");    
-}
-
 void calculateOutput(neuron *neuron)
 {
     double sum = 0;
