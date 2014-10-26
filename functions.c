@@ -6,33 +6,22 @@
 
 void sortArray(Uint32 array[], int size)
 {
-    int i;
-    for(i = 0; i < size; i++)
+  int i;
+  for(i = 0; i < size; i++)
+  {
+    Uint32 temp = array[i];
+    int j = i;
+    while(j >= 0 && array[j-1] > temp)
     {
-	Uint32 temp = array[i];
-	int j = i;
-	while(j >= 0 && array[j-1] > temp)
-	{
-	    array[j] = array[j-1];
-	    j -= 1;
-	}
-	array[j] = temp;
+      array[j] = array[j-1];
+      j -= 1;
     }
+    array[j] = temp;
+  }
 }
 
-SDL_Surface *copySurface(SDL_Surface *surface)
+void printAllocError(void)
 {
-    SDL_Surface *copy = NULL;
-    copy = SDL_CreateRGBSurface(
-	SDL_HWSURFACE, surface->w, surface->h, 32,
-	 surface->format->Rmask, surface->format->Gmask,
-	 surface->format->Bmask, surface->format->Amask);
-
-    if(surface == NULL || copy == NULL)
-	return NULL;
-
-    SDL_FreeSurface(copy);
-    copy = NULL;
-
-    return SDL_DisplayFormatAlpha(surface);
+  printf("Error : alloc fail");
+  exit(EXIT_FAILURE);
 }

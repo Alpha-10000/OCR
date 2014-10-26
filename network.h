@@ -3,13 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "layer.h"
-typedef struct network network;
 
+typedef struct network network;
 struct network
 {
-    int nbLayers;
-    layer* *layers;
-    double output;
+  int nbLayers;
+  layer* *layers;
+  double output;
 };
 
 void computeOutput(int *entry, int size, network *network);

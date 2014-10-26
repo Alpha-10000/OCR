@@ -6,24 +6,28 @@
 typedef struct Block Block;
 struct Block
 {
-    //For the line
-    SDL_Rect line;
-    int nbChars;
-    SDL_Rect *chars;
+  //For the line
+  SDL_Rect line;
+  int nbChars;
+  SDL_Rect *chars;
 };
 
-void vertical_hist(SDL_Surface *surface, Uint16 *hist, int *nbLines);
+void verticalHist(SDL_Surface *surface, Uint16 *hist, int *nbLines);
 
-int horizontal_hist(SDL_Surface *surface, Uint16 *hist, Block *block);
+int horizontalHist(SDL_Surface *surface, Uint16 *hist, Block *block);
 
-Block *find_blocks(SDL_Surface *surface, int* nbLines);
+void drawHLine(SDL_Surface *surface, int x, int y, int w);
 
-void find_chars(SDL_Surface *surface, Block *blocks, int nbLines);
+Block *findBlocks(SDL_Surface *surface, int* nbLines);
 
-void print_tab(Uint16 *tab, int size);
+void findChars(SDL_Surface *surface, Block *blocks, int nbLines);
 
-void print_blocks(Block *blocks, int size);
+void prinTab(Uint16 *tab, int size);
 
-void draw_lines_chars(SDL_Surface *surface, Block *blocks, int nbLines);
+void printBlocks(Block *blocks, int size);
+
+void drawVline (SDL_Surface *surface, int x, int y, int h);
+
+void drawLinesChars(SDL_Surface *surface, Block *blocks, int nbLines);
 
 #endif

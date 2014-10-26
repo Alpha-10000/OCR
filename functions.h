@@ -4,4 +4,4 @@
 #include <SDL/SDL_image.h>
 
 void sortArray(Uint32 array[], int size);
-SDL_Surface *copySurface(SDL_Surface *surface);
+void printAllocError(void);

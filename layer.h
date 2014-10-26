@@ -6,13 +6,12 @@
 #include "neuron.h"
 
 typedef struct layer layer;
-
 struct layer
 {
-    int nbNeurons;
-    neuron* *neurons;
-    double *entries;
-    double *outputs;
+  int nbNeurons;
+  neuron* *neurons;
+  double *entries;
+  double *outputs;
 };
 
 layer* initLayer(int nbNeurons, int entriesPerNeuron);
