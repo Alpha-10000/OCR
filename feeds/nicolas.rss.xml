@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OCRulus</title><link>/</link><description></description><atom:link href="/feeds/nicolas.rss.xml" rel="self"></atom:link><lastBuildDate>Tue, 14 Oct 2014 00:00:00 +0200</lastBuildDate><item><title>Détection de caractères</title><link>/chars.html</link><description>&lt;p&gt;Une fois les lignes reconnues, il faut isoler les caractères sur chacune 
+d'entre elles.&lt;/p&gt;
+&lt;h3&gt;Histogramme&lt;/h3&gt;
+&lt;p&gt;Comme pour la détection de lignes, nous utilisons un histogramme cette fois-ci 
+horizontal. Nous parcourons la ligne de gauche à droite, et nous récupérons la 
+présence ou non d'un pixel noir sur la colonne au travers d'un tableau binaire.&lt;/p&gt;
+&lt;h3&gt;Détection des caractères&lt;/h3&gt;
+&lt;p&gt;De même, le passage d'une colonne blanche à une colonne ayant un pixel noir 
+indique le début d'un caractère, et inversement.&lt;/p&gt;
+&lt;h3&gt;Mémorisation des lignes et de ses caractères&lt;/h3&gt;
+&lt;p&gt;Pour faciliter le stockage des différentes données, nous avons choisi de 
+définir une structure Block contenant le SDL_Rect représentant la ligne, le 
+nombre de caractères de celle-ci ainsi qu'un tableau de SDL_Rect représentant 
+ces derniers.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Nicolas</dc:creator><pubDate>Tue, 14 Oct 2014 00:00:00 +0200</pubDate><guid>tag:,2014-10-14:chars.html</guid><category>detection</category><category>caracteres</category></item></channel></rss>

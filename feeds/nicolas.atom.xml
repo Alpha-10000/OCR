@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>OCRulus</title><link href="/" rel="alternate"></link><link href="/feeds/nicolas.atom.xml" rel="self"></link><id>/</id><updated>2014-10-14T00:00:00+02:00</updated><entry><title>Détection de caractères</title><link href="/chars.html" rel="alternate"></link><updated>2014-10-14T00:00:00+02:00</updated><author><name>Nicolas</name></author><id>tag:,2014-10-14:chars.html</id><summary type="html">&lt;p&gt;Une fois les lignes reconnues, il faut isoler les caractères sur chacune 
+d'entre elles.&lt;/p&gt;
+&lt;h3&gt;Histogramme&lt;/h3&gt;
+&lt;p&gt;Comme pour la détection de lignes, nous utilisons un histogramme cette fois-ci 
+horizontal. Nous parcourons la ligne de gauche à droite, et nous récupérons la 
+présence ou non d'un pixel noir sur la colonne au travers d'un tableau binaire.&lt;/p&gt;
+&lt;h3&gt;Détection des caractères&lt;/h3&gt;
+&lt;p&gt;De même, le passage d'une colonne blanche à une colonne ayant un pixel noir 
+indique le début d'un caractère, et inversement.&lt;/p&gt;
+&lt;h3&gt;Mémorisation des lignes et de ses caractères&lt;/h3&gt;
+&lt;p&gt;Pour faciliter le stockage des différentes données, nous avons choisi de 
+définir une structure Block contenant le SDL_Rect représentant la ligne, le 
+nombre de caractères de celle-ci ainsi qu'un tableau de SDL_Rect représentant 
+ces derniers.&lt;/p&gt;</summary><category term="detection"></category><category term="caracteres"></category></entry></feed>
