@@ -15,10 +15,6 @@ all: $(EXEC)
 $(EXEC): $(OBJ)
 	@$(CC) $^ -o $(EXEC) $(CFLAGS) $(LDFLAGS)
 
-#Headers
-
-main.o : filters.h functions.h neuron.h layer.h network.h detection.h
-
 #Object files
 %.o: %.c
 	@$(CC) -c $< -o $@ $(CFLAGS)

@@ -64,16 +64,13 @@ void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
   }
 }
 
-
 void greyScale(SDL_Surface *surface)
 {
   Uint8 r, g, b, grey;
   SDL_LockSurface(surface); //Necessary before using getPixel
-  int i;
-  for(i = 0; i < surface->w; i++)
+  for(int i = 0; i < surface->w; i++)
   {
-    int j;
-    for(j = 0; j < surface->h; j++)
+    for(int j = 0; j < surface->h; j++)
     {
       Uint32 pixel = getPixel(surface, i, j);
       SDL_GetRGB(pixel, surface->format, &r, &g, &b);
@@ -87,23 +84,22 @@ void greyScale(SDL_Surface *surface)
 
 void noiseRemove(SDL_Surface *surface)
 {
-  SDL_Surface *copy;
-  copy = SDL_ConvertSurface(surface, surface->format, SDL_HWSURFACE);
-  Uint32 noiseMatrix[9] = {1, 1, 1, 1, 5, 1, 1, 1, 1};
-
+  SDL_Surface *copy = NULL;
+  copy = copySurface(surface);
+  //copy = SDL_ConvertSurface(surface, surface->format, SDL_HWSURFACE);
+  //Uint32 noiseMatrix[9] = {1, 1, 1, 1, 5, 1, 1, 1, 1};
   if(surface != NULL && copy != NULL)
   {
     Uint8 grey;
-    SDL_LockSurface(surface);
-    SDL_LockSurface(copy);
-
-    int i;
-    for(i = 0; i < surface->w; i++)
+     SDL_LockSurface(surface);
+     SDL_LockSurface(copy);
+    for(int i = 0; i < surface->w; i++)
     {
-      int j;
-      for(j = 0; j < surface->h; j++)
+      //printf("noise %d\n", i);
+      for(int j = 0; j < surface->h; j++)
       {
-	Uint32 pixelMatrix[9];
+	Uint8 pixelMatrix[9];
+	//printf("noise %d %d\n", i, j);
 	Uint32 pixel = getPixel(copy, i, j);
 	SDL_GetRGB(pixel, copy->format, &grey, &grey, &grey);
 	if(i > 0 && i < (surface->w - 1) && j > 0 && j < (surface->h - 1))
@@ -136,15 +132,8 @@ void noiseRemove(SDL_Surface *surface)
 		     copy->format, &grey, &grey, &grey);
 	  pixelMatrix[8] = grey;
 	}
-	Uint16 sum = 0;
-	Uint16 coef = 0;
-	int x;
-	for(x = 0; x < 9; x++)
-	{
-	  sum += pixelMatrix[x] * noiseMatrix[x];
-	  coef += noiseMatrix[x];
-	}
-	grey = sum/coef;
+	sortArray(pixelMatrix, 9);
+	grey = pixelMatrix[4];
 	pixel = SDL_MapRGB(copy->format, grey, grey, grey);
 	setPixel(surface, i, j, pixel);
       }
@@ -156,23 +145,24 @@ void noiseRemove(SDL_Surface *surface)
 
 void binarize(SDL_Surface *surface)
 {
-  SDL_Surface *copy;
-  copy = SDL_ConvertSurface(surface, surface->format, SDL_HWSURFACE);
+  SDL_Surface *copy = NULL;
+  copy = copySurface(surface);
+  //copy = SDL_ConvertSurface(surface, surface->format, SDL_HWSURFACE);
   //Uint32 contrastMatrix[9] = {0, -1, 0, -1, 5, -1, 0, -1, 0};
   if(surface != NULL && copy != NULL)
   {
     Uint8 grey;
     SDL_LockSurface(surface);
     SDL_LockSurface(copy);
-    int i;
-    for(i = 0; i < surface->w; i++)
+    for(int i = 0; i < surface->w; i++)
     {
-      int j;
-      for(j = 0; j < surface->h; j++)
+      ///printf("binary %d\n", i);
+      for(int j = 0; j < surface->h; j++)
       {
 	Uint8 pixelMatrix[9];
-	Uint32 pixel = getPixel(surface, i, j);
-	SDL_GetRGB(pixel, surface->format, &grey, &grey, &grey);
+	//printf("binary %d %d\n", i, j);
+	Uint32 pixel = getPixel(copy, i, j);
+	SDL_GetRGB(pixel, copy->format, &grey, &grey, &grey);
 	if(i > 0 && i < (surface->w - 1) && j > 0 && j < (surface->h - 1))
 	{
 	  SDL_GetRGB(getPixel(copy, i-1, j-1),

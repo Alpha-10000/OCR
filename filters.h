@@ -1,3 +1,6 @@
+#ifndef FILTERS
+#define FILTERS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL/SDL.h>
@@ -8,3 +11,5 @@ void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 void noiseRemove(SDL_Surface *surface);
 void greyScale(SDL_Surface *surface);
 void binarize(SDL_Surface *surface);
+
+#endif

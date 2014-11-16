@@ -7,14 +7,17 @@
 #include "network.h"
 #include "detection.h"
 #include "gui.h"
+#include "functions.h"
 
 int main(int argc, char *argv[])
 {
-    /*-----Initialize Graphical User Interface-----*/
-    /*gtk_init(&argc, &argv);
-      guiInit();*/
+  /*-----Initialize Graphical User Interface-----*/
+  /*gtk_init(&argc, &argv);
+  GtkWidget *mainWidget = guiInit();
+  GdkWindow *mainWindow = NULL;
+  gtk_widget_set_parent_window(mainWidget, mainWindow);*/
 
-    /*-------SDL initialization-------*/
+  /*-------SDL initialization-------*/
   network *test2 = initNetwork(3,2,2);
   int entry[4][2] = {{1,1}, {1,0},{0,1},{0,0}};
   int expected[4] = {0,1,1,0};
@@ -36,6 +39,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
     exit(EXIT_FAILURE); //Exit the program
   }
+
   SDL_Surface *ecran = NULL; //The pointer representing the screen.
   ecran = SDL_SetVideoMode(700, 700, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
 
@@ -58,7 +62,6 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Give to the program an image as argument\n");
     exit(EXIT_FAILURE);
   }
-
   //Resize window to fit the image size
   ecran = SDL_SetVideoMode(text->w, text->h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   SDL_Rect position; //Position of the image
@@ -69,7 +72,6 @@ int main(int argc, char *argv[])
   greyScale(text);
   //noiseRemove(text);
   binarize(text);
-
   int nbLines;
   Block *blocks = findBlocks(text, &nbLines);
   //print_blocks(blocks, nbLines);
@@ -77,6 +79,15 @@ int main(int argc, char *argv[])
   drawLinesChars(text, blocks, nbLines);
   free(blocks);
 
+  /*------Main GTK loop-------*/
+  /*Uint8 **pixMatrix = matrixFromSurface(text);
+  printf("%d\n", pixMatrix[55][100]);
+  GdkPixmap *pixMap = loadPixMap(mainWindow, text, pixMatrix);
+  if(!GDK_IS_WINDOW(mainWindow))
+    printf("nope3\n");
+  gdk_window_set_back_pixmap(mainWindow, pixMap, FALSE);
+  //Display
+  gtk_widget_show_all(mainWidget);*/
   int continuer = 1;
   SDL_Event event;
   while (continuer) //Update loop
@@ -115,10 +126,12 @@ int main(int argc, char *argv[])
     SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 101, 148, 240)); //Clear
     SDL_BlitSurface(text, NULL, ecran, &position); //Redraw each after update
     SDL_Flip(ecran); //Display new state of all elements after update
-  }
+    }
    /*--------Principal code end-------*/
-  SDL_FreeSurface(text); //Free surface's memory
-  SDL_Quit(); //Exit SDL_Flip
 
+  ///gtk_main();
+
+  SDL_FreeSurface(text); //Free surface's memory
+  SDL_Quit(); //Exit
   return EXIT_SUCCESS;
 }
