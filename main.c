@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
   gtk_widget_set_parent_window(mainWidget, mainWindow);*/
 
   /*-------SDL initialization-------*/
+  /*
   network *test2 = initNetwork(3,2,2);
   int entry[4][2] = {{1,1}, {1,0},{0,1},{0,0}};
   int expected[4] = {0,1,1,0};
@@ -33,7 +34,7 @@ int main(int argc, char *argv[])
   computeOutput(entry[3],2,test2);
   printOutput(test2);
   freeNetwork(test2);
-
+  */
   if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
   {
     fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
   }
 
   SDL_WM_SetCaption("OCR", NULL); //Window title
-  SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 101, 148, 240));
+  SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
   SDL_EnableKeyRepeat(10, 10);
 
    /*--------Principal code start--------*/
@@ -77,6 +78,7 @@ int main(int argc, char *argv[])
   //print_blocks(blocks, nbLines);
   findChars(text, blocks, nbLines);
   drawLinesChars(text, blocks, nbLines);
+  text = resizeChars(text, blocks, nbLines);
   freeBlocks(blocks, nbLines);
 
   /*------Main GTK loop-------*/

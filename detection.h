@@ -32,4 +32,7 @@ void drawVline (SDL_Surface *surface, int x, int y, int h);
 
 void drawLinesChars(SDL_Surface *surface, Block *blocks, int nbLines);
 
+void centerChar(SDL_Surface *surface, SDL_Rect *rect);
+
+SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines);
 #endif

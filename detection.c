@@ -8,13 +8,13 @@
 
 void freeBlocks(Block *b, int nbLines)
 {
-    for (int i = 0; i < nbLines; i++)
-    {
+  for (int i = 0; i < nbLines; i++)
+  {
         //for (int j = 0; j < b[i].nbChars; j++)
-            free(b[i].chars);
+    free(b[i].chars);
         //free(b[i]);
-    }
-    free(b);
+  }
+  free(b);
 }
 
 // Create vertical histograme of surface
@@ -35,24 +35,24 @@ void verticalHist(SDL_Surface *surface, Uint16 *hist, int *nbLines)
       // Get color at pos(i,j)
       Uint8 color;
       SDL_GetRGB(getPixel(surface, i, j), surface->format,
-		 &color, &color, &color);
+       &color, &color, &color);
       // Is it black ?
       if (!color)
       {
-	hist[j]++;
+       hist[j]++;
 
-	if (!onLine)
-	{
-	  (*nbLines)++;
-	  onLine = 1;
-	}
-      }
-    }
+       if (!onLine)
+       {
+         (*nbLines)++;
+         onLine = 1;
+       }
+     }
+   }
 
-    if (i == surface->w)
-      onLine = 0;
-  }
-  SDL_UnlockSurface(surface);
+   if (i == surface->w)
+    onLine = 0;
+}
+SDL_UnlockSurface(surface);
 }
 
 // Draw an horizontal red line from x of length w at y on surface
@@ -87,24 +87,24 @@ Block *findBlocks(SDL_Surface *surface, int *nbLines)
       if (hist[i] >= threshold)
       {
 	// New line begins
-	onLine = 1;
-	blocks[j].line.x = 0;
-	blocks[j].line.w = surface->w;
-	blocks[j].line.y = i;
-      }
-    }
-    else
+       onLine = 1;
+       blocks[j].line.x = 0;
+       blocks[j].line.w = surface->w;
+       blocks[j].line.y = i;
+     }
+   }
+   else
+   {
+    if (hist[i] < threshold)
     {
-      if (hist[i] < threshold)
-      {
 	//Line reached end
-	onLine = 0;
-	blocks[j].line.h = i - blocks[j].line.y;
-	j++;
-      }
-    }
-  }
-  return blocks;
+     onLine = 0;
+     blocks[j].line.h = i - blocks[j].line.y;
+     j++;
+   }
+ }
+}
+return blocks;
 }
 
 // Used to check histogram
@@ -120,8 +120,8 @@ void printBlocks(Block *blocks, int size)
   for(int i = 0; i < size; i++)
   {
     printf("line %d : x = %d; w = %d; y = %d; h = %d\n", i,
-	   blocks[i].line.x, blocks[i].line.w,
-	   blocks[i].line.y, blocks[i].line.h);
+      blocks[i].line.x, blocks[i].line.w,
+      blocks[i].line.y, blocks[i].line.h);
   }
 }
 
@@ -143,24 +143,24 @@ int horizontalHist(SDL_Surface *surface, Uint16 *hist, Block *block)
       //Get color at pos(x+i, y+j)
       Uint8 color;
       SDL_GetRGB(getPixel(surface, block->line.x + i, block->line.y + j),
-		 surface->format, &color, &color, &color);
+       surface->format, &color, &color, &color);
       //Is it black ?
       if (!color)
       {
-	hist[i]++;
-	if (!onChar)
-	{
-	  nbChars++;
-	  onChar = 1;
-	}
-      }
-    }
-    if (j == block->line.h)
-      onChar = 0;
-  }
+       hist[i]++;
+       if (!onChar)
+       {
+         nbChars++;
+         onChar = 1;
+       }
+     }
+   }
+   if (j == block->line.h)
+    onChar = 0;
+}
 
-  SDL_UnlockSurface(surface);
-  return nbChars;
+SDL_UnlockSurface(surface);
+return nbChars;
 }
 
 //Draw a vertical blue line from y of length h at x on surface
@@ -177,48 +177,49 @@ void drawVline (SDL_Surface *surface, int x, int y, int h)
 void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
 {
   for(int cur_Line = 0; cur_Line < nbLines; cur_Line++)
-    {
+  {
       // Vertical hist for this line
-      Uint16 hist[blocks[cur_Line].line.w];
-      blocks[cur_Line].nbChars = horizontalHist(surface, hist,
-						 &blocks[cur_Line]);
+    Uint16 hist[blocks[cur_Line].line.w];
+    blocks[cur_Line].nbChars = horizontalHist(surface, hist,
+     &blocks[cur_Line]);
 
       // Testing
       //print_tab(hist, blocks[cur_Line].line.w);
       //printf("Line %d nb chars : %d\n", cur_Line, blocks[cur_Line].nbChars);
       // Create chars array
-      blocks[cur_Line].chars = malloc(blocks[cur_Line].nbChars *
-				      sizeof(SDL_Rect));
+    blocks[cur_Line].chars = malloc(blocks[cur_Line].nbChars *
+      sizeof(SDL_Rect));
 
       // Bool -> on a char ?
       // threshold at which we consider a line pixel as a part of a char
-      int onChar = 0, threshold = 1, cur_Char = 0;
-      for (int k = 0; k < blocks[cur_Line].line.w; k++)
+    int onChar = 0, threshold = 1, cur_Char = 0;
+    for (int k = 0; k < blocks[cur_Line].line.w; k++)
+    {
+      if (!onChar)
       {
-	if (!onChar)
-	{
-	  if (hist[k] >= threshold)
-	  {
-	    // New line begins
-	    onChar = 1;
-	    blocks[cur_Line].chars[cur_Char].x = k;
-	    blocks[cur_Line].chars[cur_Char].y = blocks[cur_Line].line.y;
-	    blocks[cur_Line].chars[cur_Char].h = blocks[cur_Line].line.h;
-	  }
-	}
-	else
-	{
-	  if (hist[k] < threshold)
-	  {
+        if (hist[k] >= threshold)
+        {
+	         // New line begins
+         onChar = 1;
+         blocks[cur_Line].chars[cur_Char].x = k;
+         blocks[cur_Line].chars[cur_Char].y = blocks[cur_Line].line.y;
+         blocks[cur_Line].chars[cur_Char].h = blocks[cur_Line].line.h;
+       }
+     }
+     else
+     {
+       if (hist[k] < threshold)
+       {
 	    //Line reached end
-	    onChar = 0;
-	    blocks[cur_Line].chars[cur_Char].w =
-	      k - blocks[cur_Line].chars[cur_Char].x;
-	    cur_Char++;
-	  }
-	}
-      }
-    }
+         onChar = 0;
+         blocks[cur_Line].chars[cur_Char].w =
+         k - blocks[cur_Line].chars[cur_Char].x;
+         centerChar(surface, &blocks[cur_Line].chars[cur_Char]);
+         cur_Char++;
+       }
+     }
+   }
+ }
 }
 
 void drawLinesChars(SDL_Surface *surface, Block *blocks, int nbLines)
@@ -234,6 +235,97 @@ void drawLinesChars(SDL_Surface *surface, Block *blocks, int nbLines)
       SDL_Rect ch = blocks[i].chars[j];
       drawVline(surface, ch.x, ch.y, ch.h);
       drawVline(surface, ch.x + ch.w, ch.y, ch.h);
+      drawHLine(surface, ch.x, ch.y, ch.w);
+      drawHLine(surface, ch.x, ch.y + ch.h, ch.w);
     }
   }
+}
+
+void centerChar(SDL_Surface *surface, SDL_Rect *rect)
+{
+  SDL_LockSurface(surface);
+  int result = 1;
+  int counter = -1;
+  Uint32 pixel;
+  Uint8 grey;
+  for (int y = 0; y < rect->h && result; y++)
+  {
+    for (int x = 0; x < rect->w && result; x++)
+    {
+      pixel = getPixel(surface, rect->x + x, rect->y + y);
+      SDL_GetRGB(pixel, surface->format, &grey, &grey, &grey);
+      if (grey == 0)
+        result = 0;
+    }
+    counter++;
+  }
+  rect->y = rect->y + counter;
+  rect->h = rect->h - counter;
+  counter = -1;
+  result = 1;
+  for (int y = rect->h; y >= 0 && result; y--)
+  {
+    for (int x = 0; x < rect->w && result; x++)
+    {
+      pixel = getPixel(surface, rect->x + x, rect->y + y);
+      SDL_GetRGB(pixel, surface->format, &grey, &grey, &grey);
+      if (grey == 0)
+        result = 0;
+    }
+    counter++;
+  }
+  rect->h = rect->h - counter;
+  SDL_UnlockSurface(surface);
+}
+
+SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
+{
+  SDL_Surface *copy = copySurface(surface);
+  SDL_LockSurface(surface);
+  SDL_LockSurface(copy);
+
+  for (int i = 0; i < surface->w; i++)
+  {
+    for (int j = 0; j < surface->h; j++)
+    {
+      Uint32 pixel = getPixel(surface,0,0);
+      setPixel(copy, i, j, pixel);
+    }
+  }
+
+  int resolution = 50;
+  for (int nbLine = 0; nbLine < nbLines; nbLine++)
+  {
+    for (int charn = 0; charn < blocks[nbLine].nbChars; charn++)
+    {
+      for (int x = 0; x <= resolution; x++)
+      {
+        for (int y = 0; y <= resolution; y++)
+        {
+          Uint32 pixel = getPixel(surface,
+          blocks[nbLine].chars[charn].x + x*blocks[nbLine].chars[charn].w/resolution,
+          blocks[nbLine].chars[charn].y + y*blocks[nbLine].chars[charn].h/resolution);
+
+          setPixel(copy,
+          charn*(resolution+16) + resolution + x,
+          nbLine*(resolution+16) + resolution + y,
+          pixel);
+        }
+      }
+    }
+  }
+/*
+  for (int i = 0; i < surface->w; i++)
+  {
+    for (int j = 0; j < surface->h; j++)
+    {
+      Uint32 pixel = getPixel(copy,i,j);
+      setPixel(surface, i, j, pixel);
+    }
+  }
+*/
+  SDL_UnlockSurface(copy);
+  SDL_UnlockSurface(surface);
+  surface = copy;
+  return copy;
 }
