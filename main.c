@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
   //print_blocks(blocks, nbLines);
   findChars(text, blocks, nbLines);
   drawLinesChars(text, blocks, nbLines);
-  free(blocks);
+  freeBlocks(blocks, nbLines);
 
   /*------Main GTK loop-------*/
   /*Uint8 **pixMatrix = matrixFromSurface(text);

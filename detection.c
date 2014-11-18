@@ -6,6 +6,17 @@
 #include "filters.h"
 #include "detection.h"
 
+void freeBlocks(Block *b, int nbLines)
+{
+    for (int i = 0; i < nbLines; i++)
+    {
+        //for (int j = 0; j < b[i].nbChars; j++)
+            free(b[i].chars);
+        //free(b[i]);
+    }
+    free(b);
+}
+
 // Create vertical histograme of surface
 void verticalHist(SDL_Surface *surface, Uint16 *hist, int *nbLines)
 {

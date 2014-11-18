@@ -12,6 +12,8 @@ struct Block
   SDL_Rect *chars;
 };
 
+void freeBlocks(Block *b, int nbBlock);
+
 void verticalHist(SDL_Surface *surface, Uint16 *hist, int *nbLines);
 
 int horizontalHist(SDL_Surface *surface, Uint16 *hist, Block *block);
