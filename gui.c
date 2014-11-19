@@ -12,25 +12,33 @@ void cb_quit (GtkWidget *p_widget, gpointer user_data)
   (void)user_data;
 }
 
-
-GdkPixmap *loadPixMap(GdkWindow *window, SDL_Surface *surface, Uint8 **matrix)
+GdkPixbuf *loadPixBuf(SDL_Surface *surface)
 {
-  getImageData(surface, matrix);
-  GdkPixmap *pixMap = gdk_pixmap_create_from_xpm(window, NULL,
-						  NULL, "data.xpm");
-  return pixMap;
+  SDL_SaveBMP(surface, "data.bmp");
+  GError ** error = NULL;
+  GdkPixbuf *pixBuf = NULL;
+  pixBuf = gdk_pixbuf_new_from_file("data.bmp", error);
+  return pixBuf;
 }
 
 GtkWidget *guiInit(void)
 {
   /*------Main Window-------*/
-  GtkWidget *mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  GtkWidget *mainWindow = NULL;
+  mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   g_signal_connect(G_OBJECT(mainWindow), "destroy", G_CALLBACK(cb_quit), NULL);
+  return mainWindow;
+}
 
-  //Quit button
+GtkWidget *initMainBox(GtkWidget *window)
+{
+  GtkWidget *mainBox = NULL;
+  mainBox = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(window), mainBox);
+
   GtkWidget *quitButton = NULL;
   quitButton = gtk_button_new_from_stock(GTK_STOCK_QUIT);
-  gtk_container_add(GTK_CONTAINER(mainWindow), quitButton);
   g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(cb_quit), NULL);
-  return mainWindow;
+  gtk_box_pack_start(GTK_BOX(mainBox), quitButton, FALSE, FALSE, 0);
+  return mainBox;
 }

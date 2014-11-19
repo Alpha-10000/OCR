@@ -85,8 +85,8 @@ void greyScale(SDL_Surface *surface)
 void noiseRemove(SDL_Surface *surface)
 {
   SDL_Surface *copy = NULL;
-  copy = copySurface(surface);
-  //copy = SDL_ConvertSurface(surface, surface->format, SDL_HWSURFACE);
+  ///copy = copySurface(surface);
+  copy = SDL_ConvertSurface(surface, surface->format, SDL_HWSURFACE);
   //Uint32 noiseMatrix[9] = {1, 1, 1, 1, 5, 1, 1, 1, 1};
   if(surface != NULL && copy != NULL)
   {
@@ -146,8 +146,8 @@ void noiseRemove(SDL_Surface *surface)
 void binarize(SDL_Surface *surface)
 {
   SDL_Surface *copy = NULL;
-  copy = copySurface(surface);
-  //copy = SDL_ConvertSurface(surface, surface->format, SDL_HWSURFACE);
+  //copy = copySurface(surface);
+  copy = SDL_ConvertSurface(surface, surface->format, SDL_HWSURFACE);
   //Uint32 contrastMatrix[9] = {0, -1, 0, -1, 5, -1, 0, -1, 0};
   if(surface != NULL && copy != NULL)
   {
@@ -210,7 +210,7 @@ void binarize(SDL_Surface *surface)
 	  grey = 255;
 	else
 	  grey = 0;
-	pixel = SDL_MapRGB(copy->format, grey, grey, grey);
+	pixel = SDL_MapRGB(surface->format, grey, grey, grey);
 	setPixel(surface, i, j, pixel);
       }
     }

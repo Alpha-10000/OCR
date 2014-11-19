@@ -12,11 +12,9 @@
 int main(int argc, char *argv[])
 {
   /*-----Initialize Graphical User Interface-----*/
-  /*gtk_init(&argc, &argv);
-  GtkWidget *mainWidget = guiInit();
-  GdkWindow *mainWindow = NULL;
-  gtk_widget_set_parent_window(mainWidget, mainWindow);*/
-
+  gtk_init(&argc, &argv);
+  GtkWidget *mainWindow = guiInit();
+  GtkWidget *mainBox = initMainBox(mainWindow);
   /*-------SDL initialization-------*/
   /*
   network *test2 = initNetwork(3,2,2);
@@ -41,7 +39,7 @@ int main(int argc, char *argv[])
     exit(EXIT_FAILURE); //Exit the program
   }
 
-  SDL_Surface *ecran = NULL; //The pointer representing the screen.
+  /*SDL_Surface *ecran = NULL; //The pointer representing the screen.
   ecran = SDL_SetVideoMode(700, 700, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
 
   if (ecran == NULL) //If the opening failed
@@ -52,7 +50,7 @@ int main(int argc, char *argv[])
 
   SDL_WM_SetCaption("OCR", NULL); //Window title
   SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
-  SDL_EnableKeyRepeat(10, 10);
+  SDL_EnableKeyRepeat(10, 10);*/
 
    /*--------Principal code start--------*/
 
@@ -63,76 +61,30 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Give to the program an image as argument\n");
     exit(EXIT_FAILURE);
   }
-  //Resize window to fit the image size
-  ecran = SDL_SetVideoMode(text->w, text->h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-  SDL_Rect position; //Position of the image
-  position.x = ecran->w / 2 - text->w / 2;
-  position.y = ecran->h / 2 - text->h / 2;
-  SDL_BlitSurface(text, NULL, ecran, &position); //Display the image
 
   greyScale(text);
-  //noiseRemove(text);
+  ///noiseRemove(text);
   binarize(text);
+
   int nbLines;
   Block *blocks = findBlocks(text, &nbLines);
   //print_blocks(blocks, nbLines);
   findChars(text, blocks, nbLines);
   //drawLinesChars(text, blocks, nbLines);
-  text = resizeChars(text, blocks, nbLines);
-  ecran = SDL_SetVideoMode(text->w, text->h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+  ///SDL_Surface *resized = NULL;
+  ///resized = resizeChars(text, blocks, nbLines);
+  ///ecran = SDL_SetVideoMode(text->w, text->h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   freeBlocks(blocks, nbLines);
 
   /*------Main GTK loop-------*/
-  /*Uint8 **pixMatrix = matrixFromSurface(text);
-  printf("%d\n", pixMatrix[55][100]);
-  GdkPixmap *pixMap = loadPixMap(mainWindow, text, pixMatrix);
-  if(!GDK_IS_WINDOW(mainWindow))
-    printf("nope3\n");
-  gdk_window_set_back_pixmap(mainWindow, pixMap, FALSE);
-  //Display
-  gtk_widget_show_all(mainWidget);*/
-  int continuer = 1;
-  SDL_Event event;
-  while (continuer) //Update loop
-  {
-    SDL_WaitEvent(&event);
-    switch(event.type)
-    {
-    case SDL_QUIT:
-      continuer = 0;
-      break;
-    case SDL_KEYDOWN:
-      switch(event.key.keysym.sym)
-      {
-      case SDLK_UP:
-	position.y += 5;
-	break;
-      case SDLK_DOWN:
-	position.y -= 5;
-	break;
-      default:
-	break;
-      }
-    case SDL_MOUSEBUTTONUP:
-      switch(event.button.button)
-      {
-      case SDL_BUTTON_WHEELUP:
-	position.y += 10;
-	break;
-      case SDL_BUTTON_WHEELDOWN:
-	position.y -= 10;
-	break;
-      }
-    default:
-      break;
-    }
-    SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 101, 148, 240)); //Clear
-    SDL_BlitSurface(text, NULL, ecran, &position); //Redraw each after update
-    SDL_Flip(ecran); //Display new state of all elements after update
-    }
+  GdkPixbuf *pixBuf = loadPixBuf(text);
+  GtkWidget *textImage = gtk_image_new_from_pixbuf(pixBuf);
+
+  gtk_box_pack_start(GTK_BOX(mainBox), textImage, FALSE, FALSE, 0);
+  gtk_widget_show_all(mainWindow);
    /*--------Principal code end-------*/
 
-  ///gtk_main();
+  gtk_main();
 
   SDL_FreeSurface(text); //Free surface's memory
   SDL_Quit(); //Exit

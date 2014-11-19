@@ -5,7 +5,7 @@
 #include <gtk/gtk.h>
 
 void cb_quit (GtkWidget *p_widget, gpointer user_data);
-GdkPixmap *loadPixMap(GdkWindow *window, SDL_Surface *surface, Uint8 **matrix);
+GdkPixbuf *loadPixBuf(SDL_Surface *surface);
 GtkWidget *guiInit(void);
-
+GtkWidget *initMainBox(GtkWidget *window);
 #endif

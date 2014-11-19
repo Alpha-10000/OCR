@@ -21,7 +21,7 @@ $(EXEC): $(OBJ)
 
 #Clean
 clean:
-	rm -rf *.o *~ *# *.swp
+	rm -rf *.o *~ *# *.swp data.bmp
 
 #Mrproper
 mrproper: clean
