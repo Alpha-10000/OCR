@@ -77,8 +77,9 @@ int main(int argc, char *argv[])
   Block *blocks = findBlocks(text, &nbLines);
   //print_blocks(blocks, nbLines);
   findChars(text, blocks, nbLines);
-  drawLinesChars(text, blocks, nbLines);
+  //drawLinesChars(text, blocks, nbLines);
   text = resizeChars(text, blocks, nbLines);
+  ecran = SDL_SetVideoMode(text->w, text->h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   freeBlocks(blocks, nbLines);
 
   /*------Main GTK loop-------*/

@@ -280,20 +280,32 @@ void centerChar(SDL_Surface *surface, SDL_Rect *rect)
 
 SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
 {
-  SDL_Surface *copy = copySurface(surface);
+  int resolution = 16;
+
+  int nbChars = 0;
+  int maxCharsPerLine = blocks[0].nbChars;
+  for (int i = 0; i < nbLines; i++)
+  {
+    nbChars+=blocks[i].nbChars;
+    if(blocks[i].nbChars > maxCharsPerLine)
+      maxCharsPerLine = blocks[i].nbChars;
+  }
+  SDL_Surface *copy = SDL_CreateRGBSurface(0,
+    maxCharsPerLine*resolution,
+    nbLines*resolution+1,
+    surface->format->BitsPerPixel,0,0,0,0);
+
   SDL_LockSurface(surface);
   SDL_LockSurface(copy);
 
-  for (int i = 0; i < surface->w; i++)
+  for (int i = 0; i < copy->w; i++)
   {
-    for (int j = 0; j < surface->h; j++)
+    for (int j = 0; j < copy->h; j++)
     {
       Uint32 pixel = getPixel(surface,0,0);
       setPixel(copy, i, j, pixel);
     }
   }
-
-  int resolution = 50;
   for (int nbLine = 0; nbLine < nbLines; nbLine++)
   {
     for (int charn = 0; charn < blocks[nbLine].nbChars; charn++)
@@ -307,25 +319,14 @@ SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
           blocks[nbLine].chars[charn].y + y*blocks[nbLine].chars[charn].h/resolution);
 
           setPixel(copy,
-          charn*(resolution+16) + resolution + x,
-          nbLine*(resolution+16) + resolution + y,
+          charn*resolution + x,
+          nbLine*resolution + y,
           pixel);
         }
       }
     }
   }
-/*
-  for (int i = 0; i < surface->w; i++)
-  {
-    for (int j = 0; j < surface->h; j++)
-    {
-      Uint32 pixel = getPixel(copy,i,j);
-      setPixel(surface, i, j, pixel);
-    }
-  }
-*/
   SDL_UnlockSurface(copy);
   SDL_UnlockSurface(surface);
-  surface = copy;
   return copy;
 }
