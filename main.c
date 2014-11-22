@@ -16,23 +16,7 @@ int main(int argc, char *argv[])
   GtkWidget *mainWindow = guiInit();
   GtkWidget *mainBox = initMainBox(mainWindow);
   /*-------SDL initialization-------*/
-  /*
-  network *test2 = initNetwork(3,2,2);
-  int entry[4][2] = {{1,1}, {1,0},{0,1},{0,0}};
-  int expected[4] = {0,1,1,0};
 
-  learnNetwork(entry, expected, test2);
-
-  computeOutput(entry[0],2,test2);
-  printOutput(test2);
-  computeOutput(entry[1],2,test2);
-  printOutput(test2);
-  computeOutput(entry[2],2,test2);
-  printOutput(test2);
-  computeOutput(entry[3],2,test2);
-  printOutput(test2);
-  freeNetwork(test2);
-  */
   if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
   {
     fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
@@ -72,8 +56,25 @@ int main(int argc, char *argv[])
   findChars(text, blocks, nbLines);
   //drawLinesChars(text, blocks, nbLines);
   ///SDL_Surface *resized = NULL;
-  ///resized = resizeChars(text, blocks, nbLines);
+  text = resizeChars(text, blocks, nbLines);
   ///ecran = SDL_SetVideoMode(text->w, text->h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+
+  //Neural Network tests
+  network *testNN = initNetwork(3,30);
+  learnNetwork(testNN, blocks, text, nbLines);
+  /*
+  int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
+  fillEntryVector(text, entryVector,
+        getCharNb(0, blocks, nbLines),
+        getLineNb(0, blocks, nbLines));
+  computeOutput(testNN, entryVector);
+  printOutput(testNN);
+  free(entryVector);
+  */
+  readText(testNN, text, blocks, nbLines);
+  freeNetwork(testNN);
+
+
   freeBlocks(blocks, nbLines);
 
   /*------Main GTK loop-------*/

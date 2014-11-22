@@ -1,22 +1,32 @@
 #ifndef NETWORK
 #define NETWORK
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "layer.h"
+#include "detection.h"
+#include "functions.h"
+#include "filters.h"
 
 typedef struct network network;
 struct network
 {
   int nbLayers;
   layer* *layers;
-  double output;
+  double *output;
 };
 
-void computeOutput(int *entry, int size, network *network);
-network *initNetwork(int nbLayers, int nbNeurons, int entryPerNeurons);
+extern const int NN_RESOLUTION;
+
+network *initNetwork(int nbLayers, int nbNeurons);
 void printEverything(network *network);
 void printOutput(network *network);
-void learnNetwork(int entry[4][2], int expected[4], network *network);
-void computeOutput(int *entry, int size, network *network);
+void readText(network *network, SDL_Surface *surface, Block *blocks, int nbLines);
+void fillEntryVector(SDL_Surface *surface, int *entryVector, int charNb, int LineNb);
+int getLineNb(int entry, Block* blocks, int nbLines);
+int getCharNb(int entry, Block* blocks, int nbLines);
+void learnNetwork(network *network, Block *blocks, SDL_Surface *surface, int nbLines);
+void computeOutput(network *network, int *entryVector);
 void freeNetwork(network *network);
 #endif

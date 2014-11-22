@@ -5,6 +5,7 @@
 #include "functions.h"
 #include "filters.h"
 #include "detection.h"
+#include "network.h"
 
 void freeBlocks(Block *b, int nbLines)
 {
@@ -280,7 +281,7 @@ void centerChar(SDL_Surface *surface, SDL_Rect *rect)
 
 SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
 {
-  int resolution = 16;
+  int resolution = NN_RESOLUTION;
 
   int nbChars = 0;
   int maxCharsPerLine = blocks[0].nbChars;
