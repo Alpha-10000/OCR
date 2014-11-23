@@ -23,20 +23,7 @@ int main(int argc, char *argv[])
     exit(EXIT_FAILURE); //Exit the program
   }
 
-  /*SDL_Surface *ecran = NULL; //The pointer representing the screen.
-  ecran = SDL_SetVideoMode(700, 700, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-
-  if (ecran == NULL) //If the opening failed
-  {
-    fprintf(stderr, "Impossible to load video mode : %s\n", SDL_GetError());
-    exit(EXIT_FAILURE);
-  }
-
-  SDL_WM_SetCaption("OCR", NULL); //Window title
-  SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
-  SDL_EnableKeyRepeat(10, 10);*/
-
-   /*--------Principal code start--------*/
+  /*--------Principal code start--------*/
 
   SDL_Surface *text = NULL;
   text = IMG_Load(argv[argc - 1]); //Loading the image we will work on
@@ -57,8 +44,6 @@ int main(int argc, char *argv[])
   //drawLinesChars(text, blocks, nbLines);
   ///SDL_Surface *resized = NULL;
   text = resizeChars(text, blocks, nbLines);
-  ///ecran = SDL_SetVideoMode(text->w, text->h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-
   //Neural Network tests
   network *testNN = initNetwork(3,30);
   learnNetwork(testNN, blocks, text, nbLines);
