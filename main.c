@@ -64,8 +64,11 @@ int main(int argc, char *argv[])
 
   /*------Main GTK loop-------*/
   GdkPixbuf *pixBuf = loadPixBuf(text);
-  GtkWidget *textImage = gtk_image_new_from_pixbuf(pixBuf);
-
+  GdkPixbuf *miniBuf = gdk_pixbuf_scale_simple(pixBuf,
+					       gdk_pixbuf_get_width(pixBuf)/2,
+					       gdk_pixbuf_get_height(pixBuf)/2,
+					       GDK_INTERP_NEAREST);
+  GtkWidget *textImage = gtk_image_new_from_pixbuf(miniBuf);
   gtk_box_pack_start(GTK_BOX(mainBox), textImage, FALSE, FALSE, 0);
   gtk_widget_show_all(mainWindow);
    /*--------Principal code end-------*/

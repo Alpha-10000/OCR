@@ -79,7 +79,7 @@ GtkWidget *initMainBox(GtkWidget *window)
   /*Add bar to window*/
   gtk_box_pack_start(GTK_BOX(mainBox), menuBar, FALSE, FALSE, 0);
 
-  /*----Text zone---*/
+  /*----Text zone----*/
   GtkWidget *textView = NULL;
   textView = gtk_text_view_new();
   gtk_box_pack_end(GTK_BOX(mainBox), textView, TRUE, TRUE, 0);
