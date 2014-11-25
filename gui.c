@@ -32,9 +32,24 @@ GtkWidget *guiInit(void)
 
 GtkWidget *initMainBox(GtkWidget *window)
 {
+  GtkWidget *box = NULL;
+  box = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(window), box);
+
   GtkWidget *mainBox = NULL;
   mainBox = gtk_hbox_new(FALSE, 0);
-  gtk_container_add(GTK_CONTAINER(window), mainBox);
+  gtk_box_pack_end(GTK_BOX(box), mainBox, TRUE, TRUE, 0);
+
+  /*----Tool Bar----*/
+  GtkWidget *toolBar = gtk_toolbar_new();
+  gtk_box_pack_start(GTK_BOX(box), toolBar, FALSE, FALSE, 0);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_OPEN,
+			   "Open", NULL, NULL, NULL, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE,
+			   "Save", NULL, NULL, NULL, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT,
+			   "Quit", NULL, G_CALLBACK(cb_quit), NULL, -1);
+  gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);
 
   /*-----Menu----*/
   /*Menu Bar*/
@@ -77,11 +92,12 @@ GtkWidget *initMainBox(GtkWidget *window)
   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar), menuItem);
 
   /*Add bar to window*/
-  gtk_box_pack_start(GTK_BOX(mainBox), menuBar, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(box), menuBar, FALSE, FALSE, 0);
 
   /*----Text zone----*/
   GtkWidget *textView = NULL;
   textView = gtk_text_view_new();
   gtk_box_pack_end(GTK_BOX(mainBox), textView, TRUE, TRUE, 0);
+
   return mainBox;
 }
