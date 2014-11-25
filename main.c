@@ -14,7 +14,6 @@ int main(int argc, char *argv[])
   /*-----Initialize Graphical User Interface-----*/
   gtk_init(&argc, &argv);
   GtkWidget *mainWindow = guiInit();
-  GtkWidget *mainBox = initMainBox(mainWindow);
   /*-------SDL initialization-------*/
 
   if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
@@ -63,19 +62,20 @@ int main(int argc, char *argv[])
   freeBlocks(blocks, nbLines);
 
   /*------Main GTK loop-------*/
+
   GdkPixbuf *pixBuf = loadPixBuf(text);
-  GdkPixbuf *miniBuf = gdk_pixbuf_scale_simple(pixBuf,
-					       gdk_pixbuf_get_width(pixBuf)/2,
-					       gdk_pixbuf_get_height(pixBuf)/2,
-					       GDK_INTERP_NEAREST);
-  GtkWidget *textImage = gtk_image_new_from_pixbuf(miniBuf);
-  gtk_box_pack_start(GTK_BOX(mainBox), textImage, FALSE, FALSE, 0);
+  GtkWidget *textImage = gtk_image_new_from_pixbuf(pixBuf);
+  GtkWidget *mainBox = initMainBox(mainWindow);
+  initToolBar(mainBox);
+  initMenu(mainBox);
+  GtkWidget *mainZone = getMainZone(mainBox);
+  gtk_box_pack_start(GTK_BOX(mainZone), textImage, FALSE, FALSE, 0);
   gtk_widget_show_all(mainWindow);
+
    /*--------Principal code end-------*/
 
   gtk_main();
-
   SDL_FreeSurface(text); //Free surface's memory
-  SDL_Quit(); //Exit
+  SDL_Quit();
   return EXIT_SUCCESS;
 }

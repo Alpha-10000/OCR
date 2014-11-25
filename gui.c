@@ -5,21 +5,61 @@
 #include "functions.h"
 #include "gui.h"
 
-void cb_quit (GtkWidget *p_widget, gpointer user_data)
+void cb_quit (GtkWidget *widget, gpointer data)
 {
   gtk_main_quit();
-  (void)p_widget;
-  (void)user_data;
+  (void)widget;
+  (void)data;
 }
 
 GdkPixbuf *loadPixBuf(SDL_Surface *surface)
 {
   SDL_SaveBMP(surface, "data.bmp");
-  GError ** error = NULL;
+  GError **error = NULL;
   GdkPixbuf *pixBuf = NULL;
   pixBuf = gdk_pixbuf_new_from_file("data.bmp", error);
-  return pixBuf;
+  GdkPixbuf *miniBuf = NULL;
+  miniBuf = gdk_pixbuf_scale_simple(pixBuf,
+				    gdk_pixbuf_get_width(pixBuf)/2,
+				    gdk_pixbuf_get_height(pixBuf)/2,
+				    GDK_INTERP_NEAREST);
+  return miniBuf;
 }
+
+/*void cb_open (GtkWidget *widget, gpointer data)
+{
+  GtkWidget *image = NULL;
+  image = GTK_WIDGET(data);
+  GtkWidget *topLevel = NULL;
+  topLevel = gtk_widget_get_toplevel(image);
+  GtkFileFilter *filter = NULL;
+  filter = gtk_file_filter_new();
+  GtkWidget *dialog = NULL;
+  dialog = gtk_file_chooser_dialog_new("Open file", NULL,
+				       GTK_FILE_CHOOSER_ACTION_OPEN,
+				       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+				       NULL);
+
+  gtk_file_filter_add_pixbuf_formats(filter);
+  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+
+  switch(gtk_dialog_run(GTK_DIALOG(dialog)))
+  {
+    case GTK_RESPONSE_ACCEPT:
+    {
+      gchar *fileName = NULL;
+      fileName = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+      gtk_image_set_from_file(GTK_IMAGE(image), fileName);
+      break;
+    }
+    default:
+      break;
+  }
+  gtk_widget_destroy(dialog);
+  (void)widget;
+  }*/
 
 GtkWidget *guiInit(void)
 {
@@ -32,26 +72,14 @@ GtkWidget *guiInit(void)
 
 GtkWidget *initMainBox(GtkWidget *window)
 {
-  GtkWidget *box = NULL;
-  box = gtk_vbox_new(FALSE, 0);
-  gtk_container_add(GTK_CONTAINER(window), box);
-
   GtkWidget *mainBox = NULL;
-  mainBox = gtk_hbox_new(FALSE, 0);
-  gtk_box_pack_end(GTK_BOX(box), mainBox, TRUE, TRUE, 0);
+  mainBox = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(window), mainBox);
+  return mainBox;
+}
 
-  /*----Tool Bar----*/
-  GtkWidget *toolBar = gtk_toolbar_new();
-  gtk_box_pack_start(GTK_BOX(box), toolBar, FALSE, FALSE, 0);
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_OPEN,
-			   "Open", NULL, NULL, NULL, -1);
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE,
-			   "Save", NULL, NULL, NULL, -1);
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT,
-			   "Quit", NULL, G_CALLBACK(cb_quit), NULL, -1);
-  gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);
-
-  /*-----Menu----*/
+void initMenu(GtkWidget *box)
+{
   /*Menu Bar*/
   GtkWidget *menuBar = NULL;
   menuBar = gtk_menu_bar_new();
@@ -62,6 +90,7 @@ GtkWidget *initMainBox(GtkWidget *window)
   /*Menu items*/
   GtkWidget *menuItem = NULL;
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
+  g_signal_connect(G_OBJECT(menuItem), "activate", NULL, NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
@@ -93,11 +122,29 @@ GtkWidget *initMainBox(GtkWidget *window)
 
   /*Add bar to window*/
   gtk_box_pack_start(GTK_BOX(box), menuBar, FALSE, FALSE, 0);
+}
 
-  /*----Text zone----*/
+void initToolBar(GtkWidget *box)
+{
+  GtkWidget *toolBar = gtk_toolbar_new();
+  gtk_box_pack_start(GTK_BOX(box), toolBar, FALSE, FALSE, 0);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_OPEN,
+			   "Open", NULL, NULL, NULL, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE,
+			   "Save", NULL, NULL, NULL, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT,
+			   "Quit", NULL, G_CALLBACK(cb_quit), NULL, -1);
+  gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);
+}
+
+GtkWidget *getMainZone(GtkWidget *box)
+{
+  GtkWidget *zone = NULL;
+  zone = gtk_hbox_new(FALSE, 0);
+  gtk_box_pack_end(GTK_BOX(box), zone, TRUE, TRUE, 0);
+
   GtkWidget *textView = NULL;
   textView = gtk_text_view_new();
-  gtk_box_pack_end(GTK_BOX(mainBox), textView, TRUE, TRUE, 0);
-
-  return mainBox;
+  gtk_box_pack_end(GTK_BOX(zone), textView, TRUE, TRUE, 0);
+  return zone;
 }
