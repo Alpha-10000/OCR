@@ -66,8 +66,8 @@ int main(int argc, char *argv[])
   GdkPixbuf *pixBuf = loadPixBuf(text);
   GtkWidget *textImage = gtk_image_new_from_pixbuf(pixBuf);
   GtkWidget *mainBox = initMainBox(mainWindow);
-  initToolBar(mainBox);
-  initMenu(mainBox);
+  initToolBar(mainBox, textImage);
+  initMenu(mainBox, textImage);
   GtkWidget *mainZone = getMainZone(mainBox);
   gtk_box_pack_start(GTK_BOX(mainZone), textImage, FALSE, FALSE, 0);
   gtk_widget_show_all(mainWindow);
