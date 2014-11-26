@@ -56,7 +56,7 @@ void cb_process(GtkWidget *widget, gpointer data)
   text = IMG_Load("data.bmp");
   if(text == NULL)
   {
-    fprintf(stderr, "Give to the program an image as argument\n");
+    fprintf(stderr, "Error while loading SDL Surface\n");
     exit(EXIT_FAILURE);
   }
 

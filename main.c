@@ -27,7 +27,6 @@ int main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 
-  /*-----Principal code start-----*/
   SDL_Quit();
   gtk_main();
   return EXIT_SUCCESS;
