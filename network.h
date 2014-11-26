@@ -22,7 +22,9 @@ extern const int NN_RESOLUTION;
 network *initNetwork(int nbLayers, int nbNeurons);
 void printEverything(network *network);
 void printOutput(network *network);
-void readText(network *network, SDL_Surface *surface, Block *blocks, int nbLines);
+char getNNcharOutput(network *network);
+char *readText(network *network, SDL_Surface *surface,
+	       Block *blocks, int nbLines, char *text);
 void fillEntryVector(SDL_Surface *surface, int *entryVector, int charNb, int LineNb);
 int getLineNb(int entry, Block* blocks, int nbLines);
 int getCharNb(int entry, Block* blocks, int nbLines);

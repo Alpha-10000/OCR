@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include "network.h"
 
 const int NN_RESOLUTION = 16;
@@ -82,7 +83,8 @@ char getNNcharOutput(network *network)
   return (char)toBeConverted;
 }
 
-void readText(network *network, SDL_Surface *surface, Block *blocks, int nbLines)
+char* readText(network *network, SDL_Surface *surface,
+	       Block *blocks, int nbLines, char *text)
 {
   int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
   int currentChar = 0;
@@ -92,17 +94,26 @@ void readText(network *network, SDL_Surface *surface, Block *blocks, int nbLines
     {
       //printf("Entering readtext(%d)...", currentChar);
       fillEntryVector(surface, entryVector,
-        getCharNb(currentChar, blocks, nbLines),
-        getLineNb(currentChar, blocks, nbLines));
+		      getCharNb(currentChar, blocks, nbLines),
+		      getLineNb(currentChar, blocks, nbLines));
       computeOutput(network, entryVector);
       //printf("Exiting readtext   ");
-      printf("%c", getNNcharOutput(network));
+      char c = getNNcharOutput(network);
+      char s[2];
+      s[0] = c;
+      s[1] = '\0';
+      strcat(text, s);
+      printf("%s", s);
       currentChar++;
     }
+    strcat(text, "\n");
     printf("\n");
   }
   printf("\n");
+  strcat(text, "\n");
   free(entryVector);
+  printf("%s", text);
+  return text;
 }
 
 void fillEntryVector(SDL_Surface *surface, int *entryVector, int charNb, int LineNb)

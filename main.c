@@ -4,6 +4,7 @@
 #include <SDL/SDL_image.h>
 #include <gtk/gtk.h>
 #include "gui.h"
+#include "functions.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,12 +13,19 @@ int main(int argc, char *argv[])
   gtk_init(&argc, &argv);
   GtkWidget *mainWindow = guiInit();
 
-  GtkWidget *textImage = gtk_image_new();
+  //Image and Text
+  Zone *zone = malloc(sizeof(struct Zone*));
+  zone->image = gtk_image_new();
+  zone->text = gtk_text_view_new();
+
+  //All Widgets
   GtkWidget *mainBox = initMainBox(mainWindow);
-  initToolBar(mainBox, textImage);
-  initMenu(mainBox, textImage);
+  initToolBar(mainBox, zone);
+  initMenu(mainBox, zone);
+
   GtkWidget *mainZone = getMainZone(mainBox);
-  gtk_box_pack_start(GTK_BOX(mainZone), textImage, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(mainZone), zone->image, FALSE, FALSE, 0);
+  gtk_box_pack_end(GTK_BOX(mainZone), zone->text, TRUE, TRUE, 0);
   gtk_widget_show_all(mainWindow);
 
   /*------Init SDL------*/

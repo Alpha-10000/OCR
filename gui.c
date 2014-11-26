@@ -28,8 +28,9 @@ GdkPixbuf *loadPixBuf(SDL_Surface *surface)
 
 void cb_open(GtkWidget *widget, gpointer data)
 {
+  Zone *zone = (Zone*)data;
   GtkWidget *image = NULL;
-  image = GTK_WIDGET(data);
+  image = GTK_WIDGET(zone->image);
   GtkWidget *topLevel = NULL;
   topLevel = gtk_widget_get_toplevel(image);
   GtkFileFilter *filter = NULL;
@@ -77,7 +78,7 @@ GtkWidget *initMainBox(GtkWidget *window)
   return mainBox;
 }
 
-void initMenu(GtkWidget *box, GtkWidget *image)
+void initMenu(GtkWidget *box, Zone *zone)
 {
   /*Menu Bar*/
   GtkWidget *menuBar = NULL;
@@ -90,12 +91,12 @@ void initMenu(GtkWidget *box, GtkWidget *image)
   GtkWidget *menuItem = NULL;
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
   g_signal_connect(G_OBJECT(menuItem), "activate",
-		   G_CALLBACK(cb_open), image);
+		   G_CALLBACK(cb_open), zone);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_EXECUTE, NULL);
   g_signal_connect(G_OBJECT(menuItem), "activate",
-		   G_CALLBACK(cb_process), image);
+		   G_CALLBACK(cb_process), zone);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
@@ -122,7 +123,7 @@ void initMenu(GtkWidget *box, GtkWidget *image)
 
   menuItem = gtk_menu_item_new_with_label("About");
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
-  /*Subemenu*/
+  /*Submenu*/
   menuItem = gtk_menu_item_new_with_label("?");
   /*Link menu items*/
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuItem), menu);
@@ -133,18 +134,18 @@ void initMenu(GtkWidget *box, GtkWidget *image)
   gtk_box_pack_start(GTK_BOX(box), menuBar, FALSE, FALSE, 0);
 }
 
-void initToolBar(GtkWidget *box, GtkWidget *image)
+void initToolBar(GtkWidget *box, Zone *zone)
 {
   GtkWidget *toolBar = gtk_toolbar_new();
   gtk_box_pack_start(GTK_BOX(box), toolBar, FALSE, FALSE, 0);
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_OPEN,
-			   "Open", NULL, G_CALLBACK(cb_open), image, -1);
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_EXECUTE,
-			   "Process", NULL, G_CALLBACK(cb_process), image, -1);
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE,
-			   "Save", NULL, NULL, NULL, -1);
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT,
-			   "Quit", NULL, G_CALLBACK(cb_quit), NULL, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_OPEN, "Open",
+			   NULL, G_CALLBACK(cb_open), zone, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_EXECUTE, "Process",
+			   NULL, G_CALLBACK(cb_process), zone, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE, "Save",
+			   NULL, NULL, NULL, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT, "Quit",
+			   NULL, G_CALLBACK(cb_quit), NULL, -1);
   gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);
 }
 
@@ -153,9 +154,5 @@ GtkWidget *getMainZone(GtkWidget *box)
   GtkWidget *zone = NULL;
   zone = gtk_hbox_new(FALSE, 0);
   gtk_box_pack_end(GTK_BOX(box), zone, TRUE, TRUE, 0);
-
-  GtkWidget *textView = NULL;
-  textView = gtk_text_view_new();
-  gtk_box_pack_end(GTK_BOX(zone), textView, TRUE, TRUE, 0);
   return zone;
 }
