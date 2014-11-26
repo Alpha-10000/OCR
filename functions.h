@@ -12,5 +12,6 @@ void printAllocError(void);
 Uint8 **matrixFromSurface(SDL_Surface *surface);
 char *arrayFromSurface(SDL_Surface *surface, Uint8 **pixMatrix);
 void getImageData(SDL_Surface *surface, Uint8 **pixMatrix);
+void cb_process(GtkWidget *widget, gpointer data);
 
 #endif

@@ -1,9 +1,15 @@
+#ifndef FUNCTIONS
+#define FUNCTIONS
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <gtk/gtk.h>
 #include "functions.h"
 #include "filters.h"
+#include "network.h"
+#include "detection.h"
+#include "gui.h"
 
 SDL_Surface *copySurface(SDL_Surface *surface)
 {
@@ -39,79 +45,51 @@ void printAllocError(void)
   exit(EXIT_FAILURE);
 }
 
-Uint8 **matrixFromSurface(SDL_Surface *surface)
+void cb_process(GtkWidget *widget, gpointer data)
 {
-  Uint8** matrix = malloc(surface->w * sizeof(Uint8 *));
-  for(int i = 0; i < surface->w; i++)
-    matrix[i] = malloc(surface->h * sizeof(Uint8 *));
-  for(int i = 0; i < surface->w; i++)
-  {
-    for(int j = 0; j < surface->h; j++)
-    {
-      Uint32 pixel = getPixel(surface, i, j);
-      Uint8 r, g, b;
-      SDL_GetRGB(pixel, surface->format, &r, &g, &b);
-      if(r == 232 && g == 0 && b == 52)
-	matrix[i][j] = 10; //red
-      else if(r == 5 && g  == 199 & b == 206)
-	matrix[i][j] = 20; //blue
-      else
-	matrix[i][j] = g;
-    }
-  }
-  return matrix;
-}
+  GtkWidget *image = NULL;
+  image = GTK_WIDGET(data);
+  GdkPixbuf *pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(image));
+  gdk_pixbuf_save(pixBuf, "data.bmp", "bmp", NULL, NULL, NULL);
 
-char *arrayFromSurface(SDL_Surface *surface, Uint8 **pixMatrix)
-{
-  char* array = malloc(surface->w * surface->h * sizeof(Uint8 *));
-  int n = 0;
-  for(int i = 0; i < surface->w; i++)
+  SDL_Surface *text = NULL;
+  text = IMG_Load("data.bmp");
+  if(text == NULL)
   {
-    for(int j = 0; j < surface->h; j++)
-    {
-      array[n] = (char)pixMatrix[i][j];
-      n++;
-    }
+    fprintf(stderr, "Give to the program an image as argument\n");
+    exit(EXIT_FAILURE);
   }
-  return array;
-}
 
-void getImageData(SDL_Surface *surface, Uint8 **pixMatrix)
-{
-  FILE* xpmFile = NULL;
-  xpmFile = fopen("data.xpm", "r+");
-  if(xpmFile != NULL)
-  {
-    fputs("#ifndef XPM\n", xpmFile);
-    fputs("#define XPM\n", xpmFile);
+  greyScale(text);
+  ///noiseRemove(text);
+  binarize(text);
 
-    fputs("static char *imageData[] ={\n", xpmFile);
-    fprintf(xpmFile, "\"%d %d 4 1\",\n",surface->w, surface->h);
-    fputs("\"X c black\",\n", xpmFile);
-    fputs("\"O c white\",\n", xpmFile);
-    fputs("\"R c e80034\",\n", xpmFile);
-    fputs("\"B c 05c7ce\",\n", xpmFile);
-    for(int i = 0; i < surface->w; i++)
-    {
-      fputs("\"", xpmFile);
-      for(int j = 0; j < surface->h; j++)
-      {
-	if(pixMatrix[i][j] == 0)
-	  fputs("X", xpmFile);
-	if(pixMatrix[i][j] == 255)
-	  fputs("O", xpmFile);
-	if(pixMatrix[i][j] == 10)
-	  fputs("R", xpmFile);
-	if(pixMatrix[i][j] == 20)
-	  fputs("B", xpmFile);
-      }
-      fputs("\"\n", xpmFile);
-    }
-    fputs("};", xpmFile);
-    fputs("#endif", xpmFile);
-    fclose(xpmFile);
-  }
-  else
-    printf("Impossible to open or read imageData.xpm");
+  int nbLines;
+  Block *blocks = findBlocks(text, &nbLines);
+  //print_blocks(blocks, nbLines);
+  findChars(text, blocks, nbLines);
+  //drawLinesChars(text, blocks, nbLines);
+  ///SDL_Surface *resized = NULL;
+  text = resizeChars(text, blocks, nbLines);
+  //Neural Network tests
+  network *testNN = initNetwork(3,30);
+  learnNetwork(testNN, blocks, text, nbLines);
+  /*
+    int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
+    fillEntryVector(text, entryVector,
+    getCharNb(0, blocks, nbLines),
+    getLineNb(0, blocks, nbLines));
+    computeOutput(testNN, entryVector);
+    printOutput(testNN);
+    free(entryVector);
+  */
+  readText(testNN, text, blocks, nbLines);
+  freeNetwork(testNN);
+  freeBlocks(blocks, nbLines);
+
+  pixBuf = loadPixBuf(text);
+  gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
+  SDL_FreeSurface(text);
+  (void)widget;
 }
+#endif

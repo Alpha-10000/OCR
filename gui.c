@@ -26,7 +26,7 @@ GdkPixbuf *loadPixBuf(SDL_Surface *surface)
   return miniBuf;
 }
 
-void cb_open (GtkWidget *widget, gpointer data)
+void cb_open(GtkWidget *widget, gpointer data)
 {
   GtkWidget *image = NULL;
   image = GTK_WIDGET(data);
@@ -35,7 +35,7 @@ void cb_open (GtkWidget *widget, gpointer data)
   GtkFileFilter *filter = NULL;
   filter = gtk_file_filter_new();
   GtkWidget *dialog = NULL;
-  dialog = gtk_file_chooser_dialog_new("Open file", NULL,
+  dialog = gtk_file_chooser_dialog_new("Open file", GTK_WINDOW(topLevel),
 				       GTK_FILE_CHOOSER_ACTION_OPEN,
 				       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
@@ -59,7 +59,7 @@ void cb_open (GtkWidget *widget, gpointer data)
   }
   gtk_widget_destroy(dialog);
   (void)widget;
-  }
+}
 
 GtkWidget *guiInit(void)
 {
@@ -91,6 +91,11 @@ void initMenu(GtkWidget *box, GtkWidget *image)
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
   g_signal_connect(G_OBJECT(menuItem), "activate",
 		   G_CALLBACK(cb_open), image);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
+
+  menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_EXECUTE, NULL);
+  g_signal_connect(G_OBJECT(menuItem), "activate",
+		   G_CALLBACK(cb_process), image);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
@@ -134,6 +139,8 @@ void initToolBar(GtkWidget *box, GtkWidget *image)
   gtk_box_pack_start(GTK_BOX(box), toolBar, FALSE, FALSE, 0);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_OPEN,
 			   "Open", NULL, G_CALLBACK(cb_open), image, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_EXECUTE,
+			   "Process", NULL, G_CALLBACK(cb_process), image, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE,
 			   "Save", NULL, NULL, NULL, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT,

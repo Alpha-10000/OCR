@@ -3,68 +3,16 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <gtk/gtk.h>
-#include "filters.h"
-#include "network.h"
-#include "detection.h"
 #include "gui.h"
-#include "functions.h"
 
 int main(int argc, char *argv[])
 {
-  /*-----Initialize Graphical User Interface-----*/
+  /*-----Init GUI-----*/
+
   gtk_init(&argc, &argv);
   GtkWidget *mainWindow = guiInit();
-  /*-------SDL initialization-------*/
 
-  if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
-  {
-    fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
-    exit(EXIT_FAILURE); //Exit the program
-  }
-
-  /*--------Principal code start--------*/
-
-  SDL_Surface *text = NULL;
-  text = IMG_Load(argv[argc - 1]); //Loading the image we will work on
-  if (text == NULL)
-  {
-    fprintf(stderr, "Give to the program an image as argument\n");
-    exit(EXIT_FAILURE);
-  }
-
-  greyScale(text);
-  ///noiseRemove(text);
-  binarize(text);
-
-  int nbLines;
-  Block *blocks = findBlocks(text, &nbLines);
-  //print_blocks(blocks, nbLines);
-  findChars(text, blocks, nbLines);
-  //drawLinesChars(text, blocks, nbLines);
-  ///SDL_Surface *resized = NULL;
-  text = resizeChars(text, blocks, nbLines);
-  //Neural Network tests
-  network *testNN = initNetwork(3,30);
-  learnNetwork(testNN, blocks, text, nbLines);
-  /*
-  int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
-  fillEntryVector(text, entryVector,
-        getCharNb(0, blocks, nbLines),
-        getLineNb(0, blocks, nbLines));
-  computeOutput(testNN, entryVector);
-  printOutput(testNN);
-  free(entryVector);
-  */
-  readText(testNN, text, blocks, nbLines);
-  freeNetwork(testNN);
-
-
-  freeBlocks(blocks, nbLines);
-
-  /*------Main GTK loop-------*/
-
-  GdkPixbuf *pixBuf = loadPixBuf(text);
-  GtkWidget *textImage = gtk_image_new_from_pixbuf(pixBuf);
+  GtkWidget *textImage = gtk_image_new();
   GtkWidget *mainBox = initMainBox(mainWindow);
   initToolBar(mainBox, textImage);
   initMenu(mainBox, textImage);
@@ -72,10 +20,15 @@ int main(int argc, char *argv[])
   gtk_box_pack_start(GTK_BOX(mainZone), textImage, FALSE, FALSE, 0);
   gtk_widget_show_all(mainWindow);
 
-   /*--------Principal code end-------*/
+  /*------Init SDL------*/
+  if (SDL_Init(SDL_INIT_VIDEO) == -1) //Starting SDL. If error
+  {
+    fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
+    exit(EXIT_FAILURE);
+  }
 
-  gtk_main();
-  SDL_FreeSurface(text); //Free surface's memory
+  /*-----Principal code start-----*/
   SDL_Quit();
+  gtk_main();
   return EXIT_SUCCESS;
 }
