@@ -5,7 +5,7 @@
 CC=clang
 CFLAGS=-Wall -Wextra -Werror -std=c99 -O2 $(shell pkg-config --cflags gtk+-2.0)
 LDFLAGS=-lSDL -lSDLmain -lSDL_image -lm $(shell pkg-config --libs gtk+-2.0)
-EXEC=Program
+EXEC=OCRulus
 SRC=$(wildcard *.c)
 OBJ=$(SRC:.c=.o)
 
