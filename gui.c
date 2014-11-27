@@ -43,8 +43,8 @@ void cb_open(GtkWidget *widget, gpointer data)
 				       NULL);
 
   gtk_file_filter_add_pixbuf_formats(filter);
+  gtk_file_filter_set_name(filter, "Image File");
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
-
 
   switch(gtk_dialog_run(GTK_DIALOG(dialog)))
   {
@@ -53,6 +53,67 @@ void cb_open(GtkWidget *widget, gpointer data)
       gchar *fileName = NULL;
       fileName = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
       gtk_image_set_from_file(GTK_IMAGE(image), fileName);
+      g_free(fileName);
+      break;
+    }
+    default:
+      break;
+  }
+  gtk_widget_destroy(dialog);
+  (void)widget;
+}
+
+void cb_save(GtkWidget *widget, gpointer data)
+{
+  Zone *zone = (Zone*)data;
+  ///GtkWidget *text = NULL;
+  ///text = GTK_WIDGET(zone->text);
+  ///GtkWidget *topLevel = NULL;
+  ///topLevel = gtk_widget_get_toplevel(text);
+  GtkWidget *dialog = NULL;
+  dialog = gtk_file_chooser_dialog_new("Save file", NULL,
+				       GTK_FILE_CHOOSER_ACTION_SAVE,
+				       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				       GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+				       NULL);
+
+  GtkFileFilter *filter = NULL;
+  filter = gtk_file_filter_new();
+  gtk_file_filter_set_name(filter, "Text File (*.txt)");
+  gtk_file_filter_add_pattern(filter, "*txt");
+  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+  GtkFileFilter *all = NULL;
+  all = gtk_file_filter_new();
+  gtk_file_filter_set_name(all, "All Files");
+  gtk_file_filter_add_pattern(all, "*");
+  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), all);
+  gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
+						 TRUE);
+  gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), "New Document");
+
+  switch(gtk_dialog_run(GTK_DIALOG(dialog)))
+  {
+    case GTK_RESPONSE_ACCEPT:
+    {
+      gchar *fileName = NULL;
+      fileName = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+      FILE *file = NULL;
+      file = fopen(fileName, "w");
+      if(file)
+      {
+	gchar *chars = NULL;
+	GtkTextBuffer *textBuffer = NULL;
+	textBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(zone->text));
+	GtkTextIter start;
+	GtkTextIter end;
+	gtk_text_buffer_get_bounds(textBuffer, &start, &end);
+	chars = gtk_text_buffer_get_text(textBuffer, &start, &end, FALSE);
+	fprintf (file, "%s", chars);
+	fclose(file);
+	g_free(chars);
+      }
+      else
+	printf("Impossible to save file\n");
       break;
     }
     default:
@@ -90,8 +151,7 @@ void initMenu(GtkWidget *box, Zone *zone)
   /*Menu items*/
   GtkWidget *menuItem = NULL;
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
-  g_signal_connect(G_OBJECT(menuItem), "activate",
-		   G_CALLBACK(cb_open), zone);
+  g_signal_connect(G_OBJECT(menuItem), "activate", G_CALLBACK(cb_open), zone);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_EXECUTE, NULL);
@@ -100,6 +160,7 @@ void initMenu(GtkWidget *box, Zone *zone)
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
   menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
+  g_signal_connect(G_OBJECT(menuItem), "activate", G_CALLBACK(cb_save), zone);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
   menuItem = gtk_separator_menu_item_new();
@@ -143,7 +204,7 @@ void initToolBar(GtkWidget *box, Zone *zone)
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_EXECUTE, "Process",
 			   NULL, G_CALLBACK(cb_process), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE, "Save",
-			   NULL, NULL, NULL, -1);
+			   NULL, G_CALLBACK(cb_save), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT, "Quit",
 			   NULL, G_CALLBACK(cb_quit), NULL, -1);
   gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);

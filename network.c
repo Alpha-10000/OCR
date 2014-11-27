@@ -112,7 +112,6 @@ char* readText(network *network, SDL_Surface *surface,
   printf("\n");
   strcat(text, "\n");
   free(entryVector);
-  printf("%s", text);
   return text;
 }
 
