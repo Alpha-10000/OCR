@@ -16,6 +16,8 @@ void rotate(SDL_Surface *old, double angle)
 
     SDL_Surface *new = SDL_CreateRGBSurface(0, w, h, old->format->BitsPerPixel,
                                             0,0,0,0);
+    SDL_LockSurface(old);
+    SDL_LockSurface(new);
     for (int y = 0; y < h; y++)
     {
         for (int x = 0; x < w; x++)
@@ -32,7 +34,9 @@ void rotate(SDL_Surface *old, double angle)
                 setPixel(new, x, y, SDL_MapRGB(old->format, 255, 255, 255));
         }
     }
-    
+    SDL_UnlockSurface(old);
+    SDL_UnlockSurface(new);
+
     SDL_Surface *swp = old;
     old = new;
     free(swp);

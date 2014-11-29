@@ -61,7 +61,7 @@ void cb_process(GtkWidget *widget, gpointer data)
   }
   
   greyScale(textImage);
-  ///noiseRemove(text);
+  //noiseRemove(text);
   binarize(textImage);
   rotate(textImage,30);
  
