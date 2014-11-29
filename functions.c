@@ -8,6 +8,7 @@
 #include "network.h"
 #include "detection.h"
 #include "gui.h"
+#include "rotation.h"
 
 SDL_Surface *copySurface(SDL_Surface *surface)
 {
@@ -58,11 +59,12 @@ void cb_process(GtkWidget *widget, gpointer data)
     fprintf(stderr, "Error while loading SDL Surface\n");
     exit(EXIT_FAILURE);
   }
-
+  
   greyScale(textImage);
   ///noiseRemove(text);
   binarize(textImage);
-
+  rotate(textImage,30);
+ 
   int nbLines;
   Block *blocks = findBlocks(textImage, &nbLines);
   //print_blocks(blocks, nbLines);

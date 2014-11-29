@@ -32,4 +32,8 @@ void rotate(SDL_Surface *old, double angle)
                 setPixel(new, x, y, SDL_MapRGB(old->format, 255, 255, 255));
         }
     }
+    
+    SDL_Surface *swp = old;
+    old = new;
+    free(swp);
 }
