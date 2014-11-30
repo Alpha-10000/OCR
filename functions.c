@@ -8,6 +8,7 @@
 #include "network.h"
 #include "detection.h"
 #include "gui.h"
+#include "rotation.h"
 
 SDL_Surface *copySurface(SDL_Surface *surface)
 {

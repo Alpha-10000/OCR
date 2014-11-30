@@ -10,11 +10,7 @@
 void freeBlocks(Block *b, int nbLines)
 {
   for (int i = 0; i < nbLines; i++)
-  {
-        //for (int j = 0; j < b[i].nbChars; j++)
     free(b[i].chars);
-        //free(b[i]);
-  }
   free(b);
 }
 
