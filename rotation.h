@@ -1,6 +1,6 @@
 #ifndef ROTATION
 #define ROTATION
 
-void rotate(SDL_Surface *old, double angle);
+SDL_Surface* rotate(SDL_Surface *old, double angle);
 
 #endif

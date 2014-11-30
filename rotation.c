@@ -5,7 +5,7 @@
 
 #define PI 3.14159265
 
-void rotate(SDL_Surface *old, double angle)
+SDL_Surface*  rotate(SDL_Surface *old, double angle)
 {
     int h0 = old->h, w0 = old->w;
     double cosA = cos(angle * PI / 180);
@@ -18,6 +18,7 @@ void rotate(SDL_Surface *old, double angle)
                                             0,0,0,0);
     SDL_LockSurface(old);
     SDL_LockSurface(new);
+    
     for (int y = 0; y < h; y++)
     {
         for (int x = 0; x < w; x++)
@@ -34,10 +35,8 @@ void rotate(SDL_Surface *old, double angle)
                 setPixel(new, x, y, SDL_MapRGB(old->format, 255, 255, 255));
         }
     }
+
     SDL_UnlockSurface(old);
     SDL_UnlockSurface(new);
-
-    SDL_Surface *swp = old;
-    old = new;
-    free(swp);
+    return new;
 }

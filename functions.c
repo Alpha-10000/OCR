@@ -61,7 +61,7 @@ void cb_process(GtkWidget *widget, gpointer data)
       fprintf(stderr, "Error while loading SDL Surface\n");
       exit(EXIT_FAILURE);
     }
-
+    
     greyScale(textImage);
     ///noiseRemove(textImage);
     binarize(textImage);
