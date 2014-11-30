@@ -199,6 +199,7 @@ void initToolBar(GtkWidget *box, Zone *zone)
 {
   GtkWidget *toolBar = gtk_toolbar_new();
   gtk_box_pack_start(GTK_BOX(box), toolBar, FALSE, FALSE, 0);
+
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_OPEN, "Open",
 			   NULL, G_CALLBACK(cb_open), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_EXECUTE, "Process",
@@ -207,7 +208,9 @@ void initToolBar(GtkWidget *box, Zone *zone)
 			   NULL, G_CALLBACK(cb_save), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT, "Quit",
 			   NULL, G_CALLBACK(cb_quit), NULL, -1);
+
   gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);
+  gtk_toolbar_set_icon_size(GTK_TOOLBAR(toolBar), GTK_ICON_SIZE_SMALL_TOOLBAR);
 }
 
 GtkWidget *getMainZone(GtkWidget *box)

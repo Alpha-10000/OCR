@@ -1,5 +1,6 @@
 #ifndef GUI
 #define GUI
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
@@ -14,4 +15,5 @@ GtkWidget *initMainBox(GtkWidget *window);
 void initMenu(GtkWidget* box, Zone *zone);
 void initToolBar(GtkWidget *box, Zone *zone);
 GtkWidget *getMainZone(GtkWidget *box);
+
 #endif

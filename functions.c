@@ -48,58 +48,66 @@ void cb_process(GtkWidget *widget, gpointer data)
   Zone *zone = (Zone*)data;
   GtkWidget * image = NULL;
   image = GTK_WIDGET(zone->image);
-  GdkPixbuf *pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(image));
-  gdk_pixbuf_save(pixBuf, "data.bmp", "bmp", NULL, NULL, NULL);
-
-  SDL_Surface *textImage = NULL;
-  textImage = IMG_Load("data.bmp");
-  if(textImage == NULL)
+  GdkPixbuf *pixBuf = NULL;
+  pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(image));
+  if(pixBuf)
   {
-    fprintf(stderr, "Error while loading SDL Surface\n");
-    exit(EXIT_FAILURE);
+    gdk_pixbuf_save(pixBuf, "data", "bmp", NULL, NULL, NULL);
+    SDL_Surface *textImage = NULL;
+    textImage = IMG_Load("data");
+    if(textImage == NULL)
+    {
+      fprintf(stderr, "Error while loading SDL Surface\n");
+      exit(EXIT_FAILURE);
+    }
+
+    greyScale(textImage);
+    ///noiseRemove(textImage);
+    binarize(textImage);
+
+    int nbLines;
+    Block *blocks = findBlocks(textImage, &nbLines);
+    //print_blocks(blocks, nbLines);
+    findChars(textImage, blocks, nbLines);
+    //drawLinesChars(text, blocks, nbLines);
+    ///SDL_Surface *resized = NULL;
+    textImage = resizeChars(textImage, blocks, nbLines);
+    //Neural Network tests
+    network *testNN = initNetwork(3,30);
+    learnNetwork(testNN, blocks, textImage, nbLines);
+    /*
+      int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
+      fillEntryVector(text, entryVector,
+      getCharNb(0, blocks, nbLines),
+      getLineNb(0, blocks, nbLines));
+      computeOutput(testNN, entryVector);
+      printOutput(testNN);
+      free(entryVector);
+    */
+    char* chars = NULL;
+    chars = malloc(nbLines * 200 * sizeof(char));
+    for(int i = 0; i < 200 * nbLines; i++)
+      chars[i] = '\0';
+    if(chars)
+    {
+      chars = readText(testNN, textImage, blocks, nbLines, chars);
+      freeNetwork(testNN);
+      freeBlocks(blocks, nbLines);
+      GtkTextBuffer *textBuffer;
+      textBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(zone->text));
+
+      GtkTextIter start;
+      GtkTextIter end;
+      gtk_text_buffer_get_start_iter(textBuffer, &start);
+      gtk_text_buffer_get_end_iter(textBuffer, &end);
+      gtk_text_buffer_delete(textBuffer, &start, &end);
+      gchar *text = NULL;
+      text = g_locale_to_utf8(chars, -1, NULL, NULL, NULL);
+      if(text)
+	gtk_text_buffer_insert(textBuffer, &end, chars, -1);
+      (void)widget;
+      SDL_FreeSurface(textImage);
+      free(chars);
+    }
   }
-
-  greyScale(textImage);
-  ///noiseRemove(text);
-  binarize(textImage);
-
-  int nbLines;
-  Block *blocks = findBlocks(textImage, &nbLines);
-  //print_blocks(blocks, nbLines);
-  findChars(textImage, blocks, nbLines);
-  //drawLinesChars(text, blocks, nbLines);
-  ///SDL_Surface *resized = NULL;
-  textImage = resizeChars(textImage, blocks, nbLines);
-  //Neural Network tests
-  network *testNN = initNetwork(3,30);
-  learnNetwork(testNN, blocks, textImage, nbLines);
-  /*
-    int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
-    fillEntryVector(text, entryVector,
-    getCharNb(0, blocks, nbLines),
-    getLineNb(0, blocks, nbLines));
-    computeOutput(testNN, entryVector);
-    printOutput(testNN);
-    free(entryVector);
-  */
-  char* chars = malloc(nbLines * 1000 * sizeof(char));
-
-  readText(testNN, textImage, blocks, nbLines, chars);
-  freeNetwork(testNN);
-  freeBlocks(blocks, nbLines);
-
-  pixBuf = loadPixBuf(textImage);
-  gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
-
-  GtkTextBuffer *textBuffer = NULL;
-  textBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(zone->text));
-  GtkTextIter iter;
-  gtk_text_buffer_get_iter_at_line(textBuffer, &iter, 0);
-  gchar *text = NULL;
-  text = g_locale_to_utf8(chars, -1, NULL, NULL, NULL);
-  gtk_text_buffer_insert(textBuffer, &iter, text, -1);
-
-  SDL_FreeSurface(textImage);
-  free(chars);
-  (void)widget;
 }

@@ -83,7 +83,7 @@ char getNNcharOutput(network *network)
   return (char)toBeConverted;
 }
 
-char* readText(network *network, SDL_Surface *surface,
+char *readText(network *network, SDL_Surface *surface,
 	       Block *blocks, int nbLines, char *text)
 {
   int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
