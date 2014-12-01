@@ -3,4 +3,4 @@ OCR
 
 Optical character recognition
 
-Usage : ./Program textImage
+Usage : ./Ocrulus

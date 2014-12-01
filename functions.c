@@ -54,18 +54,21 @@ void cb_process(GtkWidget *widget, gpointer data)
   pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(image));
   if(pixBuf)
   {
-    gdk_pixbuf_save(pixBuf, "data", "bmp", NULL, NULL, NULL);
+    gdk_pixbuf_save(pixBuf, "data.bmp", "bmp", NULL, NULL, NULL);
     SDL_Surface *textImage = NULL;
-    textImage = IMG_Load("data");
+    textImage = IMG_Load("data.bmp");
     if(textImage == NULL)
     {
       fprintf(stderr, "Error while loading SDL Surface\n");
       exit(EXIT_FAILURE);
     }
-    
+
     greyScale(textImage);
     ///noiseRemove(textImage);
     binarize(textImage);
+
+    pixBuf = loadPixBuf(textImage);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
 
     int nbLines;
     Block *blocks = findBlocks(textImage, &nbLines);
@@ -87,7 +90,7 @@ void cb_process(GtkWidget *widget, gpointer data)
       printOutput(testNN);
       free(entryVector);
     */
-    
+
       //saveNetworkSettings(testNN);
       //readNetworkSettings(testNN);
 
