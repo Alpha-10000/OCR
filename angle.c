@@ -9,34 +9,33 @@
 
 int houghHist(SDL_Surface *surface)
 {
-	int *teta_list = malloc(180 * sizeof(int));
-	int goodteta = 0;
+	//initialisation d'une matrice [maxrho][180]
+	int maxrho = sqrt(surface->w * surface->w + surface->h * surface->h);
+	int *hough_mat = malloc(maxrho * sizeof(*int));
+	for (int i = 0; i < maxrho; i++)
+		hough_mat[i] = malloc(180 * sizeof(int));
+	//parcours de l'image
 	SDL_LockSurface(surface);
-	for (int j = 0; j < surface->h; j++)
+	for (int x = 0; x < surface->w; x++)
 	{
-		Uint8 color;
-		SDL_GetRGB(getPixel(surface, (surface->w)/2, j), surface->format,
-		 &color, &color, &color);
-		if (!color)
+		for (int y = 0; y < surface->h; y++)
 		{
-			//pour tous les teta de 0 à 180 degré, tracer une ligne et compter le nb de
-			//pixels noirs sur chaque ligne et stocker ce nb dans une matrice(le pix,teta)
-			int teta, rho, nbpixels = 0;
-			for (int indexteta = 0; indexteta<180; indexteta++)
+			Uint8 color;
+			SDL_GetRGB(getPixel(surface, (x, y), surface->format,
+					&color, &color, &color);
+			if (!color)
 			{
-				teta = (indexteta/180)*PI;
-				rho = (surface->w) / 2 * cos(teta) + j * sin(teta);
-				//calculer nb pixels sur la ligne courante
-				if (nbpixels) //< nb pixels compté
-					goodteta = teta;
-			} 
+				double teta, rho;
+				//parcours de tous les angles du pixel noir
+				for (double indexteta = 0; indexteta<180; indexteta++)
+				{
+					//transformation en coordonnées polaires
+					teta = (indexteta/180)*PI;
+					rho = x * cos(teta) + y * sin(teta);
+					//incrémentation de la case correspondante dans la matrice
+					hough_mat[rho][indexteta]++;
+				} 
+			}
 		}
-		teta_list[goodteta]++;
 	}
-	int return_teta = 0;
-	for (int i = 0; i < 180; i++)
-	{
-		return_teta = max(return_teta, teta_list[i]);
-	}
-	return return_teta;
 }
