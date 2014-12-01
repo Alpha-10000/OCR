@@ -273,6 +273,10 @@ void centerChar(SDL_Surface *surface, SDL_Rect *rect)
   }
   rect->h = rect->h - counter;
   SDL_UnlockSurface(surface);
+  rect->x--;
+  rect->y--;
+  rect->w+=2;
+  rect->h+=2;
 }
 
 SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)

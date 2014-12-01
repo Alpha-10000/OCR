@@ -18,6 +18,7 @@ struct network
 };
 
 extern const int NN_RESOLUTION;
+extern const int NN_NBOUTPUTS;
 
 network *initNetwork(int nbLayers, int nbNeurons);
 void printEverything(network *network);

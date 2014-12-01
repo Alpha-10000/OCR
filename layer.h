@@ -10,8 +10,6 @@ struct layer
 {
   int nbNeurons;
   neuron* *neurons;
-  double *entries;
-  double *outputs;
 };
 
 layer* initLayer(int nbNeurons, int entriesPerNeuron);

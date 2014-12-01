@@ -5,10 +5,11 @@
 #include "network.h"
 
 const int NN_RESOLUTION = 16;
+const int NN_NBOUTPUTS = 93;
 
 network *initNetwork(int nbLayers, int nbNeurons)
 {
-  int nbOutPut = 26*2;
+  int nbOutPut = NN_NBOUTPUTS;
   int nbInputs = NN_RESOLUTION*NN_RESOLUTION;
   network *result = malloc(sizeof(network));
   result->nbLayers = nbLayers;
@@ -76,10 +77,10 @@ char getNNcharOutput(network *network)
     }
   }
 
-  if (toBeConverted <= 25)
-    toBeConverted += 97;
+  if (toBeConverted == 0)
+    toBeConverted = 33;
   else
-    toBeConverted = toBeConverted - 26 + 65;
+    toBeConverted += 34;
   return (char)toBeConverted;
 }
 
@@ -92,7 +93,9 @@ char *readText(network *network, SDL_Surface *surface,
   {
     for (int j = 0; j < blocks[i].nbChars; j++)
     {
-      //printf("Entering readtext(%d)...", currentChar);
+      //printf("Reading char(%d) line(%d) pos(%d) : ", currentChar,
+      //  getLineNb(currentChar, blocks, nbLines),
+      //  getCharNb(currentChar, blocks, nbLines));
       fillEntryVector(surface, entryVector,
 		      getCharNb(currentChar, blocks, nbLines),
 		      getLineNb(currentChar, blocks, nbLines));
@@ -163,11 +166,11 @@ void learnNetwork(network *network, Block *blocks, SDL_Surface *surface, int nbL
 {
   //Assuming the text is abcd....xyzABCD...XYZ
   int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
-  double learnCoef = 1;
+  double learnCoef = 1.5;
 
-  for (int nbTest = 0; nbTest < 200; nbTest++)
+  for (int nbTest = 0; nbTest < 2000; nbTest++)
   {
-    for (int currentTest = 0; currentTest < 26*2; currentTest++)
+    for (int currentTest = 0; currentTest < NN_NBOUTPUTS; currentTest++)
     {
       fillEntryVector(surface, entryVector,
         getCharNb(currentTest, blocks, nbLines),

@@ -9,6 +9,7 @@
 #include "detection.h"
 #include "gui.h"
 #include "rotation.h"
+#include "save.h"
 
 SDL_Surface *copySurface(SDL_Surface *surface)
 {
@@ -70,21 +71,26 @@ void cb_process(GtkWidget *widget, gpointer data)
     Block *blocks = findBlocks(textImage, &nbLines);
     //print_blocks(blocks, nbLines);
     findChars(textImage, blocks, nbLines);
-    //drawLinesChars(text, blocks, nbLines);
+    drawLinesChars(textImage, blocks, nbLines);
     ///SDL_Surface *resized = NULL;
     textImage = resizeChars(textImage, blocks, nbLines);
     //Neural Network tests
     network *testNN = initNetwork(3,30);
-    learnNetwork(testNN, blocks, textImage, nbLines);
+    //learnNetwork(testNN, blocks, textImage, nbLines);
+    readNetworkSettings(testNN);
     /*
       int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
-      fillEntryVector(text, entryVector,
+      fillEntryVector(textImage, entryVector,
       getCharNb(0, blocks, nbLines),
       getLineNb(0, blocks, nbLines));
       computeOutput(testNN, entryVector);
       printOutput(testNN);
       free(entryVector);
     */
+    
+      //saveNetworkSettings(testNN);
+      //readNetworkSettings(testNN);
+
     char* chars = NULL;
     chars = malloc(nbLines * 200 * sizeof(char));
     for(int i = 0; i < 200 * nbLines; i++)
