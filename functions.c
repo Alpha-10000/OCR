@@ -10,6 +10,7 @@
 #include "gui.h"
 #include "rotation.h"
 #include "save.h"
+#include "angle.h"
 
 SDL_Surface *copySurface(SDL_Surface *surface)
 {
