@@ -10,9 +10,10 @@ SDL_Surface* rotate(SDL_Surface *old, double angle)
     int h0 = old->h, w0 = old->w;
     double cosA = cos(angle * PI / 180);
     double sinA = sin(angle * PI / 180);
-    int w = w0 * cosA + h0 * sinA;
-    int h = h0 * cosA + w0 * sinA;
-    double xc = w0/2, yc = h0/2;
+    int w = w0 * abs(cosA) + h0 * abs(sinA);
+    int h = h0 * abs(cosA) + w0 * abs(sinA);
+    double x0c = w0/2, y0c = h0/2;
+    double xc = w/2, yc = h/2;
 
     SDL_Surface *new = SDL_CreateRGBSurface(0, w, h, old->format->BitsPerPixel,
                                             0,0,0,0);
@@ -23,8 +24,8 @@ SDL_Surface* rotate(SDL_Surface *old, double angle)
     {
         for (int x = 0; x < w; x++)
         {
-            int x0 = (cosA * (x - xc) + sinA * (y - yc)) + xc;
-            int y0 = (-sinA * (x - xc) + cosA * (y - yc)) + yc;
+            int x0 = (cosA * (x - xc) + sinA * (y - yc)) + x0c;
+            int y0 = (-sinA * (x - xc) + cosA * (y - yc)) + y0c;
             
             if (x0 >= 0 && x0 < w0 && y0 >= 0 && y0 < h0)
             {
