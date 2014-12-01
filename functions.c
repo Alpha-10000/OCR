@@ -62,6 +62,10 @@ void cb_process(GtkWidget *widget, gpointer data)
       fprintf(stderr, "Error while loading SDL Surface\n");
       exit(EXIT_FAILURE);
     }
+    
+    SDL_Surface *swp = textImage;
+    textImage = rotate(textImage, 90);
+    SDL_FreeSurface(swp);
 
     greyScale(textImage);
     ///noiseRemove(textImage);

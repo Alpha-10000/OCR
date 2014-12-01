@@ -5,14 +5,14 @@
 
 #define PI 3.14159265
 
-SDL_Surface*  rotate(SDL_Surface *old, double angle)
+SDL_Surface* rotate(SDL_Surface *old, double angle)
 {
     int h0 = old->h, w0 = old->w;
     double cosA = cos(angle * PI / 180);
     double sinA = sin(angle * PI / 180);
-    int w = (w0 * cosA + h0 * sinA);
-    int h = (h0 * cosA+ w0 * sinA);
-    int xc = w0/2, yc = h0/2;
+    int w = w0 * cosA + h0 * sinA;
+    int h = h0 * cosA + w0 * sinA;
+    double xc = w0/2, yc = h0/2;
 
     SDL_Surface *new = SDL_CreateRGBSurface(0, w, h, old->format->BitsPerPixel,
                                             0,0,0,0);
