@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
+#include <gtkspell/gtkspell.h>
+#include <string.h>
 #include "filters.h"
 #include "functions.h"
 #include "gui.h"
@@ -123,6 +125,20 @@ void cb_save(GtkWidget *widget, gpointer data)
   (void)widget;
 }
 
+void cb_lang(GtkWidget *widget, gpointer data)
+{
+  Zone *zone = (Zone*)data;
+  const gchar *lang = NULL;
+  lang = gtk_label_get_label(GTK_LABEL(GTK_BIN(widget)->child));
+  GtkSpell *spell = NULL;
+  spell = gtkspell_get_from_text_view(GTK_TEXT_VIEW(zone->text));
+  if(strncmp(lang, "English", 7) == 0)
+    gtkspell_set_language(spell, "en_US", NULL);
+  if(strncmp(lang, "Français", 8) == 0)
+    gtkspell_set_language(spell, "fr_FR", NULL);
+  gtkspell_recheck_all(spell);
+}
+
 GtkWidget *guiInit(void)
 {
   GtkWidget *mainWindow = NULL;
@@ -145,28 +161,23 @@ void initMenu(GtkWidget *box, Zone *zone)
   GtkWidget *menuBar = NULL;
   menuBar = gtk_menu_bar_new();
 
-  /*Menu 1*/
+  /*Menu*/
   GtkWidget *menu = NULL;
   menu = gtk_menu_new();
   /*Menu items*/
   GtkWidget *menuItem = NULL;
-  menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
+  menuItem = gtk_menu_item_new_with_label("Open");
   g_signal_connect(G_OBJECT(menuItem), "activate", G_CALLBACK(cb_open), zone);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
-  menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_EXECUTE, NULL);
-  g_signal_connect(G_OBJECT(menuItem), "activate",
-		   G_CALLBACK(cb_process), zone);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
-
-  menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
+  menuItem = gtk_menu_item_new_with_label("Save");
   g_signal_connect(G_OBJECT(menuItem), "activate", G_CALLBACK(cb_save), zone);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
   menuItem = gtk_separator_menu_item_new();
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
-  menuItem = gtk_image_menu_item_new_from_stock(GTK_STOCK_QUIT, NULL);
+  menuItem = gtk_menu_item_new_with_label("Quit");
   g_signal_connect(G_OBJECT(menuItem), "activate", G_CALLBACK(cb_quit), NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
   /*Submenu*/
@@ -176,7 +187,40 @@ void initMenu(GtkWidget *box, Zone *zone)
   /*Add to menu bar*/
   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar), menuItem);
 
-  /*Menu 2*/
+
+  /*Menu*/
+  menu = gtk_menu_new();
+  /*Menu items*/
+  menuItem = gtk_menu_item_new_with_label("Process");
+  g_signal_connect(G_OBJECT(menuItem), "activate",
+		   G_CALLBACK(cb_process), zone);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
+
+  GtkWidget *lang = gtk_menu_new();
+  GSList *list = NULL;
+  menuItem = gtk_radio_menu_item_new_with_label(NULL, "English");
+  gtk_menu_shell_append(GTK_MENU_SHELL(lang), menuItem);
+  list = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(menuItem));
+  g_signal_connect(G_OBJECT(menuItem), "activate", G_CALLBACK(cb_lang), zone);
+
+  menuItem = gtk_radio_menu_item_new_with_label(list, "Français");
+  gtk_menu_shell_append(GTK_MENU_SHELL(lang), menuItem);
+  list = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(menuItem));
+  g_signal_connect(G_OBJECT(menuItem) ,"activate", G_CALLBACK(cb_lang), zone);
+
+  menuItem = gtk_menu_item_new_with_label("Lang");
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuItem), lang);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
+
+  /*Submenu*/
+  menuItem = gtk_menu_item_new_with_label("Edit");
+  /*Link menu items*/
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuItem), menu);
+  /*Add to menuBar*/
+  gtk_menu_shell_append(GTK_MENU_SHELL(menuBar), menuItem);
+
+
+  /*Menu*/
   menu = gtk_menu_new();
   /*Menu items*/
   menuItem = gtk_menu_item_new_with_label("Help");

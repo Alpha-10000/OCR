@@ -3,6 +3,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <gtk/gtk.h>
+#include <gtkspell/gtkspell.h>
 #include "gui.h"
 #include "functions.h"
 
@@ -12,14 +13,15 @@ int main(int argc, char *argv[])
 
   gtk_init(&argc, &argv);
   GtkWidget *mainWindow = guiInit();
-  gtk_window_maximize(GTK_WINDOW (mainWindow));
+  gtk_window_maximize(GTK_WINDOW(mainWindow));
   gtk_window_set_title(GTK_WINDOW(mainWindow), "OCRulus");
 
   //Image and Text
   Zone *zone = malloc(sizeof(struct Zone*));
   zone->image = gtk_image_new();
   zone->text = gtk_text_view_new();
-
+  GtkSpell *spell = gtkspell_new_attach(GTK_TEXT_VIEW(zone->text), NULL, NULL);
+  gtkspell_recheck_all(spell);
   //All Widgets
   GtkWidget *mainBox = initMainBox(mainWindow);
   initToolBar(mainBox, zone);
