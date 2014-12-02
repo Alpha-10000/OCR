@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "filters.h"
-#define max(a,b) (a>=b?a:b)
 #define PI 3.14159265358979323846
 
 int houghHist(SDL_Surface *surface)
@@ -31,10 +30,10 @@ int houghHist(SDL_Surface *surface)
                 int rho;
                 double teta;
                 //parcours de tous les angles du pixel noir
-                for (int indexteta = 0; indexteta<180; indexteta++)
+                for (int indexteta = 0; indexteta < 180; indexteta++)
                 {
                     //transformation en coordonnées polaires
-                    teta = (indexteta/180)*PI;
+                    teta = (indexteta / 180)*PI;
                     rho = x * cos(teta) + y * sin(teta);
                     //incrémentation de la case correspondante dans la matrice
                     hough_mat[rho][indexteta]++;
@@ -42,7 +41,20 @@ int houghHist(SDL_Surface *surface)
             }
         }
     }
-    
     SDL_UnlockSurface(surface);
-    return 0;
+    	int max = 0, winteta = 0;
+	for (int r = 0; r < maxrho; r++)
+	{
+		for (int t = 0; t < 180; t++)
+		{
+			if (hough_mat[r][t] > max)
+			{
+				max = hough_mat[r][t];
+				winteta = t;
+			}
+		}
+	}	
+    return winteta;
 }
+
+//XX Il faut free !!!!!

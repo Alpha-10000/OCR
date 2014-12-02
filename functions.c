@@ -10,114 +10,119 @@
 #include "gui.h"
 #include "rotation.h"
 #include "save.h"
+#include "angle.h"
 
 SDL_Surface *copySurface(SDL_Surface *surface)
 {
-  SDL_Surface *copy = NULL;
-  copy = SDL_CreateRGBSurface(
-    SDL_HWSURFACE, surface->w, surface->h, 32,
-    surface->format->Rmask, surface->format->Gmask,
-    surface->format->Bmask, surface->format->Amask);
-  if(surface == NULL || copy == NULL)
-    return NULL;
-  SDL_FreeSurface(copy);
-  copy = NULL;
-  return SDL_DisplayFormatAlpha(surface);
+    SDL_Surface *copy = NULL;
+    copy = SDL_CreateRGBSurface(
+            SDL_HWSURFACE, surface->w, surface->h, 32,
+            surface->format->Rmask, surface->format->Gmask,
+            surface->format->Bmask, surface->format->Amask);
+    if(surface == NULL || copy == NULL)
+        return NULL;
+    SDL_FreeSurface(copy);
+    copy = NULL;
+    return SDL_DisplayFormatAlpha(surface);
 }
 void sortArray(Uint8 array[], int size)
 {
-  for(int i = 0; i < size; i++)
-  {
-    Uint8 temp = array[i];
-    int j = i;
-    while(j >= 0 && array[j-1] > temp)
+    for(int i = 0; i < size; i++)
     {
-      array[j] = array[j-1];
-      j--;
+        Uint8 temp = array[i];
+        int j = i;
+        while(j >= 0 && array[j-1] > temp)
+        {
+            array[j] = array[j-1];
+            j--;
+        }
+        array[j] = temp;
     }
-    array[j] = temp;
-  }
 }
 
 void printAllocError(void)
 {
-  printf("Error : alloc fail");
-  exit(EXIT_FAILURE);
+    printf("Error : alloc fail");
+    exit(EXIT_FAILURE);
 }
 
 void cb_process(GtkWidget *widget, gpointer data)
 {
-  Zone *zone = (Zone*)data;
-  GtkWidget * image = NULL;
-  image = GTK_WIDGET(zone->image);
-  GdkPixbuf *pixBuf = NULL;
-  pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(image));
-  if(pixBuf)
-  {
-    gdk_pixbuf_save(pixBuf, "data.bmp", "bmp", NULL, NULL, NULL);
-    SDL_Surface *textImage = NULL;
-    textImage = IMG_Load("data.bmp");
-    if(textImage == NULL)
+    Zone *zone = (Zone*)data;
+    GtkWidget * image = NULL;
+    image = GTK_WIDGET(zone->image);
+    GdkPixbuf *pixBuf = NULL;
+    pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(image));
+    if(pixBuf)
     {
-      fprintf(stderr, "Error while loading SDL Surface\n");
-      exit(EXIT_FAILURE);
+        gdk_pixbuf_save(pixBuf, "data.bmp", "bmp", NULL, NULL, NULL);
+        SDL_Surface *textImage = NULL;
+        textImage = IMG_Load("data.bmp");
+        if(textImage == NULL)
+        {
+            fprintf(stderr, "Error while loading SDL Surface\n");
+            exit(EXIT_FAILURE);
+        }
+
+        SDL_Surface *swp = textImage;
+        textImage = rotate(textImage, 90);
+        SDL_FreeSurface(swp);
+
+        greyScale(textImage);
+        ///noiseRemove(textImage);
+        binarize(textImage);
+
+        pixBuf = loadPixBuf(textImage);
+        gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
+
+        int nbLines;
+        Block *blocks = findBlocks(textImage, &nbLines);
+        //print_blocks(blocks, nbLines);
+        findChars(textImage, blocks, nbLines);
+        drawLinesChars(textImage, blocks, nbLines);
+        ///SDL_Surface *resized = NULL;
+        textImage = resizeChars(textImage, blocks, nbLines);
+        //Neural Network tests
+        network *testNN = initNetwork(3,30);
+        //learnNetwork(testNN, blocks, textImage, nbLines);
+        readNetworkSettings(testNN);
+        /*
+           int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
+           fillEntryVector(textImage, entryVector,
+           getCharNb(0, blocks, nbLines),
+           getLineNb(0, blocks, nbLines));
+           computeOutput(testNN, entryVector);
+           printOutput(testNN);
+           free(entryVector);
+         */
+
+        //saveNetworkSettings(testNN);
+        //readNetworkSettings(testNN);
+
+        char* chars = NULL;
+        chars = malloc(nbLines * 200 * sizeof(char));
+        for(int i = 0; i < 200 * nbLines; i++)
+            chars[i] = '\0';
+        if(chars)
+        {
+            chars = readText(testNN, textImage, blocks, nbLines, chars);
+            freeNetwork(testNN);
+            freeBlocks(blocks, nbLines);
+            GtkTextBuffer *textBuffer;
+            textBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(zone->text));
+
+            GtkTextIter start;
+            GtkTextIter end;
+            gtk_text_buffer_get_start_iter(textBuffer, &start);
+            gtk_text_buffer_get_end_iter(textBuffer, &end);
+            gtk_text_buffer_delete(textBuffer, &start, &end);
+            gchar *text = NULL;
+            text = g_locale_to_utf8(chars, -1, NULL, NULL, NULL);
+            if(text)
+                gtk_text_buffer_insert(textBuffer, &end, chars, -1);
+            (void)widget;
+            SDL_FreeSurface(textImage);
+            free(chars);
+        }
     }
-
-    greyScale(textImage);
-    ///noiseRemove(textImage);
-    binarize(textImage);
-
-    pixBuf = loadPixBuf(textImage);
-    gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
-
-    int nbLines;
-    Block *blocks = findBlocks(textImage, &nbLines);
-    //print_blocks(blocks, nbLines);
-    findChars(textImage, blocks, nbLines);
-    drawLinesChars(textImage, blocks, nbLines);
-    ///SDL_Surface *resized = NULL;
-    textImage = resizeChars(textImage, blocks, nbLines);
-    //Neural Network tests
-    network *testNN = initNetwork(3,30);
-    //learnNetwork(testNN, blocks, textImage, nbLines);
-    readNetworkSettings(testNN);
-    /*
-      int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
-      fillEntryVector(textImage, entryVector,
-      getCharNb(0, blocks, nbLines),
-      getLineNb(0, blocks, nbLines));
-      computeOutput(testNN, entryVector);
-      printOutput(testNN);
-      free(entryVector);
-    */
-
-      //saveNetworkSettings(testNN);
-      //readNetworkSettings(testNN);
-
-    char* chars = NULL;
-    chars = malloc(nbLines * 200 * sizeof(char));
-    for(int i = 0; i < 200 * nbLines; i++)
-      chars[i] = '\0';
-    if(chars)
-    {
-      chars = readText(testNN, textImage, blocks, nbLines, chars);
-      freeNetwork(testNN);
-      freeBlocks(blocks, nbLines);
-      GtkTextBuffer *textBuffer;
-      textBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(zone->text));
-
-      GtkTextIter start;
-      GtkTextIter end;
-      gtk_text_buffer_get_start_iter(textBuffer, &start);
-      gtk_text_buffer_get_end_iter(textBuffer, &end);
-      gtk_text_buffer_delete(textBuffer, &start, &end);
-      gchar *text = NULL;
-      text = g_locale_to_utf8(chars, -1, NULL, NULL, NULL);
-      if(text)
-	gtk_text_buffer_insert(textBuffer, &end, chars, -1);
-      (void)widget;
-      SDL_FreeSurface(textImage);
-      free(chars);
-    }
-  }
 }
