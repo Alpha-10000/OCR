@@ -20,12 +20,12 @@ GdkPixbuf *loadPixBuf(SDL_Surface *surface)
   GError **error = NULL;
   GdkPixbuf *pixBuf = NULL;
   pixBuf = gdk_pixbuf_new_from_file("data.bmp", error);
-  GdkPixbuf *miniBuf = NULL;
+  /*GdkPixbuf *miniBuf = NULL;
   miniBuf = gdk_pixbuf_scale_simple(pixBuf,
 				    gdk_pixbuf_get_width(pixBuf)/2,
 				    gdk_pixbuf_get_height(pixBuf)/2,
-				    GDK_INTERP_NEAREST);
-  return miniBuf;
+				    GDK_INTERP_NEAREST);*/
+  return pixBuf;
 }
 
 void cb_open(GtkWidget *widget, gpointer data)

@@ -141,6 +141,7 @@ void noiseRemove(SDL_Surface *surface)
     SDL_UnlockSurface(copy);
     SDL_UnlockSurface(surface);
   }
+  SDL_FreeSurface(copy);
 }
 
 void binarize(SDL_Surface *surface)
@@ -217,4 +218,5 @@ void binarize(SDL_Surface *surface)
     SDL_UnlockSurface(copy);
     SDL_UnlockSurface(surface);
   }
+  SDL_FreeSurface(copy);
 }

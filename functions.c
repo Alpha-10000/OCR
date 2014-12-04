@@ -64,12 +64,12 @@ void cb_process(GtkWidget *widget, gpointer data)
             exit(EXIT_FAILURE);
         }
 
-        SDL_Surface *swp = textImage;
+        /*SDL_Surface *swp = textImage;
         textImage = rotate(textImage, 90);
-        SDL_FreeSurface(swp);
+        SDL_FreeSurface(swp);*/
 
         greyScale(textImage);
-        ///noiseRemove(textImage);
+	noiseRemove(textImage);
         binarize(textImage);
 
         pixBuf = loadPixBuf(textImage);
