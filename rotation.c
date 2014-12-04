@@ -5,13 +5,18 @@
 
 #define PI 3.1415
 
+
+double absD(double x)
+{
+    return x < 0 ? -x : x;
+}
 SDL_Surface* rotate(SDL_Surface *old, double angle)
 {
     double h0 = old->h, w0 = old->w;
     double cosA = cos(angle * PI / 180);
     double sinA = sin(angle * PI / 180);
-    int w = w0 * cosA + h0 * sinA;
-    int h = h0 * cosA + w0 * sinA;
+    int w = w0 * absD(cosA) + h0 * absD(sinA);
+    int h = h0 * absD(cosA) + w0 * absD(sinA);
     int x0c = w0/2, y0c = h0/2;
     int xc = w/2, yc = h/2;
 
