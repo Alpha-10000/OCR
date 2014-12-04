@@ -74,6 +74,7 @@ Block *findBlocks(SDL_Surface *surface, int *nbLines)
     if (blocks == NULL){
         printAllocError();
     }
+
     // Bool -> on a line ?
     // threshold at which we consider a line pixel as a part of a text line
     int onLine = 0, threshold = 1, j = 0 /*, spaceTresh = 10*/;
@@ -105,7 +106,7 @@ Block *findBlocks(SDL_Surface *surface, int *nbLines)
             {
                 //Line reached end
                 onLine = 0;
-                blocks[j].line.h = i - blocks[j].line.y;
+                blocks[j].line.h = i - blocks[j].line.y + 1;
                 j++;
             }
         }
@@ -188,6 +189,7 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
         Uint16 hist[blocks[cur_Line].line.w];
         blocks[cur_Line].nbChars = horizontalHist(surface, hist,
                 &blocks[cur_Line]);
+        //printf("line=%d nbchars=%d\n", cur_Line, blocks[cur_Line].nbChars);
 
         // Testing
         //print_tab(hist, blocks[cur_Line].line.w);
@@ -195,6 +197,13 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
         // Create chars array
         blocks[cur_Line].chars = malloc(blocks[cur_Line].nbChars *
                 sizeof(SDL_Rect));
+        for (int i = 0; i < blocks[cur_Line].nbChars; i++)
+        {
+            blocks[cur_Line].chars[i].x=0;
+            blocks[cur_Line].chars[i].y=0;
+            blocks[cur_Line].chars[i].w=0;
+            blocks[cur_Line].chars[i].h=0;
+        }
 
         // Bool -> on a char ?
         // threshold at which we consider a line pixel as a part of a char
@@ -305,8 +314,8 @@ SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
             maxCharsPerLine = blocks[i].nbChars;
     }
     SDL_Surface *copy = SDL_CreateRGBSurface(0,
-            maxCharsPerLine*resolution,
-            nbLines*resolution+1,
+            maxCharsPerLine*resolution+1,
+            nbLines*resolution,
             surface->format->BitsPerPixel,0,0,0,0);
 
     SDL_LockSurface(surface);
@@ -320,13 +329,14 @@ SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
             setPixel(copy, i, j, pixel);
         }
     }
+
     for (int nbLine = 0; nbLine < nbLines; nbLine++)
     {
         for (int charn = 0; charn < blocks[nbLine].nbChars; charn++)
         {
-            for (int x = 0; x <= resolution; x++)
+            for (int x = 0; x < resolution; x++)
             {
-                for (int y = 0; y <= resolution; y++)
+                for (int y = 0; y < resolution; y++)
                 {
                     Uint32 pixel = getPixel(surface,
                             blocks[nbLine].chars[charn].x + x*blocks[nbLine].chars[charn].w/resolution,

@@ -69,33 +69,45 @@ void cb_process(GtkWidget *widget, gpointer data)
         SDL_FreeSurface(swp);*/
 
         greyScale(textImage);
-	noiseRemove(textImage);
+        //noiseRemove(textImage);
         binarize(textImage);
 
-        pixBuf = loadPixBuf(textImage);
-        gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
+        //pixBuf = loadPixBuf(textImage);
+        //gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
 
         int nbLines;
         Block *blocks = findBlocks(textImage, &nbLines);
         //print_blocks(blocks, nbLines);
         findChars(textImage, blocks, nbLines);
-        drawLinesChars(textImage, blocks, nbLines);
-        ///SDL_Surface *resized = NULL;
-        textImage = resizeChars(textImage, blocks, nbLines);
-        //Neural Network tests
-        network *testNN = initNetwork(3,30);
-        //learnNetwork(testNN, blocks, textImage, nbLines);
-        readNetworkSettings(testNN);
-        /*
-           int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
-           fillEntryVector(textImage, entryVector,
-           getCharNb(0, blocks, nbLines),
-           getLineNb(0, blocks, nbLines));
-           computeOutput(testNN, entryVector);
-           printOutput(testNN);
-           free(entryVector);
-         */
+        //drawLinesChars(textImage, blocks, nbLines);
 
+        textImage = resizeChars(textImage, blocks, nbLines);
+
+        network *testNN = initNetwork(3,40);
+        readNetworkSettings(testNN);
+        //learnNetwork(testNN, blocks, textImage, nbLines);
+
+        pixBuf = loadPixBuf(textImage);
+        gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
+        
+        /*
+        int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
+        fillEntryVector(textImage, entryVector,
+        getCharNb(0, blocks, nbLines),
+        getLineNb(0, blocks, nbLines));
+        computeOutput(testNN, entryVector);
+        printOutput(testNN);
+        free(entryVector);
+        
+
+         int line = 6;
+         for (int i = 0; i < blocks[line].nbChars; i++)
+         {
+           printf("x=%d  ", blocks[line].chars[i].x);
+           printf("y=%d  ", blocks[line].chars[i].y);
+           printf("w=%d  ", blocks[line].chars[i].w);
+           printf("h=%d\n", blocks[line].chars[i].h);
+         }*/
         //saveNetworkSettings(testNN);
         //readNetworkSettings(testNN);
 

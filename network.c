@@ -106,13 +106,13 @@ char *readText(network *network, SDL_Surface *surface,
       s[0] = c;
       s[1] = '\0';
       strcat(text, s);
-      printf("%s", s);
+      //printf("%s", s);
       currentChar++;
     }
     strcat(text, "\n");
-    printf("\n");
+    //printf("\n");
   }
-  printf("\n");
+  //printf("\n");
   strcat(text, "\n");
   free(entryVector);
   return text;
@@ -164,13 +164,14 @@ int getCharNb(int entry, Block* blocks, int nbLines)
 
 void learnNetwork(network *network, Block *blocks, SDL_Surface *surface, int nbLines)
 {
-  //Assuming the text is abcd....xyzABCD...XYZ
   int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
-  double learnCoef = 1.5;
+  double learnCoef = 1;
+  int policeNumber = 5;
 
-  for (int nbTest = 0; nbTest < 2000; nbTest++)
+  for (int nbTest = 0; nbTest < 200; nbTest++)
   {
-    for (int currentTest = 0; currentTest < NN_NBOUTPUTS; currentTest++)
+    printf("Test %d/200\n", nbTest+1);
+    for (int currentTest = 0; currentTest < NN_NBOUTPUTS*policeNumber; currentTest++)
     {
       fillEntryVector(surface, entryVector,
         getCharNb(currentTest, blocks, nbLines),
@@ -182,7 +183,7 @@ void learnNetwork(network *network, Block *blocks, SDL_Surface *surface, int nbL
       {
        network->layers[network->nbLayers-1]->neurons[i]->delta =
        network->output[i]*(1-network->output[i])*
-       ((currentTest == i ? 1 : 0)-network->output[i]);
+       (((currentTest % NN_NBOUTPUTS) == i ? 1 : 0)-network->output[i]);
      }
      for (int i = network->nbLayers-2; i >= 0; i--)
      {
