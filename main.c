@@ -22,14 +22,13 @@ int main(int argc, char *argv[])
   zone->text = gtk_text_view_new();
   GtkSpell *spell = gtkspell_new_attach(GTK_TEXT_VIEW(zone->text), NULL, NULL);
   gtkspell_recheck_all(spell);
+
   //All Widgets
   GtkWidget *mainBox = initMainBox(mainWindow);
-  initToolBar(mainBox, zone);
   initMenu(mainBox, zone);
+  initToolBar(mainBox, zone);
 
-  GtkWidget *mainZone = getMainZone(mainBox);
-  gtk_box_pack_start(GTK_BOX(mainZone), zone->image, FALSE, FALSE, 0);
-  gtk_box_pack_end(GTK_BOX(mainZone), zone->text, TRUE, TRUE, 0);
+  setMainZone(mainBox, zone);
   gtk_widget_show_all(mainWindow);
 
   /*------Init SDL------*/

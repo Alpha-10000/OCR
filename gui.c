@@ -257,10 +257,22 @@ void initToolBar(GtkWidget *box, Zone *zone)
   gtk_toolbar_set_icon_size(GTK_TOOLBAR(toolBar), GTK_ICON_SIZE_SMALL_TOOLBAR);
 }
 
-GtkWidget *getMainZone(GtkWidget *box)
+void setMainZone(GtkWidget *box, Zone *zone)
 {
-  GtkWidget *zone = NULL;
-  zone = gtk_hbox_new(FALSE, 0);
-  gtk_box_pack_end(GTK_BOX(box), zone, TRUE, TRUE, 0);
-  return zone;
+  GtkWidget *mainZone = NULL;
+  mainZone = gtk_hbox_new(FALSE, 0);
+  GtkWidget *separator = NULL;
+  separator = gtk_vseparator_new();
+
+  GtkWidget *scroll = NULL;
+  scroll = gtk_scrolled_window_new(NULL, NULL);
+  gtk_container_add(GTK_CONTAINER(scroll), zone->text);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  gtk_box_pack_start(GTK_BOX(mainZone), zone->image, FALSE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(mainZone), separator, FALSE, FALSE, 2);
+  gtk_box_pack_start(GTK_BOX(mainZone), scroll, TRUE, TRUE, 0);
+
+  gtk_box_pack_end(GTK_BOX(box), mainZone, TRUE, TRUE, 0);
 }

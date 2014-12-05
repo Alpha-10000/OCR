@@ -15,6 +15,6 @@ GtkWidget *guiInit(void);
 GtkWidget *initMainBox(GtkWidget *window);
 void initMenu(GtkWidget* box, Zone *zone);
 void initToolBar(GtkWidget *box, Zone *zone);
-GtkWidget *getMainZone(GtkWidget *box);
+void setMainZone(GtkWidget *box, Zone *zone);
 
 #endif
