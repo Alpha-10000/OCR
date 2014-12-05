@@ -23,6 +23,7 @@ extern const int NN_NBOUTPUTS;
 network *initNetwork(int nbLayers, int nbNeurons);
 void printEverything(network *network);
 void printOutput(network *network);
+char numToChar(int entry);
 char getNNcharOutput(network *network);
 char *readText(network *network, SDL_Surface *surface,
 	       Block *blocks, int nbLines, char *text);

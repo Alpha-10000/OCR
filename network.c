@@ -59,9 +59,18 @@ void printOutput(network *network)
       maxvalue = network->output[i];
       toBeConverted = i;
     }
-    printf("final output (%d)=%f\n", i, network->output[i]);
+    printf("final output (%c)=%f\n", numToChar(i), network->output[i]);
   }
   printf("\nmax value = %f\ntoBeConverted = %d\n", maxvalue, toBeConverted);
+}
+
+char numToChar(int entry)
+{
+    if (entry == 0)
+    entry = 33;
+  else
+    entry += 34;
+  return (char)entry;
 }
 
 char getNNcharOutput(network *network)
@@ -93,9 +102,9 @@ char *readText(network *network, SDL_Surface *surface,
   {
     for (int j = 0; j < blocks[i].nbChars; j++)
     {
-      //printf("Reading char(%d) line(%d) pos(%d) : ", currentChar,
-      //  getLineNb(currentChar, blocks, nbLines),
-      //  getCharNb(currentChar, blocks, nbLines));
+      /*printf("Reading char(%d) line(%d) pos(%d) : ", currentChar,
+        getLineNb(currentChar, blocks, nbLines),
+        getCharNb(currentChar, blocks, nbLines));*/
       fillEntryVector(surface, entryVector,
 		      getCharNb(currentChar, blocks, nbLines),
 		      getLineNb(currentChar, blocks, nbLines));
@@ -107,6 +116,16 @@ char *readText(network *network, SDL_Surface *surface,
       s[1] = '\0';
       strcat(text, s);
       //printf("%s", s);
+
+      //Adding spaces
+      for (int l = 0; l < blocks[i].spaces[j]; l++)
+      {
+        char spaces[2];
+        spaces[0] = ' ';
+        spaces[1] = '\0';
+        strcat(text, spaces);
+      }
+
       currentChar++;
     }
     strcat(text, "\n");

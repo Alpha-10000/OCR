@@ -72,36 +72,35 @@ void cb_process(GtkWidget *widget, gpointer data)
         //noiseRemove(textImage);
         binarize(textImage);
 
-        //pixBuf = loadPixBuf(textImage);
-        //gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
+        pixBuf = loadPixBuf(textImage);
+        gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
 
         int nbLines;
         Block *blocks = findBlocks(textImage, &nbLines);
         //print_blocks(blocks, nbLines);
         findChars(textImage, blocks, nbLines);
         detectSpaces(blocks, nbLines);
-        printSpaces(blocks, nbLines);
+        //printSpaces(blocks, nbLines);
         //drawLinesChars(textImage, blocks, nbLines);
-
+        
         textImage = resizeChars(textImage, blocks, nbLines);
 
         network *testNN = initNetwork(3,40);
         readNetworkSettings(testNN);
         //learnNetwork(testNN, blocks, textImage, nbLines);
 
-        pixBuf = loadPixBuf(textImage);
-        gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
-
+        //pixBuf = loadPixBuf(textImage);
+        //gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
         /*
            int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
            fillEntryVector(textImage, entryVector,
-           getCharNb(0, blocks, nbLines),
-           getLineNb(0, blocks, nbLines));
+           getCharNb(15, blocks, nbLines),
+           getLineNb(15, blocks, nbLines));
            computeOutput(testNN, entryVector);
            printOutput(testNN);
            free(entryVector);
 
-
+           
            int line = 6;
            for (int i = 0; i < blocks[line].nbChars; i++)
            {

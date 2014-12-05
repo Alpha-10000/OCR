@@ -279,7 +279,7 @@ SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
 
 void detectSpaces(Block *b, int nbLine)
 {
-    int spaceTresh = 4;
+    int spaceTresh = 3;
     for (int l = 0; l < nbLine; l++)
     {
         for (int c = 0; c < b[l].nbChars - 1; c++)
