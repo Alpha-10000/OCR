@@ -8,7 +8,7 @@
 #include "network.h"
 
 // Create vertical histograme of surface
-void verticalHist(SDL_Surface *surface, Uint16 *hist, int *nbLines)
+void verticalHist(SDL_Surface *surface, int *hist, int *nbLines)
 {
     // Needed for getPixel
     SDL_LockSurface(surface);
@@ -46,7 +46,7 @@ void verticalHist(SDL_Surface *surface, Uint16 *hist, int *nbLines)
 }
 
 // Create horizontal histogram of line
-int horizontalHist(SDL_Surface *surface, Uint16 *hist, Block *block)
+int horizontalHist(SDL_Surface *surface, int *hist, Block *block)
 {
     //Needed for GetPixel
     SDL_LockSurface(surface);
@@ -87,7 +87,7 @@ int horizontalHist(SDL_Surface *surface, Uint16 *hist, Block *block)
 Block *findBlocks(SDL_Surface *surface, int *nbLines)
 {
     // Get surface vertical hist'
-    Uint16 hist[surface->h];
+    int hist[surface->h];
     verticalHist(surface, hist, nbLines);
 
     // Create lines array
@@ -129,7 +129,7 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
     for(int cur_Line = 0; cur_Line < nbLines; cur_Line++)
     {
         // Vertical hist for this line
-        Uint16 hist[blocks[cur_Line].line.w];
+        int hist[blocks[cur_Line].line.w];
         blocks[cur_Line].nbChars = horizontalHist(surface, hist,
                 &blocks[cur_Line]);
 
@@ -139,27 +139,19 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
         // Create chars array
         blocks[cur_Line].chars = malloc(blocks[cur_Line].nbChars *
                 sizeof(SDL_Rect));
+        blocks[cur_Line].spaces = malloc(blocks[cur_Line].nbChars *
+                sizeof(int));
         initChars(blocks, cur_Line);
 
         // Bool -> on a char ?
         // threshold at which we consider a line pixel as a part of a char
-        int onChar = 0, threshold = 1, cur_Char = 0 /*, spaceTresh = 10*/;
+        int onChar = 0, threshold = 1, cur_Char = 0;
         for (int k = 0; k < blocks[cur_Line].line.w; k++)
         {
             if (!onChar)
             {
                 if (hist[k] >= threshold)
                 {
-
-                    // To do: add spaces array, init, handle multiple spaces
-                    /*
-                       int spaceX = blocks[cur_Line].chars[cur_Char - 1].x +
-                       blocks[cur_Line].chars[cur_Char -1].w;
-                       if (k - spaceX >= spaceTresh)
-                       {
-                       spaces[cur_Char - 1]++;
-                       }
-                     */
                     // New char begins
                     onChar = 1;
                     blocks[cur_Line].chars[cur_Char].x = k;
@@ -285,6 +277,21 @@ SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
     return copy;
 }
 
+void detectSpaces(Block *b, int nbLine)
+{
+    int spaceTresh = 4;
+    for (int l = 0; l < nbLine; l++)
+    {
+        for (int c = 0; c < b[l].nbChars - 1; c++)
+        {
+            int space = b[l].chars[c + 1].x - b[l].chars[c].x - b[l].chars[c].w;  
+            if (space >= spaceTresh)
+                b[l].spaces[c] = space / spaceTresh;
+        }
+    }
+}
+
+// Drawing functions
 // Draw an horizontal red line from x of length w at y on surface
 void drawHLine(SDL_Surface *surface, int x, int y, int w)
 {
@@ -326,6 +333,7 @@ void drawLinesChars(SDL_Surface *surface, Block *blocks, int nbLines)
     }
 }
 
+// Init functions
 // Init array with value
 void initArray(int *array, int size, int value)
 {
@@ -345,10 +353,11 @@ void initBlocks(Block *b, int size)
     }
 }
 
-void initChars(Block *b, int line )
+void initChars(Block *b, int line)
 {
     for (int i = 0; i < b[line].nbChars; i++)
     {
+        b[line].spaces[i] = 0;
         b[line].chars[i].x = 0;
         b[line].chars[i].y = 0;
         b[line].chars[i].w = 0;
@@ -356,8 +365,9 @@ void initChars(Block *b, int line )
     }
 }
 
+// Test functions
 // Used to check histogram
-void printTab(Uint16 *array, int size)
+void printTab(int *array, int size)
 {
     for(int i = 0; i < size; i++)
         printf("array[%d] = %d\n", i, array[i]);
@@ -374,9 +384,22 @@ void printBlocks(Block *blocks, int size)
     }
 }
 
+void printSpaces(Block *b, int size)
+{
+    for(int i = 0; i < size; i++)
+    {
+        printf("Line %d\n", i);
+        printTab(b[i].spaces, b[i].nbChars);
+    }
+}
+
+
 void freeBlocks(Block *b, int nbLines)
 {
     for (int i = 0; i < nbLines; i++)
+    {
         free(b[i].chars);
+        free(b[i].spaces);
+    }
     free(b);
 }
