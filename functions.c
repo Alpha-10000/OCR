@@ -65,8 +65,8 @@ void cb_process(GtkWidget *widget, gpointer data)
         }
 
         /*SDL_Surface *swp = textImage;
-        textImage = rotate(textImage, 90);
-        SDL_FreeSurface(swp);*/
+          textImage = rotate(textImage, 90);
+          SDL_FreeSurface(swp);*/
 
         greyScale(textImage);
         //noiseRemove(textImage);
@@ -79,6 +79,8 @@ void cb_process(GtkWidget *widget, gpointer data)
         Block *blocks = findBlocks(textImage, &nbLines);
         //print_blocks(blocks, nbLines);
         findChars(textImage, blocks, nbLines);
+        detectSpaces(blocks, nbLines);
+        printSpaces(blocks, nbLines);
         //drawLinesChars(textImage, blocks, nbLines);
 
         textImage = resizeChars(textImage, blocks, nbLines);
@@ -89,25 +91,25 @@ void cb_process(GtkWidget *widget, gpointer data)
 
         pixBuf = loadPixBuf(textImage);
         gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
-        
-        /*
-        int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
-        fillEntryVector(textImage, entryVector,
-        getCharNb(0, blocks, nbLines),
-        getLineNb(0, blocks, nbLines));
-        computeOutput(testNN, entryVector);
-        printOutput(testNN);
-        free(entryVector);
-        
 
-         int line = 6;
-         for (int i = 0; i < blocks[line].nbChars; i++)
-         {
+        /*
+           int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
+           fillEntryVector(textImage, entryVector,
+           getCharNb(0, blocks, nbLines),
+           getLineNb(0, blocks, nbLines));
+           computeOutput(testNN, entryVector);
+           printOutput(testNN);
+           free(entryVector);
+
+
+           int line = 6;
+           for (int i = 0; i < blocks[line].nbChars; i++)
+           {
            printf("x=%d  ", blocks[line].chars[i].x);
            printf("y=%d  ", blocks[line].chars[i].y);
            printf("w=%d  ", blocks[line].chars[i].w);
            printf("h=%d\n", blocks[line].chars[i].h);
-         }*/
+           }*/
         //saveNetworkSettings(testNN);
         //readNetworkSettings(testNN);
 
