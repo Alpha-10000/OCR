@@ -6,55 +6,62 @@
 #include "filters.h"
 #define PI 3.14159265358979323846
 
-int houghHist(SDL_Surface *surface)
+double toRad(double a)
 {
-    //initialisation d'une matrice [maxrho][180]
-    int maxrho = sqrt(surface->w * surface->w + surface->h * surface->h);
-    int **hough_mat = malloc(maxrho * sizeof(int*));
-
-    for (int i = 0; i < maxrho; i++)
-        hough_mat[i] = malloc(180 * sizeof(int));
-
-    //parcours de l'image
-    SDL_LockSurface(surface);
-    
-    for (int x = 0; x < surface->w; x++)
+    return a * PI / 180;
+}
+int maxTheta (int **hough, int w, int h)
+{
+    int max = 0, thetaMax = 0;
+    for (int r = 0; r < h; r++)
     {
-        for (int y = 0; y < surface->h; y++)
+        for (int t = 0; t < w; t++)
         {
-            Uint8 color;
-            SDL_GetRGB(getPixel(surface, x, y), surface->format,
-                    &color, &color, &color);
-            if (!color)
+            if (hough[r][t] > max)
             {
-                int rho;
-                double teta;
-                //parcours de tous les angles du pixel noir
-                for (int indexteta = 0; indexteta < 180; indexteta++)
-                {
-                    //transformation en coordonnées polaires
-                    teta = (indexteta / 180)*PI;
-                    rho = x * cos(teta) + y * sin(teta);
-                    //incrémentation de la case correspondante dans la matrice
-                    hough_mat[rho][indexteta]++;
-                }
+                max = hough[r][t];
+                thetaMax = t;
             }
         }
     }
-    SDL_UnlockSurface(surface);
-    	int max = 0, winteta = 0;
-	for (int r = 0; r < maxrho; r++)
-	{
-		for (int t = 0; t < 180; t++)
-		{
-			if (hough_mat[r][t] > max)
-			{
-				max = hough_mat[r][t];
-				winteta = t;
-			}
-		}
-	}	
-    return winteta;
+    return thetaMax - 90;
 }
 
-//XX Il faut free !!!!!
+int houghHist (SDL_Surface *s)
+{
+    double w = s->w, h = s->h;
+    int maxRho = sqrt(w*w + h*h);
+
+    int **hough = malloc(maxRho * 2 * sizeof(int*));
+    for (int i = 0; i < maxRho * 2; i++)
+    {
+        hough[i] = malloc(180 * sizeof(int));
+        for (int j = 0; j < 180; j++)
+            hough[i][j] = 0;
+    }
+    
+    SDL_LockSurface(s);
+    for (int y = 0; y < h; y++)
+    {
+        for (int x = 0; x < w; x++)
+        {
+            Uint8 color;
+            SDL_GetRGB(getPixel(s, x, y), s->format,
+                    &color, &color, &color);
+            if (!color)
+            {
+                for(double theta = 0; theta <= 180; theta++)
+                {
+                    double radTheta = toRad(theta);
+                    double rho = (double)x * cos(radTheta) + (double)y * sin(radTheta);
+                    hough[maxRho + (int)rho][(int)theta]++;
+
+                }
+            }
+
+        }
+    }
+    SDL_UnlockSurface(s);
+
+    return maxTheta(hough, 180, maxRho * 2);
+}
