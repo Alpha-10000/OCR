@@ -7,13 +7,6 @@
 #include "detection.h"
 #include "network.h"
 
-void freeBlocks(Block *b, int nbLines)
-{
-    for (int i = 0; i < nbLines; i++)
-        free(b[i].chars);
-    free(b);
-}
-
 // Create vertical histograme of surface
 void verticalHist(SDL_Surface *surface, Uint16 *hist, int *nbLines)
 {
@@ -50,86 +43,6 @@ void verticalHist(SDL_Surface *surface, Uint16 *hist, int *nbLines)
             onLine = 0;
     }
     SDL_UnlockSurface(surface);
-}
-
-// Draw an horizontal red line from x of length w at y on surface
-void drawHLine(SDL_Surface *surface, int x, int y, int w)
-{
-    SDL_Rect rect;
-    rect.x = x;
-    rect.w = w;
-    rect.y = y;
-    rect.h = 1;
-    SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 232, 0, 52));
-}
-
-// Return Block array containing each text line
-Block *findBlocks(SDL_Surface *surface, int *nbLines)
-{
-    // Get surface vertical hist'
-    Uint16 hist[surface->h];
-    verticalHist(surface, hist, nbLines);
-    // Create lines array
-    Block *blocks = malloc(*nbLines * sizeof(Block));
-    if (blocks == NULL){
-        printAllocError();
-    }
-
-    // Bool -> on a line ?
-    // threshold at which we consider a line pixel as a part of a text line
-    int onLine = 0, threshold = 1, j = 0 /*, spaceTresh = 10*/;
-    for (int i = 0; i < surface->h; i++)
-    {
-        if (!onLine)
-        {
-            if (hist[i] >= threshold)
-            {
-                // To do: add spaces array, init, handle multiple spaces
-                /*
-                int spaceX = blocks[cur_Line].chars[cur_Char - 1].x +
-                            blocks[cur_Line].chars[cur_Char -1].w;
-                if (k - spaceX >= spaceTresh)
-                {
-                    spaces[cur_Char - 1]++;
-                }
-                */
-                // New line begins
-                onLine = 1;
-                blocks[j].line.x = 0;
-                blocks[j].line.w = surface->w;
-                blocks[j].line.y = i;
-            }
-        }
-        else
-        {
-            if (hist[i] < threshold)
-            {
-                //Line reached end
-                onLine = 0;
-                blocks[j].line.h = i - blocks[j].line.y + 1;
-                j++;
-            }
-        }
-    }
-    return blocks;
-}
-
-// Used to check histogram
-void printTab(Uint16 *tab, int size)
-{
-    for(int i = 0; i < size; i++)
-        printf("tab[%d] = %d\n", i, tab[i]);
-}
-
-// Check find blocks
-void printBlocks(Block *blocks, int size)
-{
-    for(int i = 0; i < size; i++)
-    {
-        printf("line %d : x = %d; w = %d; y = %d; h = %d\n", i,
-                blocks[i].line.x, blocks[i].line.w,
-                blocks[i].line.y, blocks[i].line.h);
-    }
 }
 
 // Create horizontal histogram of line
@@ -170,15 +83,45 @@ int horizontalHist(SDL_Surface *surface, Uint16 *hist, Block *block)
     return nbChars;
 }
 
-//Draw a vertical blue line from y of length h at x on surface
-void drawVline (SDL_Surface *surface, int x, int y, int h)
+// Return Block array containing each text line
+Block *findBlocks(SDL_Surface *surface, int *nbLines)
 {
-    SDL_Rect rect;
-    rect.x = x;
-    rect.h = h;
-    rect.y = y;
-    rect.w = 1;
-    SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 5, 199, 206));
+    // Get surface vertical hist'
+    Uint16 hist[surface->h];
+    verticalHist(surface, hist, nbLines);
+
+    // Create lines array
+    Block *blocks = malloc(*nbLines * sizeof(Block));
+    initBlocks(blocks, *nbLines);
+
+    // Bool -> on a line ?
+    // threshold at which we consider a line pixel as a part of a text line
+    int onLine = 0, threshold = 1, j = 0;
+    for (int i = 0; i < surface->h; i++)
+    {
+        if (!onLine)
+        {
+            if (hist[i] >= threshold)
+            {
+                // New line begins
+                onLine = 1;
+                blocks[j].line.x = 0;
+                blocks[j].line.w = surface->w;
+                blocks[j].line.y = i;
+            }
+        }
+        else
+        {
+            if (hist[i] < threshold)
+            {
+                //Line reached end
+                onLine = 0;
+                blocks[j].line.h = i - blocks[j].line.y + 1;
+                j++;
+            }
+        }
+    }
+    return blocks;
 }
 
 void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
@@ -189,32 +132,35 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
         Uint16 hist[blocks[cur_Line].line.w];
         blocks[cur_Line].nbChars = horizontalHist(surface, hist,
                 &blocks[cur_Line]);
-        //printf("line=%d nbchars=%d\n", cur_Line, blocks[cur_Line].nbChars);
 
         // Testing
-        //print_tab(hist, blocks[cur_Line].line.w);
         //printf("Line %d nb chars : %d\n", cur_Line, blocks[cur_Line].nbChars);
+
         // Create chars array
         blocks[cur_Line].chars = malloc(blocks[cur_Line].nbChars *
                 sizeof(SDL_Rect));
-        for (int i = 0; i < blocks[cur_Line].nbChars; i++)
-        {
-            blocks[cur_Line].chars[i].x=0;
-            blocks[cur_Line].chars[i].y=0;
-            blocks[cur_Line].chars[i].w=0;
-            blocks[cur_Line].chars[i].h=0;
-        }
+        initChars(blocks, cur_Line);
 
         // Bool -> on a char ?
         // threshold at which we consider a line pixel as a part of a char
-        int onChar = 0, threshold = 1, cur_Char = 0;
+        int onChar = 0, threshold = 1, cur_Char = 0 /*, spaceTresh = 10*/;
         for (int k = 0; k < blocks[cur_Line].line.w; k++)
         {
             if (!onChar)
             {
                 if (hist[k] >= threshold)
                 {
-                    // New line begins
+
+                    // To do: add spaces array, init, handle multiple spaces
+                    /*
+                       int spaceX = blocks[cur_Line].chars[cur_Char - 1].x +
+                       blocks[cur_Line].chars[cur_Char -1].w;
+                       if (k - spaceX >= spaceTresh)
+                       {
+                       spaces[cur_Char - 1]++;
+                       }
+                     */
+                    // New char begins
                     onChar = 1;
                     blocks[cur_Line].chars[cur_Char].x = k;
                     blocks[cur_Line].chars[cur_Char].y = blocks[cur_Line].line.y;
@@ -225,7 +171,7 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
             {
                 if (hist[k] < threshold)
                 {
-                    //Line reached end
+                    //Char reached end
                     onChar = 0;
                     blocks[cur_Line].chars[cur_Char].w =
                         k - blocks[cur_Line].chars[cur_Char].x;
@@ -234,29 +180,11 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
                 }
             }
         }
+        // Resize line at correct left and right borders
         blocks[cur_Line].line.x = blocks[cur_Line].chars[0].x;
         blocks[cur_Line].line.w = blocks[cur_Line].chars[cur_Char - 1].x +
             blocks[cur_Line].chars[cur_Char - 1].w -
             blocks[cur_Line].line.x;
-    }
-}
-
-void drawLinesChars(SDL_Surface *surface, Block *blocks, int nbLines)
-{
-    for(int i = 0; i < nbLines; i++)
-    {
-        SDL_Rect line = blocks[i].line;
-        drawHLine(surface, line.x, line.y, line.w);
-        drawHLine(surface, line.x, line.y + line.h, line.w);
-
-        for(int j = 0; j < blocks[i].nbChars; j++)
-        {
-            SDL_Rect ch = blocks[i].chars[j];
-            drawVline(surface, ch.x, ch.y, ch.h);
-            drawVline(surface, ch.x + ch.w, ch.y, ch.h);
-            drawHLine(surface, ch.x, ch.y, ch.w);
-            drawHLine(surface, ch.x, ch.y + ch.h, ch.w);
-        }
     }
 }
 
@@ -297,8 +225,8 @@ void centerChar(SDL_Surface *surface, SDL_Rect *rect)
     SDL_UnlockSurface(surface);
     rect->x--;
     rect->y--;
-    rect->w+=2;
-    rect->h+=2;
+    rect->w += 2;
+    rect->h += 2;
 }
 
 SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
@@ -339,8 +267,10 @@ SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
                 for (int y = 0; y < resolution; y++)
                 {
                     Uint32 pixel = getPixel(surface,
-                            blocks[nbLine].chars[charn].x + x*blocks[nbLine].chars[charn].w/resolution,
-                            blocks[nbLine].chars[charn].y + y*blocks[nbLine].chars[charn].h/resolution);
+                            blocks[nbLine].chars[charn].x + 
+                            x * blocks[nbLine].chars[charn].w/resolution,
+                            blocks[nbLine].chars[charn].y + 
+                            y * blocks[nbLine].chars[charn].h/resolution);
 
                     setPixel(copy,
                             charn*resolution + x,
@@ -353,4 +283,100 @@ SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
     SDL_UnlockSurface(copy);
     SDL_UnlockSurface(surface);
     return copy;
+}
+
+// Draw an horizontal red line from x of length w at y on surface
+void drawHLine(SDL_Surface *surface, int x, int y, int w)
+{
+    SDL_Rect rect;
+    rect.x = x;
+    rect.w = w;
+    rect.y = y;
+    rect.h = 1;
+    SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 232, 0, 52));
+}
+
+//Draw a vertical blue line from y of length h at x on surface
+void drawVline (SDL_Surface *surface, int x, int y, int h)
+{
+    SDL_Rect rect;
+    rect.x = x;
+    rect.h = h;
+    rect.y = y;
+    rect.w = 1;
+    SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 5, 199, 206));
+}
+
+void drawLinesChars(SDL_Surface *surface, Block *blocks, int nbLines)
+{
+    for(int i = 0; i < nbLines; i++)
+    {
+        SDL_Rect line = blocks[i].line;
+        drawHLine(surface, line.x, line.y, line.w);
+        drawHLine(surface, line.x, line.y + line.h, line.w);
+
+        for(int j = 0; j < blocks[i].nbChars; j++)
+        {
+            SDL_Rect ch = blocks[i].chars[j];
+            drawVline(surface, ch.x, ch.y, ch.h);
+            drawVline(surface, ch.x + ch.w, ch.y, ch.h);
+            drawHLine(surface, ch.x, ch.y, ch.w);
+            drawHLine(surface, ch.x, ch.y + ch.h, ch.w);
+        }
+    }
+}
+
+// Init array with value
+void initArray(int *array, int size, int value)
+{
+    for (int i = 0; i < size; i++)
+        array[i] = value;
+}
+
+void initBlocks(Block *b, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        b[i].line.x = 0;
+        b[i].line.y = 0;
+        b[i].line.w = 0;
+        b[i].line.h = 0;
+        b[i].nbChars = 0;
+    }
+}
+
+void initChars(Block *b, int line )
+{
+    for (int i = 0; i < b[line].nbChars; i++)
+    {
+        b[line].chars[i].x = 0;
+        b[line].chars[i].y = 0;
+        b[line].chars[i].w = 0;
+        b[line].chars[i].h = 0;
+    }
+}
+
+// Used to check histogram
+void printTab(Uint16 *array, int size)
+{
+    for(int i = 0; i < size; i++)
+        printf("array[%d] = %d\n", i, array[i]);
+}
+
+// Check find blocks
+void printBlocks(Block *blocks, int size)
+{
+    for(int i = 0; i < size; i++)
+    {
+        printf("line %d : x = %d; w = %d; y = %d; h = %d\n", i,
+                blocks[i].line.x, blocks[i].line.w,
+                blocks[i].line.y, blocks[i].line.h);
+    }
+}
+
+void freeBlocks(Block *b, int nbLines)
+{
+    for (int i = 0; i < nbLines; i++)
+        free(b[i].chars);
+    free(b);
 }
