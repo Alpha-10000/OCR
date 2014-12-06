@@ -64,11 +64,11 @@ void cb_process(GtkWidget *widget, gpointer data)
             exit(EXIT_FAILURE);
         }
 
-        double angle = houghHist(textImage);
+        /*double angle = houghHist(textImage);
         printf("Angle = %f\n", angle);
         SDL_Surface *swp = textImage;
         textImage = rotate(textImage, -angle);
-        SDL_FreeSurface(swp);
+        SDL_FreeSurface(swp);*/
 
         greyScale(textImage);
         //noiseRemove(textImage);
@@ -82,6 +82,7 @@ void cb_process(GtkWidget *widget, gpointer data)
         //print_blocks(blocks, nbLines);
         findChars(textImage, blocks, nbLines);
         detectSpaces(blocks, nbLines);
+        //printMedianCharSize(blocks, nbLines);
         //printSpaces(blocks, nbLines);
         //drawLinesChars(textImage, blocks, nbLines);
 

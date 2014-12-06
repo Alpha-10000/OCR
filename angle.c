@@ -10,6 +10,7 @@ double toRad(double a)
 {
     return a * PI / 180;
 }
+
 int maxTheta (int **hough, int w, int h)
 {
     int max = 0, thetaMax = 0;

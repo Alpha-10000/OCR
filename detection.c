@@ -177,6 +177,9 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
         blocks[cur_Line].line.w = blocks[cur_Line].chars[cur_Char - 1].x +
             blocks[cur_Line].chars[cur_Char - 1].w -
             blocks[cur_Line].line.x;
+
+        //Double char
+        //doubleChars(blocks, cur_Line);
     }
 }
 
@@ -291,6 +294,59 @@ void detectSpaces(Block *b, int nbLine)
     }
 }
 
+int medianCharSize(Block *b, int line)
+{
+    int nbChars = b[line].nbChars;
+    int w[nbChars];
+    for (int i = 0; i < nbChars; i++)
+        w[i] = b[line].chars[i].w;
+
+    for (int i = 0; i < nbChars; i++)
+    {
+        int temp = w[i];
+        int j = i;
+        while (j >= 0 && w[j-1] > temp)
+        {
+            w[j] = w[j - 1];
+            j--;
+        }
+        w[j] = temp;
+    }
+
+    return w[nbChars / 2];
+}
+void doubleChars(Block *b, int line)
+{
+    int medianSize = medianCharSize(b, line);
+
+    for (int i = 0; i < b[line].nbChars; i++)
+    {
+        if (b[line].chars[i].w > medianSize)
+        {
+            int nb = b[line].chars[i].w / medianSize;
+            if (nb > 1)
+            {
+                int oldNbChars = b[line].nbChars;
+                SDL_Rect old = b[line].chars[i];
+                b[line].nbChars += nb - 1;
+                b[line].chars = realloc(b[line].chars, (b[line].nbChars
+                            * sizeof(SDL_Rect)));
+
+                for (int j = oldNbChars - 1; j > i + nb - 1; j--)
+                    b[line].chars[j + nb - 1] = b[line].chars[j];
+
+                for (int j = 0; j < nb; j++)
+                {
+                    b[line].chars[j + i].x = old.x + j / nb * old.w;
+                    b[line].chars[j + i].w = old.w / nb;
+                    b[line].chars[j + i].y = old.y;
+                    b[line].chars[j + i].h = old.h;
+                }
+            }
+        }
+    }
+}
+
 // Drawing functions
 // Draw an horizontal red line from x of length w at y on surface
 void drawHLine(SDL_Surface *surface, int x, int y, int w)
@@ -393,6 +449,12 @@ void printSpaces(Block *b, int size)
     }
 }
 
+void printMedianCharSize(Block *b, int size)
+{
+    for (int i = 0; i < size; i++)
+        printf("Median char size on line %d = %d\n", i, 
+                medianCharSize(b, i));
+}
 
 void freeBlocks(Block *b, int nbLines)
 {
