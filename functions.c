@@ -81,7 +81,7 @@ void cb_process(GtkWidget *widget, gpointer data)
         Block *blocks = findBlocks(textImage, &nbLines);
         //print_blocks(blocks, nbLines);
         findChars(textImage, blocks, nbLines);
-        detectSpaces(blocks, nbLines);
+
         //printMedianCharSize(blocks, nbLines);
         //printSpaces(blocks, nbLines);
         //drawLinesChars(textImage, blocks, nbLines);
