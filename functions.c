@@ -102,18 +102,8 @@ void cb_process(GtkWidget *widget, gpointer data)
            computeOutput(testNN, entryVector);
            printOutput(testNN);
            free(entryVector);
-
-
-           int line = 6;
-           for (int i = 0; i < blocks[line].nbChars; i++)
-           {
-           printf("x=%d  ", blocks[line].chars[i].x);
-           printf("y=%d  ", blocks[line].chars[i].y);
-           printf("w=%d  ", blocks[line].chars[i].w);
-           printf("h=%d\n", blocks[line].chars[i].h);
-           }*/
+        */
         //saveNetworkSettings(testNN);
-        //readNetworkSettings(testNN);
 
         char* chars = NULL;
         chars = malloc(nbLines * 200 * sizeof(char));

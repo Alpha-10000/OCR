@@ -5,7 +5,7 @@
 #include "network.h"
 
 const int NN_RESOLUTION = 16;
-const int NN_NBOUTPUTS = 93;
+const int NN_NBOUTPUTS = 92;
 
 network *initNetwork(int nbLayers, int nbNeurons)
 {
@@ -70,6 +70,8 @@ char numToChar(int entry)
     entry = 33;
   else
     entry += 34;
+  if (entry > 123)
+    entry++;
   return (char)entry;
 }
 
@@ -90,6 +92,8 @@ char getNNcharOutput(network *network)
     toBeConverted = 33;
   else
     toBeConverted += 34;
+  if (toBeConverted > 123)
+    toBeConverted++;
   return (char)toBeConverted;
 }
 
