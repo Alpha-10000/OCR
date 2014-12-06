@@ -7,7 +7,7 @@
 #include "functions.h"
 #include "gui.h"
 
-void cb_quit (GtkWidget *widget, gpointer data)
+void cb_quit(GtkWidget *widget, gpointer data)
 {
   gtk_main_quit();
   (void)widget;
@@ -139,6 +139,58 @@ void cb_lang(GtkWidget *widget, gpointer data)
   gtkspell_recheck_all(spell);
 }
 
+void cb_zoomi(GtkWidget *widget, gpointer data)
+{
+  Zone *zone = (Zone*)data;
+  GdkPixbuf *pixBuf = NULL;
+  pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(zone->image));
+  if(pixBuf && gdk_pixbuf_get_width(pixBuf) < 1500)
+  {
+    GdkPixbuf *newBuf = NULL;
+    newBuf = gdk_pixbuf_scale_simple(pixBuf,
+				     gdk_pixbuf_get_width(pixBuf) / 5 * 6,
+				     gdk_pixbuf_get_height(pixBuf) / 5 * 6,
+				     GDK_INTERP_BILINEAR);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(zone->image), newBuf);
+  }
+  (void)widget;
+}
+void cb_zoomo(GtkWidget *widget, gpointer data)
+{
+  Zone *zone = (Zone*)data;
+  GdkPixbuf *pixBuf = NULL;
+  pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(zone->image));
+  if(pixBuf && gdk_pixbuf_get_width(pixBuf) > 50)
+  {
+    GdkPixbuf *newBuf = NULL;
+    newBuf = gdk_pixbuf_scale_simple(pixBuf,
+				     gdk_pixbuf_get_width(pixBuf) / 5 * 4,
+				     gdk_pixbuf_get_height(pixBuf) / 5 * 4,
+				     GDK_INTERP_BILINEAR);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(zone->image), newBuf);
+
+  }
+  (void)widget;
+}
+
+void displayOutput(char *output, Zone *zone)
+{
+  if(output)
+  {
+    GtkTextBuffer *textBuffer;
+    textBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(zone->text));
+    GtkTextIter start;
+    GtkTextIter end;
+    gtk_text_buffer_get_start_iter(textBuffer, &start);
+    gtk_text_buffer_get_end_iter(textBuffer, &end);
+    gtk_text_buffer_delete(textBuffer, &start, &end);
+    gchar *text = NULL;
+    text = g_locale_to_utf8(output, -1, NULL, NULL, NULL);
+    if(text)
+      gtk_text_buffer_insert(textBuffer, &end, output, -1);
+  }
+}
+
 GtkWidget *guiInit(void)
 {
   GtkWidget *mainWindow = NULL;
@@ -250,6 +302,12 @@ void initToolBar(GtkWidget *box, Zone *zone)
 			   NULL, G_CALLBACK(cb_process), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE, "Save",
 			   NULL, G_CALLBACK(cb_save), zone, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_ZOOM_IN, "Zoom +",
+			   NULL, G_CALLBACK(cb_zoomi), zone, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_ZOOM_OUT, "Zoom -",
+			   NULL, G_CALLBACK(cb_zoomo), zone, -1);
+
+
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT, "Quit",
 			   NULL, G_CALLBACK(cb_quit), NULL, -1);
 
@@ -262,6 +320,8 @@ void setMainZone(GtkWidget *box, Zone *zone)
   GtkWidget *mainZone = NULL;
   mainZone = gtk_hbox_new(FALSE, 0);
   GtkWidget *separator = NULL;
+  separator = gtk_hseparator_new();
+  gtk_box_pack_start(GTK_BOX(box), separator, FALSE, FALSE, 2);
   separator = gtk_vseparator_new();
 
   GtkWidget *scroll = NULL;

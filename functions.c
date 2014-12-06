@@ -119,26 +119,13 @@ void cb_process(GtkWidget *widget, gpointer data)
         chars = malloc(nbLines * 200 * sizeof(char));
         for(int i = 0; i < 200 * nbLines; i++)
             chars[i] = '\0';
-        if(chars)
-        {
-            chars = readText(testNN, textImage, blocks, nbLines, chars);
-            freeNetwork(testNN);
-            freeBlocks(blocks, nbLines);
-            GtkTextBuffer *textBuffer;
-            textBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(zone->text));
+	chars = readText(testNN, textImage, blocks, nbLines, chars);
+	displayOutput(chars, zone);
 
-            GtkTextIter start;
-            GtkTextIter end;
-            gtk_text_buffer_get_start_iter(textBuffer, &start);
-            gtk_text_buffer_get_end_iter(textBuffer, &end);
-            gtk_text_buffer_delete(textBuffer, &start, &end);
-            gchar *text = NULL;
-            text = g_locale_to_utf8(chars, -1, NULL, NULL, NULL);
-            if(text)
-                gtk_text_buffer_insert(textBuffer, &end, chars, -1);
-            (void)widget;
-            SDL_FreeSurface(textImage);
-            free(chars);
-        }
+	freeNetwork(testNN);
+	freeBlocks(blocks, nbLines);
+	SDL_FreeSurface(textImage);
+	free(chars);
     }
+    (void)widget;
 }
