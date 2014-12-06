@@ -11,6 +11,8 @@ GdkPixbuf *loadPixBuf(SDL_Surface *surface);
 void cb_open(GtkWidget *widget, gpointer data);
 void cb_save(GtkWidget *widget, gpointer data);
 void cb_lang(GtkWidget *widget, gpointer data);
+void cb_zoomi(GtkWidget *widget, gpointer data);
+void cb_zoomo(GtkWidget *widget, gpointer data);
 void displayOutput(char *output, Zone *zone);
 GtkWidget *guiInit(void);
 GtkWidget *initMainBox(GtkWidget *window);

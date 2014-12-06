@@ -2,14 +2,12 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <gtkspell/gtkspell.h>
-#include <SDL/SDL.h>
 #include <string.h>
 #include "filters.h"
 #include "functions.h"
-#include "network.h"
 #include "gui.h"
 
-void cb_quit (GtkWidget *widget, gpointer data)
+void cb_quit(GtkWidget *widget, gpointer data)
 {
   gtk_main_quit();
   (void)widget;
@@ -141,6 +139,40 @@ void cb_lang(GtkWidget *widget, gpointer data)
   gtkspell_recheck_all(spell);
 }
 
+void cb_zoomi(GtkWidget *widget, gpointer data)
+{
+  Zone *zone = (Zone*)data;
+  GdkPixbuf *pixBuf = NULL;
+  pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(zone->image));
+  if(pixBuf && gdk_pixbuf_get_width(pixBuf) < 1500)
+  {
+    GdkPixbuf *newBuf = NULL;
+    newBuf = gdk_pixbuf_scale_simple(pixBuf,
+				     gdk_pixbuf_get_width(pixBuf) / 5 * 6,
+				     gdk_pixbuf_get_height(pixBuf) / 5 * 6,
+				     GDK_INTERP_BILINEAR);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(zone->image), newBuf);
+  }
+  (void)widget;
+}
+void cb_zoomo(GtkWidget *widget, gpointer data)
+{
+  Zone *zone = (Zone*)data;
+  GdkPixbuf *pixBuf = NULL;
+  pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(zone->image));
+  if(pixBuf && gdk_pixbuf_get_width(pixBuf) > 50)
+  {
+    GdkPixbuf *newBuf = NULL;
+    newBuf = gdk_pixbuf_scale_simple(pixBuf,
+				     gdk_pixbuf_get_width(pixBuf) / 5 * 4,
+				     gdk_pixbuf_get_height(pixBuf) / 5 * 4,
+				     GDK_INTERP_BILINEAR);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(zone->image), newBuf);
+
+  }
+  (void)widget;
+}
+
 void displayOutput(char *output, Zone *zone)
 {
   if(output)
@@ -270,6 +302,12 @@ void initToolBar(GtkWidget *box, Zone *zone)
 			   NULL, G_CALLBACK(cb_process), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE, "Save",
 			   NULL, G_CALLBACK(cb_save), zone, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_ZOOM_IN, "Zoom +",
+			   NULL, G_CALLBACK(cb_zoomi), zone, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_ZOOM_OUT, "Zoom -",
+			   NULL, G_CALLBACK(cb_zoomo), zone, -1);
+
+
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_QUIT, "Quit",
 			   NULL, G_CALLBACK(cb_quit), NULL, -1);
 
