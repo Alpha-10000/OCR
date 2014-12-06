@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <gtkspell/gtkspell.h>
+#include <SDL/SDL.h>
 #include <string.h>
 #include "filters.h"
 #include "functions.h"
+#include "network.h"
 #include "gui.h"
 
 void cb_quit (GtkWidget *widget, gpointer data)
@@ -139,6 +141,24 @@ void cb_lang(GtkWidget *widget, gpointer data)
   gtkspell_recheck_all(spell);
 }
 
+void displayOutput(char *output, Zone *zone)
+{
+  if(output)
+  {
+    GtkTextBuffer *textBuffer;
+    textBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(zone->text));
+    GtkTextIter start;
+    GtkTextIter end;
+    gtk_text_buffer_get_start_iter(textBuffer, &start);
+    gtk_text_buffer_get_end_iter(textBuffer, &end);
+    gtk_text_buffer_delete(textBuffer, &start, &end);
+    gchar *text = NULL;
+    text = g_locale_to_utf8(output, -1, NULL, NULL, NULL);
+    if(text)
+      gtk_text_buffer_insert(textBuffer, &end, output, -1);
+  }
+}
+
 GtkWidget *guiInit(void)
 {
   GtkWidget *mainWindow = NULL;
@@ -262,6 +282,8 @@ void setMainZone(GtkWidget *box, Zone *zone)
   GtkWidget *mainZone = NULL;
   mainZone = gtk_hbox_new(FALSE, 0);
   GtkWidget *separator = NULL;
+  separator = gtk_hseparator_new();
+  gtk_box_pack_start(GTK_BOX(box), separator, FALSE, FALSE, 2);
   separator = gtk_vseparator_new();
 
   GtkWidget *scroll = NULL;
