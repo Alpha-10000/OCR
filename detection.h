@@ -39,7 +39,7 @@ SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines);
 
 void doubleChars(Block *b, int line);
 
-void detectSpaces(Block *b, int nbLine);
+void detectSpaces(Block *b, int line);
 
 int medianCharSize(Block *b, int line);
 

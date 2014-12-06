@@ -178,6 +178,7 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
             blocks[cur_Line].chars[cur_Char - 1].w -
             blocks[cur_Line].line.x;
 
+        detectSpaces(blocks, cur_Line);
         //Double char
         //doubleChars(blocks, cur_Line);
     }
@@ -280,17 +281,14 @@ SDL_Surface* resizeChars(SDL_Surface *surface, Block *blocks, int nbLines)
     return copy;
 }
 
-void detectSpaces(Block *b, int nbLine)
+void detectSpaces(Block *b, int l)
 {
     int spaceTresh = 3;
-    for (int l = 0; l < nbLine; l++)
+    for (int c = 0; c < b[l].nbChars - 1; c++)
     {
-        for (int c = 0; c < b[l].nbChars - 1; c++)
-        {
-            int space = b[l].chars[c + 1].x - b[l].chars[c].x - b[l].chars[c].w;  
-            if (space >= spaceTresh)
-                b[l].spaces[c] = space / spaceTresh;
-        }
+        int space = b[l].chars[c + 1].x - b[l].chars[c].x - b[l].chars[c].w;  
+        if (space >= spaceTresh)
+            b[l].spaces[c] = space / spaceTresh;
     }
 }
 
