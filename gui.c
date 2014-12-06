@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
+#include <SDL/SDL_image.h>
 #include <gtkspell/gtkspell.h>
 #include <string.h>
 #include "filters.h"
@@ -31,10 +32,8 @@ GdkPixbuf *loadPixBuf(SDL_Surface *surface)
 void cb_open(GtkWidget *widget, gpointer data)
 {
   Zone *zone = (Zone*)data;
-  GtkWidget *image = NULL;
-  image = GTK_WIDGET(zone->image);
   GtkWidget *topLevel = NULL;
-  topLevel = gtk_widget_get_toplevel(image);
+  topLevel = gtk_widget_get_toplevel(zone->image);
   GtkFileFilter *filter = NULL;
   filter = gtk_file_filter_new();
   GtkWidget *dialog = NULL;
@@ -54,7 +53,7 @@ void cb_open(GtkWidget *widget, gpointer data)
     {
       gchar *fileName = NULL;
       fileName = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-      gtk_image_set_from_file(GTK_IMAGE(image), fileName);
+      gtk_image_set_from_file(GTK_IMAGE(zone->image), fileName);
       g_free(fileName);
       break;
     }
@@ -248,6 +247,11 @@ void initMenu(GtkWidget *box, Zone *zone)
 		   G_CALLBACK(cb_process), zone);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
 
+  menuItem = gtk_menu_item_new_with_label("Learn");
+  g_signal_connect(G_OBJECT(menuItem), "activate",
+		   G_CALLBACK(cb_learn), zone);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
+
   GtkWidget *lang = gtk_menu_new();
   GSList *list = NULL;
   menuItem = gtk_radio_menu_item_new_with_label(NULL, "English");
@@ -298,10 +302,12 @@ void initToolBar(GtkWidget *box, Zone *zone)
 
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_OPEN, "Open",
 			   NULL, G_CALLBACK(cb_open), zone, -1);
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_EXECUTE, "Process",
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_MEDIA_PLAY, "Process",
 			   NULL, G_CALLBACK(cb_process), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE, "Save",
 			   NULL, G_CALLBACK(cb_save), zone, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_EXECUTE, "Learn",
+			   NULL, G_CALLBACK(cb_learn), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_ZOOM_IN, "Zoom +",
 			   NULL, G_CALLBACK(cb_zoomi), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_ZOOM_OUT, "Zoom -",
@@ -312,7 +318,6 @@ void initToolBar(GtkWidget *box, Zone *zone)
 			   NULL, G_CALLBACK(cb_quit), NULL, -1);
 
   gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);
-  gtk_toolbar_set_icon_size(GTK_TOOLBAR(toolBar), GTK_ICON_SIZE_SMALL_TOOLBAR);
 }
 
 void setMainZone(GtkWidget *box, Zone *zone)
@@ -336,12 +341,17 @@ void setMainZone(GtkWidget *box, Zone *zone)
   gtk_container_add(GTK_CONTAINER(view), zone->image);
   gtk_container_add(GTK_CONTAINER(scrolli), view);
   //gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolli), zone->image);
-  */gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+  */
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
+  gtk_box_pack_start(GTK_BOX(mainZone), separator, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX(mainZone), zone->image, FALSE, TRUE, 0);
+  separator = gtk_vseparator_new();
   gtk_box_pack_start(GTK_BOX(mainZone), separator, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX(mainZone), scroll, TRUE, TRUE, 0);
+  separator = gtk_vseparator_new();
+  gtk_box_pack_start(GTK_BOX(mainZone), separator, FALSE, FALSE, 2);
 
   gtk_box_pack_end(GTK_BOX(box), mainZone, TRUE, TRUE, 0);
 }

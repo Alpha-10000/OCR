@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include "layer.h"
 #include "detection.h"
-#include "functions.h"
-#include "filters.h"
 
 typedef struct network network;
 struct network

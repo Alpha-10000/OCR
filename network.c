@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#include "filters.h"
 #include "network.h"
 
 const int NN_RESOLUTION = 16;

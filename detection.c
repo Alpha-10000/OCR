@@ -2,10 +2,10 @@
 #include <SDL/SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "functions.h"
 #include "filters.h"
 #include "detection.h"
 #include "network.h"
+#include "functions.h"
 
 // Create vertical histograme of surface
 void verticalHist(SDL_Surface *surface, int *hist, int *nbLines)
@@ -286,7 +286,7 @@ void detectSpaces(Block *b, int l)
     int spaceTresh = medianCharSize(b, l) / 2;
     for (int c = 0; c < b[l].nbChars - 1; c++)
     {
-        int space = b[l].chars[c + 1].x - b[l].chars[c].x - b[l].chars[c].w;  
+      int space = b[l].chars[c + 1].x - b[l].chars[c].x - b[l].chars[c].w;
         if (space >= spaceTresh)
             b[l].spaces[c] = space / spaceTresh;
     }

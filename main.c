@@ -6,6 +6,7 @@
 #include <gtkspell/gtkspell.h>
 #include "gui.h"
 #include "functions.h"
+#include "network.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +21,7 @@ int main(int argc, char *argv[])
   Zone *zone = malloc(sizeof(struct Zone*));
   zone->image = gtk_image_new();
   zone->text = gtk_text_view_new();
+  zone->nn = initNetwork(3, 40);
   GtkSpell *spell = gtkspell_new_attach(GTK_TEXT_VIEW(zone->text), NULL, NULL);
   gtkspell_recheck_all(spell);
 
@@ -37,7 +39,6 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
     exit(EXIT_FAILURE);
   }
-
   SDL_Quit();
   gtk_main();
   return EXIT_SUCCESS;
