@@ -81,8 +81,8 @@ void cb_save(GtkWidget *widget, gpointer data)
 
   GtkFileFilter *filter = NULL;
   filter = gtk_file_filter_new();
-  gtk_file_filter_set_name(filter, "Text File (*.txt)");
-  gtk_file_filter_add_pattern(filter, "*txt");
+  gtk_file_filter_set_name(filter, "Text File");
+  gtk_file_filter_add_pattern(filter, "*tex)");
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
   GtkFileFilter *all = NULL;
   all = gtk_file_filter_new();
@@ -328,6 +328,15 @@ void setMainZone(GtkWidget *box, Zone *zone)
   scroll = gtk_scrolled_window_new(NULL, NULL);
   gtk_container_add(GTK_CONTAINER(scroll), zone->text);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  /*GtkWidget *scrolli = NULL;
+  scrolli = gtk_scrolled_window_new(NULL, NULL);
+  GtkWidget *view = gtk_viewport_new(NULL, NULL);
+  gtk_container_add(GTK_CONTAINER(view), zone->image);
+  gtk_container_add(GTK_CONTAINER(scrolli), view);
+  //gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolli), zone->image);
+  */gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
   gtk_box_pack_start(GTK_BOX(mainZone), zone->image, FALSE, TRUE, 0);

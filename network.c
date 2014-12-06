@@ -98,6 +98,10 @@ char *readText(network *network, SDL_Surface *surface,
 {
   int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
   int currentChar = 0;
+  char *latexH = "\\documentclass[a4paper]{article}\n"
+                 "\\usepackage[utf8]{inputenc}\n\n"
+                 "\\begin{document}\n\n";
+  strcat(text, latexH);
   for (int i = 0; i < nbLines; i++)
   {
     for (int j = 0; j < blocks[i].nbChars; j++)
@@ -133,6 +137,7 @@ char *readText(network *network, SDL_Surface *surface,
   }
   //printf("\n");
   strcat(text, "\n");
+  strcat(text, "\\end{document}");
   free(entryVector);
   return text;
 }
