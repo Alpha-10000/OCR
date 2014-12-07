@@ -7,7 +7,7 @@
 #include "network.h"
 
 const int NN_RESOLUTION = 16;
-const int NN_NBOUTPUTS = 92;
+const int NN_NBOUTPUTS = 98;
 
 network *initNetwork(int nbLayers, int nbNeurons)
 {
@@ -94,7 +94,21 @@ wchar_t getNNcharOutput(network *network)
     toBeConverted = 33;
   else
     toBeConverted += 34;
-  if (toBeConverted > 123)
+
+
+  if (toBeConverted == 126)
+    toBeConverted = 233;
+  else if (toBeConverted == 127)
+    toBeConverted = 232;
+  else if (toBeConverted == 128)
+    toBeConverted = 234;
+  else if (toBeConverted == 129)
+    toBeConverted = 224;
+  else if (toBeConverted == 130)
+    toBeConverted = 244;
+  else if (toBeConverted == 131)
+    toBeConverted = 249;
+  else if (toBeConverted > 123)
     toBeConverted++;
 
   wchar_t wchar = toBeConverted;
@@ -143,6 +157,29 @@ wchar_t *readText(network *network, SDL_Surface *surface,
     wcscat(text, L"\n");
     //printf("\n");
   }
+
+  int counter = 0;
+  while (text[counter] != '\0')
+  {
+    if (counter > 1)
+    {
+      if (text[counter] == 'I') // cas du "I" au milieu de minuscules
+      {
+        if ((text[counter-1] >= 97 && text[counter-1] <= 122)
+        || (text[counter-1] == ' ' && text[counter-2] >=97 && text[counter-2] <= 122))
+         //si minuscule avant
+          text[counter] = 'l';
+      }
+      else if (text[currentChar] >= 65 && text[currentChar] <= 90)
+      {
+
+        if (text[currentChar-1] >= 97 && text[currentChar-1] <= 122)
+            text[currentChar] -= 'a';
+      }
+    }
+    counter++;
+  }
+
   //printf("\n");
   wcscat(text, L"\n");
   wcscat(text, L"\\end{document}");

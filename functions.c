@@ -94,11 +94,11 @@ void cb_process(GtkWidget *widget, gpointer data)
       exit(EXIT_FAILURE);
     }
 
-    /*double angle = houghHist(textImage);
+    double angle = houghHist(textImage);
       printf("Angle = %f\n", angle);
       SDL_Surface *swp = textImage;
       textImage = rotate(textImage, -angle);
-      SDL_FreeSurface(swp);*/
+      SDL_FreeSurface(swp);
 
     greyScale(textImage);
     //noiseRemove(textImage);
@@ -121,7 +121,7 @@ void cb_process(GtkWidget *widget, gpointer data)
     //learnNetwork(zone->nn, blocks, textImage, nbLines);
 
     //pixBuf = loadPixBuf(textImage);
-    //gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixBuf);
+    //gtk_image_set_from_pixbuf(GTK_IMAGE(zone->image), pixBuf);
     /*
       int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
       fillEntryVector(textImage, entryVector,
