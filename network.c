@@ -166,7 +166,8 @@ wchar_t *readText(network *network, SDL_Surface *surface,
       if (text[counter] == 'I') // cas du "I" au milieu de minuscules
       {
         if ((text[counter-1] >= 97 && text[counter-1] <= 122)
-        || (text[counter-1] == ' ' && text[counter-2] >=97 && text[counter-2] <= 122))
+        || (text[counter-1] == ' ' && text[counter-2] >=97 && text[counter-2] <= 122)
+        || text[counter-1 > 200])
          //si minuscule avant
           text[counter] = 'l';
       }
