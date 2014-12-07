@@ -4,6 +4,7 @@
 #include <SDL/SDL_image.h>
 #include <gtk/gtk.h>
 #include <gtkspell/gtkspell.h>
+#include <wchar.h>
 #include "gui.h"
 #include "functions.h"
 #include "network.h"
@@ -11,10 +12,9 @@
 int main(int argc, char *argv[])
 {
   /*-----Init GUI-----*/
-
   gtk_init(&argc, &argv);
   GtkWidget *mainWindow = guiInit();
-  gtk_window_maximize(GTK_WINDOW(mainWindow));
+  // gtk_window_maximize(GTK_WINDOW(mainWindow));
   gtk_window_set_title(GTK_WINDOW(mainWindow), "OCRulus");
 
   //Image and Text

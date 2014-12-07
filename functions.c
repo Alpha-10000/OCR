@@ -3,6 +3,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <gtk/gtk.h>
+#include <wchar.h>
 #include "functions.h"
 #include "filters.h"
 #include "network.h"
@@ -132,10 +133,10 @@ void cb_process(GtkWidget *widget, gpointer data)
     */
     //saveNetworkSettings(zone->nn);
 
-    char* chars = NULL;
-    chars = malloc(nbLines * 200 * sizeof(char));
+    wchar_t* chars = NULL;
+    chars = malloc(nbLines * 200 * sizeof(wchar_t));
     for(int i = 0; i < 200 * nbLines; i++)
-      chars[i] = '\0';
+      chars[i] = L'\0';
     chars = readText(zone->nn, textImage, blocks, nbLines, chars);
     displayOutput(chars, zone);
 

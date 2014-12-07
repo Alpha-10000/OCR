@@ -3,7 +3,7 @@
 #include <gtk/gtk.h>
 #include <SDL/SDL_image.h>
 #include <gtkspell/gtkspell.h>
-#include <string.h>
+#include <wchar.h>
 #include "filters.h"
 #include "functions.h"
 #include "gui.h"
@@ -172,7 +172,7 @@ void cb_zoomo(GtkWidget *widget, gpointer data)
   (void)widget;
 }
 
-void displayOutput(char *output, Zone *zone)
+void displayOutput(wchar_t *output, Zone *zone)
 {
   if(output)
   {
@@ -184,9 +184,15 @@ void displayOutput(char *output, Zone *zone)
     gtk_text_buffer_get_end_iter(textBuffer, &end);
     gtk_text_buffer_delete(textBuffer, &start, &end);
     gchar *text = NULL;
-    text = g_locale_to_utf8(output, -1, NULL, NULL, NULL);
+    size_t size = wcslen(output) + 1;
+    char* dest = malloc(size * sizeof(char));
+    for(size_t i = 0; i <  size; i++)
+      dest[i] = L'\0';
+    wcstombs(dest, output, size + 1);
+    text = g_locale_to_utf8(dest, -1, NULL, NULL, NULL);
     if(text)
-      gtk_text_buffer_insert(textBuffer, &end, output, -1);
+      gtk_text_buffer_insert(textBuffer, &end, text, -1);
+    free(dest);
   }
 }
 

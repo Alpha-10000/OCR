@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#include <wchar.h>
 #include "filters.h"
 #include "network.h"
 
@@ -76,7 +77,7 @@ char numToChar(int entry)
   return (char)entry;
 }
 
-char getNNcharOutput(network *network)
+wchar_t getNNcharOutput(network *network)
 {
   int toBeConverted = 0;
   double maxvalue = 0;
@@ -95,18 +96,20 @@ char getNNcharOutput(network *network)
     toBeConverted += 34;
   if (toBeConverted > 123)
     toBeConverted++;
-  return (char)toBeConverted;
+
+  wchar_t wchar = toBeConverted;
+  return wchar;
 }
 
-char *readText(network *network, SDL_Surface *surface,
-	       Block *blocks, int nbLines, char *text)
+wchar_t *readText(network *network, SDL_Surface *surface,
+	       Block *blocks, int nbLines, wchar_t *text)
 {
   int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
   int currentChar = 0;
-  char *latexH = "\\documentclass[a4paper]{article}\n"
+  wchar_t *latexH = L"\\documentclass[a4paper]{article}\n"
                  "\\usepackage[utf8]{inputenc}\n\n"
                  "\\begin{document}\n\n";
-  strcat(text, latexH);
+  wcscat(text, latexH);
   for (int i = 0; i < nbLines; i++)
   {
     for (int j = 0; j < blocks[i].nbChars; j++)
@@ -119,30 +122,30 @@ char *readText(network *network, SDL_Surface *surface,
 		      getLineNb(currentChar, blocks, nbLines));
       computeOutput(network, entryVector);
       //printf("Exiting readtext   ");
-      char c = getNNcharOutput(network);
-      char s[2];
+      wchar_t c = getNNcharOutput(network);
+      wchar_t s[2];
       s[0] = c;
-      s[1] = '\0';
-      strcat(text, s);
+      s[1] = L'\0';
+      wcscat(text, s);
       //printf("%s", s);
 
       //Adding spaces
       for (int l = 0; l < blocks[i].spaces[j]; l++)
       {
-        char spaces[2];
-        spaces[0] = ' ';
-        spaces[1] = '\0';
-        strcat(text, spaces);
+        wchar_t spaces[2];
+        spaces[0] = L' ';
+        spaces[1] = L'\0';
+        wcscat(text, spaces);
       }
 
       currentChar++;
     }
-    strcat(text, "\n");
+    wcscat(text, L"\n");
     //printf("\n");
   }
   //printf("\n");
-  strcat(text, "\n");
-  strcat(text, "\\end{document}");
+  wcscat(text, L"\n");
+  wcscat(text, L"\\end{document}");
   free(entryVector);
   return text;
 }

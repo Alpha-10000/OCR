@@ -4,6 +4,7 @@
 #include <SDL/SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <wchar.h>
 #include "layer.h"
 #include "detection.h"
 
@@ -22,9 +23,9 @@ network *initNetwork(int nbLayers, int nbNeurons);
 void printEverything(network *network);
 void printOutput(network *network);
 char numToChar(int entry);
-char getNNcharOutput(network *network);
-char *readText(network *network, SDL_Surface *surface,
-	       Block *blocks, int nbLines, char *text);
+wchar_t getNNcharOutput(network *network);
+wchar_t *readText(network *network, SDL_Surface *surface,
+	       Block *blocks, int nbLines, wchar_t *text);
 void fillEntryVector(SDL_Surface *surface, int *entryVector, int charNb, int LineNb);
 int getLineNb(int entry, Block* blocks, int nbLines);
 int getCharNb(int entry, Block* blocks, int nbLines);
