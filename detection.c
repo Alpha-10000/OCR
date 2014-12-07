@@ -294,24 +294,11 @@ void detectSpaces(Block *b, int l)
 
 int medianCharSize(Block *b, int line)
 {
-    int nbChars = b[line].nbChars;
-    int w[nbChars];
-    for (int i = 0; i < nbChars; i++)
-        w[i] = b[line].chars[i].w;
+    int total = 0;
+    for (int i = 0; i < b[line].nbChars; i++)
+        total+= b[line].chars[i].w;
 
-    for (int i = 0; i < nbChars; i++)
-    {
-        int temp = w[i];
-        int j = i;
-        while (j >= 0 && w[j-1] > temp)
-        {
-            w[j] = w[j - 1];
-            j--;
-        }
-        w[j] = temp;
-    }
-
-    return w[nbChars / 2];
+    return total/b[line].nbChars;
 }
 void doubleChars(Block *b, int line)
 {
