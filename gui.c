@@ -54,6 +54,13 @@ void cb_open(GtkWidget *widget, gpointer data)
       gchar *fileName = NULL;
       fileName = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
       gtk_image_set_from_file(GTK_IMAGE(zone->image), fileName);
+      GdkPixbuf *miniBuf = NULL;
+      GdkPixbuf *pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(zone->image));
+      miniBuf = gdk_pixbuf_scale_simple(pixBuf,
+					gdk_pixbuf_get_width(pixBuf)/2,
+					gdk_pixbuf_get_height(pixBuf)/2,
+					GDK_INTERP_NEAREST);
+      gtk_image_set_from_pixbuf(GTK_IMAGE(zone->image), miniBuf);
       g_free(fileName);
       break;
     }
@@ -67,12 +74,10 @@ void cb_open(GtkWidget *widget, gpointer data)
 void cb_save(GtkWidget *widget, gpointer data)
 {
   Zone *zone = (Zone*)data;
-  ///GtkWidget *text = NULL;
-  ///text = GTK_WIDGET(zone->text);
-  ///GtkWidget *topLevel = NULL;
-  ///topLevel = gtk_widget_get_toplevel(text);
+  GtkWidget *topLevel = NULL;
+  topLevel = gtk_widget_get_toplevel(zone->text);
   GtkWidget *dialog = NULL;
-  dialog = gtk_file_chooser_dialog_new("Save file", NULL,
+  dialog = gtk_file_chooser_dialog_new("Save file", GTK_WINDOW(topLevel),
 				       GTK_FILE_CHOOSER_ACTION_SAVE,
 				       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				       GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -184,7 +189,7 @@ void displayOutput(wchar_t *output, Zone *zone)
     gtk_text_buffer_get_end_iter(textBuffer, &end);
     gtk_text_buffer_delete(textBuffer, &start, &end);
     gchar *text = NULL;
-    size_t size = wcslen(output) + 1;
+    size_t size = wcslen(output) * 2;
     char* dest = malloc(size * sizeof(char));
     for(size_t i = 0; i <  size; i++)
       dest[i] = L'\0';
@@ -330,6 +335,14 @@ void setMainZone(GtkWidget *box, Zone *zone)
 {
   GtkWidget *mainZone = NULL;
   mainZone = gtk_hbox_new(FALSE, 0);
+
+  zone->image = gtk_image_new();
+  zone->text = gtk_text_view_new();
+  zone->nn = initNetwork(3, 40);
+  GtkSpell *spell = NULL;
+  spell = gtkspell_new_attach(GTK_TEXT_VIEW(zone->text), "en_US", NULL);
+  gtkspell_recheck_all(spell);
+
   GtkWidget *separator = NULL;
   separator = gtk_hseparator_new();
   gtk_box_pack_start(GTK_BOX(box), separator, FALSE, FALSE, 2);
@@ -338,16 +351,6 @@ void setMainZone(GtkWidget *box, Zone *zone)
   GtkWidget *scroll = NULL;
   scroll = gtk_scrolled_window_new(NULL, NULL);
   gtk_container_add(GTK_CONTAINER(scroll), zone->text);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-  /*GtkWidget *scrolli = NULL;
-  scrolli = gtk_scrolled_window_new(NULL, NULL);
-  GtkWidget *view = gtk_viewport_new(NULL, NULL);
-  gtk_container_add(GTK_CONTAINER(view), zone->image);
-  gtk_container_add(GTK_CONTAINER(scrolli), view);
-  //gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolli), zone->image);
-  */
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 

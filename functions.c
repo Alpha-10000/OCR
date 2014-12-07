@@ -95,10 +95,12 @@ void cb_process(GtkWidget *widget, gpointer data)
     }
 
     double angle = houghHist(textImage);
-      printf("Angle = %f\n", angle);
+    if(angle != 0)
+    {
       SDL_Surface *swp = textImage;
       textImage = rotate(textImage, -angle);
       SDL_FreeSurface(swp);
+    }
 
     greyScale(textImage);
     //noiseRemove(textImage);
