@@ -28,16 +28,20 @@ SDL_Surface *copySurface(SDL_Surface *surface)
 }
 void sortArray(Uint8 array[], int size)
 {
-  for(int i = 0; i < size; i++)
+  for(int i = 0; i < size-1; i++)
   {
-    Uint8 temp = array[i];
-    int j = i;
-    while(j >= 0 && array[j-1] > temp)
+    int min = i;
+    for(int j = i + 1; j < size; j++)
     {
-      array[j] = array[j-1];
-      j--;
+      if(array[j] < array[min])
+	min = j;
     }
-    array[j] = temp;
+    if(min != i)
+    {
+      Uint8 temp = array[min];
+      array[min] = array[i];
+      array[i] = temp;
+    }
   }
 }
 
@@ -104,7 +108,7 @@ void cb_process(GtkWidget *widget, gpointer data)
     }
 
     greyScale(textImage);
-    //noiseRemove(textImage);
+    // noiseRemove(textImage);
     binarize(textImage);
 
     int nbLines;
