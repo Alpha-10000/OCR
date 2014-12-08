@@ -28,20 +28,16 @@ SDL_Surface *copySurface(SDL_Surface *surface)
 }
 void sortArray(Uint8 array[], int size)
 {
-  for(int i = 0; i < size-1; i++)
+  for(int i = 0; i < size; i++)
   {
-    int min = i;
-    for(int j = i + 1; j < size; j++)
+    Uint8 temp = array[i];
+    int j = i;
+    while(j >= 0 && array[j-1] > temp)
     {
-      if(array[j] < array[min])
-	min = j;
+      array[j] = array[j-1];
+      j--;
     }
-    if(min != i)
-    {
-      Uint8 temp = array[min];
-      array[min] = array[i];
-      array[i] = temp;
-    }
+    array[j] = temp;
   }
 }
 
@@ -82,23 +78,22 @@ void cb_learn(GtkWidget *widget, gpointer data)
   (void)widget;
 }
 
-
 void cb_process(GtkWidget *widget, gpointer data)
 {
   Zone *zone = (Zone*)data;
   GdkPixbuf *pixBuf = NULL;
   pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(zone->image));
-  if(pixBuf && zone->count == 0)
+  if(pixBuf)
   {
     gdk_pixbuf_save(pixBuf, "data.bmp", "bmp", NULL, NULL, NULL);
     SDL_Surface *textImage = NULL;
     textImage = IMG_Load("data.bmp");
-    resizeImage(zone->image);
     if(textImage == NULL)
     {
       fprintf(stderr, "Error while loading SDL Surface\n");
       exit(EXIT_FAILURE);
     }
+
     double angle = houghHist(textImage);
     if(angle != 0)
     {
@@ -106,13 +101,16 @@ void cb_process(GtkWidget *widget, gpointer data)
       textImage = rotate(textImage, -angle);
       SDL_FreeSurface(swp);
     }
-
     greyScale(textImage);
-    // noiseRemove(textImage);
+    //noiseRemove(textImage);
     binarize(textImage);
+
+    pixBuf = loadPixBuf(textImage);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(zone->image), pixBuf);
 
     int nbLines;
     Block *blocks = findBlocks(textImage, &nbLines);
+    //print_blocks(blocks, nbLines);
     findChars(textImage, blocks, nbLines);
 
     textImage = resizeChars(textImage, blocks, nbLines);
@@ -124,7 +122,7 @@ void cb_process(GtkWidget *widget, gpointer data)
       chars[i] = L'\0';
     chars = readText(zone->nn, textImage, blocks, nbLines, chars);
     displayOutput(chars, zone);
-    zone->count++;
+
     freeBlocks(blocks, nbLines);
     SDL_FreeSurface(textImage);
     free(chars);

@@ -24,6 +24,7 @@ SDL_Surface* rotate(SDL_Surface *old, double angle)
 					  0,0,0,0);
   SDL_LockSurface(old);
   SDL_LockSurface(new);
+
   for (int y = 0; y < h; y++)
   {
     for (int x = 0; x < w; x++)

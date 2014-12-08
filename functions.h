@@ -12,9 +12,7 @@ typedef struct
 {
   GtkWidget *image;
   GtkWidget *text;
-  GtkWidget *status;
   network *nn;
-  int count;
 }Zone;
 
 SDL_Surface *copySurface(SDL_Surface *surface);

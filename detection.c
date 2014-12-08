@@ -174,9 +174,9 @@ void findChars(SDL_Surface *surface, Block *blocks, int nbLines)
     }
     // Resize line at correct left and right borders
     blocks[cur_Line].line.x = blocks[cur_Line].chars[0].x;
-    blocks[cur_Line].line.w = blocks[cur_Line].chars[cur_Char - 1].x
-      + blocks[cur_Line].chars[cur_Char - 1].w
-      - blocks[cur_Line].line.x;
+    blocks[cur_Line].line.w = blocks[cur_Line].chars[cur_Char - 1].x +
+      blocks[cur_Line].chars[cur_Char - 1].w -
+      blocks[cur_Line].line.x;
 
     detectSpaces(blocks, cur_Line);
     //Double char

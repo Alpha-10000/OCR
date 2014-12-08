@@ -91,8 +91,8 @@ void noiseRemove(SDL_Surface *surface)
   if(surface != NULL && copy != NULL)
   {
     Uint8 grey;
-    SDL_LockSurface(surface);
-    SDL_LockSurface(copy);
+     SDL_LockSurface(surface);
+     SDL_LockSurface(copy);
     for(int i = 0; i < surface->w; i++)
     {
       //printf("noise %d\n", i);
