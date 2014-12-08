@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
   /*-----Init GUI-----*/
   gtk_init(&argc, &argv);
   GtkWidget *mainWindow = guiInit();
-  gtk_window_maximize(GTK_WINDOW(mainWindow));
+  //gtk_window_maximize(GTK_WINDOW(mainWindow));
   gtk_window_set_title(GTK_WINDOW(mainWindow), "OCRulus");
 
   //Image and Text

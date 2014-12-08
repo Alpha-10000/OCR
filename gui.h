@@ -9,6 +9,7 @@
 
 void cb_quit(GtkWidget *widget, gpointer data);
 GdkPixbuf *loadPixBuf(SDL_Surface *surface);
+void resizeImage(GtkWidget *image);
 void cb_open(GtkWidget *widget, gpointer data);
 void cb_save(GtkWidget *widget, gpointer data);
 void cb_lang(GtkWidget *widget, gpointer data);

@@ -8,61 +8,61 @@
 
 double toRad(double a)
 {
-    return a * PI / 180;
+  return a * PI / 180;
 }
 
 int maxTheta (int **hough, int w, int h)
 {
-    int max = 0, thetaMax = 0;
-    for (int r = 0; r < h; r++)
+  int max = 0, thetaMax = 0;
+  for (int r = 0; r < h; r++)
+  {
+    for (int t = 0; t < w; t++)
     {
-        for (int t = 0; t < w; t++)
-        {
-            if (hough[r][t] > max)
-            {
-                max = hough[r][t];
-                thetaMax = t;
-            }
-        }
+      if (hough[r][t] > max)
+      {
+	max = hough[r][t];
+	thetaMax = t;
+      }
     }
-    return thetaMax - 90;
+  }
+  return thetaMax - 90;
 }
 
 int houghHist (SDL_Surface *s)
 {
-    double w = s->w, h = s->h;
-    int maxRho = sqrt(w*w + h*h);
+  double w = s->w, h = s->h;
+  int maxRho = sqrt(w*w + h*h);
 
-    int **hough = malloc(maxRho * 2 * sizeof(int*));
-    for (int i = 0; i < maxRho * 2; i++)
+  int **hough = malloc(maxRho * 2 * sizeof(int*));
+  for (int i = 0; i < maxRho * 2; i++)
+  {
+    hough[i] = malloc(180 * sizeof(int));
+    for (int j = 0; j < 180; j++)
+      hough[i][j] = 0;
+  }
+
+  SDL_LockSurface(s);
+  for (int y = 0; y < h; y++)
+  {
+    for (int x = 0; x < w; x++)
     {
-        hough[i] = malloc(180 * sizeof(int));
-        for (int j = 0; j < 180; j++)
-            hough[i][j] = 0;
+      Uint8 color;
+      SDL_GetRGB(getPixel(s, x, y), s->format,
+		 &color, &color, &color);
+      if (!color)
+      {
+	for(double theta = 0; theta <= 180; theta++)
+	{
+	  double radTheta = toRad(theta);
+	  double rho = (double)x * cos(radTheta) + (double)y * sin(radTheta);
+	  hough[maxRho + (int)rho][(int)theta]++;
+
+	}
+      }
+
     }
-    
-    SDL_LockSurface(s);
-    for (int y = 0; y < h; y++)
-    {
-        for (int x = 0; x < w; x++)
-        {
-            Uint8 color;
-            SDL_GetRGB(getPixel(s, x, y), s->format,
-                    &color, &color, &color);
-            if (!color)
-            {
-                for(double theta = 0; theta <= 180; theta++)
-                {
-                    double radTheta = toRad(theta);
-                    double rho = (double)x * cos(radTheta) + (double)y * sin(radTheta);
-                    hough[maxRho + (int)rho][(int)theta]++;
+  }
+  SDL_UnlockSurface(s);
 
-                }
-            }
-
-        }
-    }
-    SDL_UnlockSurface(s);
-
-    return maxTheta(hough, 180, maxRho * 2);
+  return maxTheta(hough, 180, maxRho * 2);
 }

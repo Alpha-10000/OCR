@@ -166,7 +166,8 @@ wchar_t *readText(network *network, SDL_Surface *surface,
       if (text[counter] == 'I') // cas du "I" au milieu de minuscules
       {
         if ((text[counter-1] >= 97 && text[counter-1] <= 122)
-        || (text[counter-1] == ' ' && text[counter-2] >=97 && text[counter-2] <= 122)
+        || (text[counter-1] == ' ' && text[counter-2] >=97
+	    && text[counter-2] <= 122)
         || text[counter-1 > 200])
          //si minuscule avant
           text[counter] = 'l';
@@ -188,7 +189,8 @@ wchar_t *readText(network *network, SDL_Surface *surface,
   return text;
 }
 
-void fillEntryVector(SDL_Surface *surface, int *entryVector, int charNb, int LineNb)
+void fillEntryVector(SDL_Surface *surface, int *entryVector,
+		     int charNb, int LineNb)
 {
   Uint32 pixel;
   Uint8 grey;
@@ -232,7 +234,8 @@ int getCharNb(int entry, Block* blocks, int nbLines)
   return -1;
 }
 
-void learnNetwork(network *network, Block *blocks, SDL_Surface *surface, int nbLines)
+void learnNetwork(network *network, Block *blocks,
+		  SDL_Surface *surface, int nbLines)
 {
   int *entryVector = malloc(NN_RESOLUTION*NN_RESOLUTION*sizeof(int));
   double learnCoef = 1;
@@ -241,11 +244,11 @@ void learnNetwork(network *network, Block *blocks, SDL_Surface *surface, int nbL
   for (int nbTest = 0; nbTest < 200; nbTest++)
   {
     printf("Test %d/200\n", nbTest+1);
-    for (int currentTest = 0; currentTest < NN_NBOUTPUTS*policeNumber; currentTest++)
+    for (int curTest = 0; curTest < NN_NBOUTPUTS*policeNumber; curTest++)
     {
       fillEntryVector(surface, entryVector,
-        getCharNb(currentTest, blocks, nbLines),
-        getLineNb(currentTest, blocks, nbLines));
+        getCharNb(curTest, blocks, nbLines),
+        getLineNb(curTest, blocks, nbLines));
 
       computeOutput(network, entryVector);
 
@@ -253,7 +256,7 @@ void learnNetwork(network *network, Block *blocks, SDL_Surface *surface, int nbL
       {
        network->layers[network->nbLayers-1]->neurons[i]->delta =
        network->output[i]*(1-network->output[i])*
-       (((currentTest % NN_NBOUTPUTS) == i ? 1 : 0)-network->output[i]);
+       (((curTest % NN_NBOUTPUTS) == i ? 1 : 0)-network->output[i]);
      }
      for (int i = network->nbLayers-2; i >= 0; i--)
      {
@@ -296,7 +299,8 @@ void computeOutput(network *network, int *entryVector)
   {
     for (int x = 0; x < NN_RESOLUTION; x++)
       for (int y = 0; y < NN_RESOLUTION; y++)
-        network->layers[0]->neurons[i]->entries[x*NN_RESOLUTION + y] = entryVector[x*NN_RESOLUTION + y];
+        network->layers[0]->neurons[i]->entries[x*NN_RESOLUTION + y]
+	  = entryVector[x*NN_RESOLUTION + y];
 
     calculateOutput(network->layers[0]->neurons[i]);
   }
@@ -310,15 +314,16 @@ void computeOutput(network *network, int *entryVector)
       // for each output in the previous layer
       for(int k = 0; k < network->layers[i-1]->nbNeurons; k++)
       {
-	       //printf("Accessing the %d neuron on previous layer\n",k);
-	       network->layers[i]->neurons[j]->entries[k]
-	         = network->layers[i-1]->neurons[k]->output;
+	//printf("Accessing the %d neuron on previous layer\n",k);
+	network->layers[i]->neurons[j]->entries[k]
+	  = network->layers[i-1]->neurons[k]->output;
       }
       calculateOutput(network->layers[i]->neurons[j]);
     }
   }
   for (int i = 0; i < network->layers[network->nbLayers-1]->nbNeurons; i++)
-    network->output[i] = network->layers[network->nbLayers-1]->neurons[i]->output;
+    network->output[i] =
+      network->layers[network->nbLayers-1]->neurons[i]->output;
 }
 
 void freeNetwork(network *network)

@@ -21,12 +21,18 @@ GdkPixbuf *loadPixBuf(SDL_Surface *surface)
   GError **error = NULL;
   GdkPixbuf *pixBuf = NULL;
   pixBuf = gdk_pixbuf_new_from_file("data.bmp", error);
-  /*GdkPixbuf *miniBuf = NULL;
+  return pixBuf;
+}
+
+void resizeImage(GtkWidget *image)
+{
+  GdkPixbuf *miniBuf = NULL;
+  GdkPixbuf *pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(image));
   miniBuf = gdk_pixbuf_scale_simple(pixBuf,
 				    gdk_pixbuf_get_width(pixBuf)/2,
 				    gdk_pixbuf_get_height(pixBuf)/2,
-				    GDK_INTERP_NEAREST);*/
-  return pixBuf;
+				    GDK_INTERP_BILINEAR);
+  gtk_image_set_from_pixbuf(GTK_IMAGE(image), miniBuf);
 }
 
 void cb_open(GtkWidget *widget, gpointer data)
@@ -54,14 +60,8 @@ void cb_open(GtkWidget *widget, gpointer data)
       gchar *fileName = NULL;
       fileName = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
       gtk_image_set_from_file(GTK_IMAGE(zone->image), fileName);
-      GdkPixbuf *miniBuf = NULL;
-      GdkPixbuf *pixBuf = gtk_image_get_pixbuf(GTK_IMAGE(zone->image));
-      miniBuf = gdk_pixbuf_scale_simple(pixBuf,
-					gdk_pixbuf_get_width(pixBuf)/2,
-					gdk_pixbuf_get_height(pixBuf)/2,
-					GDK_INTERP_NEAREST);
-      gtk_image_set_from_pixbuf(GTK_IMAGE(zone->image), miniBuf);
       g_free(fileName);
+      zone->count = 0;
       break;
     }
     default:
@@ -313,8 +313,8 @@ void initToolBar(GtkWidget *box, Zone *zone)
 
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_OPEN, "Open",
 			   NULL, G_CALLBACK(cb_open), zone, -1);
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_MEDIA_PLAY, "Process",
-			   NULL, G_CALLBACK(cb_process), zone, -1);
+  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_MEDIA_PLAY,
+			   "Process", NULL, G_CALLBACK(cb_process), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_SAVE, "Save",
 			   NULL, G_CALLBACK(cb_save), zone, -1);
   gtk_toolbar_insert_stock(GTK_TOOLBAR(toolBar), GTK_STOCK_EXECUTE, "Learn",
@@ -339,6 +339,7 @@ void setMainZone(GtkWidget *box, Zone *zone)
   zone->image = gtk_image_new();
   zone->text = gtk_text_view_new();
   zone->nn = initNetwork(3, 40);
+
   GtkSpell *spell = NULL;
   spell = gtkspell_new_attach(GTK_TEXT_VIEW(zone->text), "en_US", NULL);
   gtkspell_recheck_all(spell);

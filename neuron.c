@@ -24,16 +24,16 @@ neuron *initNeuron(int nbEntries)
 void calculateOutput(neuron *neuron)
 {
   double sum = 0;
-    for(int i = 0; i < neuron->nbEntries; i++)
-    {
-      sum += neuron->entries[i] * neuron->weight[i];
-    }
-    //This is where we apply the function
-    //printf("resulting sum: %f\n", sum);
-    neuron->output = (1/(1+exp(-sum)));
-    //printf("sigmoid=%f\n", neuron->output);
-    //neuron->output = neuron->output >= 0.5 ? 1 : 0;
-    //printf("resulting output: %f\n", neuron->output);
+  for(int i = 0; i < neuron->nbEntries; i++)
+  {
+    sum += neuron->entries[i] * neuron->weight[i];
+  }
+  //This is where we apply the function
+  //printf("resulting sum: %f\n", sum);
+  neuron->output = (1/(1+exp(-sum)));
+  //printf("sigmoid=%f\n", neuron->output);
+  //neuron->output = neuron->output >= 0.5 ? 1 : 0;
+  //printf("resulting output: %f\n", neuron->output);
 }
 
 void freeMemory(neuron *entry)
