@@ -4,7 +4,7 @@
     <!-- Set the viewport width to device width for mobile -->
     <meta name="viewport" content="width=device-width" />
 
-    <title>OCRulus - News</title>
+    <title>OCRulus - Nicolas</title>
 
     <link rel="stylesheet" href="../theme/css/normalize.css" />
     <link rel="stylesheet" href="../theme/css/foundation.min.css" />
@@ -48,33 +48,6 @@
         
 
             <article>
-                <a href="../last.html"><h3 class="article-title">C'est la fin.</h3></a>
-<h6 class="subheader" title="2014-12-05T00:00:00">ven. 05 décembre 2014
-</h6>
-
-
-<p>La soutenance finale approche, et notre OCR est fin prêt.
-Vous pouvez dès à présent récupérer les sources de notre projet
-ainsi que notre rapport.</p>
-<p>A bientôt pour de nouvelles aventures !</p><p class="subheader">Category: <a href="../category/news.html">News</a>
-
-    Tagged: 
-    <a href="../tag/final.html">final </a>
-    <a href="../tag/episode.html">episode </a>
-</p>
-
-
-
-            </article>
-
-
-                <hr  class="gradient"/>
-
-
-        
-
-
-            <article>
                 <a href="../chars.html"><h3 class="article-title">Détection de caractères</h3></a>
 <h6 class="subheader" title="2014-10-14T00:00:00">mar. 14 octobre 2014
 </h6>
@@ -85,7 +58,15 @@ d'entre elles.</p>
 <h3>Histogramme</h3>
 <p>Comme pour la détection de lignes, nous utilisons un histogramme cette fois-ci 
 horizontal. Nous parcourons la ligne de gauche à droite, et nous récupérons la 
-présence ou non d'un pixel noir sur la ...</p><p class="subheader">Category: <a href="../category/news.html">News</a>
+présence ou non d'un pixel noir sur la colonne au travers d'un tableau binaire.</p>
+<h3>Détection des caractères</h3>
+<p>De même, le passage d'une colonne blanche à une colonne ayant un pixel noir 
+indique le début d'un caractère, et inversement.</p>
+<h3>Mémorisation des lignes et de ses caractères</h3>
+<p>Pour faciliter le stockage des différentes données, nous avons choisi de 
+définir une structure Block contenant le SDL_Rect représentant la ligne, le 
+nombre de caractères de celle-ci ainsi qu'un tableau de SDL_Rect représentant 
+ces derniers.</p><p class="subheader">Category: <a href="../category/news.html">News</a>
 
     Tagged: 
     <a href="../tag/caracteres.html">caractères </a>
@@ -93,37 +74,8 @@ présence ou non d'un pixel noir sur la ...</p><p class="subheader">Category: <a
 
 
 
-                <a class="button radius secondary small right" href="../chars.html">Read More</a>
-                <hr  class="gradient"/>
             </article>
 
-        
-
-
-            <article>
-                <a href="../lignes.html"><h3 class="article-title">Détection de lignes</h3></a>
-<h6 class="subheader" title="2014-10-06T00:00:00">lun. 06 octobre 2014
-</h6>
-
-
-<p>Pour que notre O.C.R puisse reconnaître du texte, il faut d'abord situer ce 
-dernier. Dans cette partie, nous travaillons sur une image dite "parfaite", 
-issue du processus pré-traitement. Dans un premier temps, nous devons trouver 
-l'emplacement des différentes lignes du texte.</p>
-<h3>Histogramme</h3>
-<p>Afin de trouver nos ...</p><p class="subheader">Category: <a href="../category/news.html">News</a>
-
-    Tagged: 
-    <a href="../tag/lignes.html">lignes </a>
-</p>
-
-
-
-                <a class="button radius secondary small right" href="../lignes.html">Read More</a>
-                <hr  class="gradient"/>
-            </article>
-
-            <!-- /#posts-list -->
 <div class="pagination-centered">
 <h6 class="subheader">Page 1 of 1</h6>
 
@@ -131,6 +83,10 @@ l'emplacement des différentes lignes du texte.</p>
 
 </p>
 </div>
+
+
+
+            <!-- /#posts-list -->
 
     </div>
     <!-- End Main Content -->

@@ -4,7 +4,7 @@
     <!-- Set the viewport width to device width for mobile -->
     <meta name="viewport" content="width=device-width" />
 
-    <title>OCRulus</title>
+    <title>Détection de caractères</title>
 
     <link rel="stylesheet" href="./theme/css/normalize.css" />
     <link rel="stylesheet" href="./theme/css/foundation.min.css" />
@@ -44,26 +44,40 @@
 
     <!-- Main Blog Content -->
     <div class="large-9 columns">
+<article>
+    <header>
+        <h3 class="article-title"><a href="./chars.html" rel="bookmark"
+        title="Permalink to Détection de caractères">Détection de caractères</a></h3>
+    </header>
 
-<h3>Archives</h3>
+<h6 class="subheader" title="2014-10-14T00:00:00">mar. 14 octobre 2014
+</h6>
 
-<table class="table-archive">
-    <tbody>
-        <tr>
-        <td>ven. 05 décembre 2014</td>
-        <td><a href='last.html'>C'est la fin.</a></td>
-        </tr>
-        <tr>
-        <td>mar. 14 octobre 2014</td>
-        <td><a href='chars.html'>Détection de caractères</a></td>
-        </tr>
-        <tr>
-        <td>lun. 06 octobre 2014</td>
-        <td><a href='lignes.html'>Détection de lignes</a></td>
-        </tr>
-    </tbody>
-</table>
 
+    <p>Une fois les lignes reconnues, il faut isoler les caractères sur chacune 
+d'entre elles.</p>
+<h3>Histogramme</h3>
+<p>Comme pour la détection de lignes, nous utilisons un histogramme cette fois-ci 
+horizontal. Nous parcourons la ligne de gauche à droite, et nous récupérons la 
+présence ou non d'un pixel noir sur la colonne au travers d'un tableau binaire.</p>
+<h3>Détection des caractères</h3>
+<p>De même, le passage d'une colonne blanche à une colonne ayant un pixel noir 
+indique le début d'un caractère, et inversement.</p>
+<h3>Mémorisation des lignes et de ses caractères</h3>
+<p>Pour faciliter le stockage des différentes données, nous avons choisi de 
+définir une structure Block contenant le SDL_Rect représentant la ligne, le 
+nombre de caractères de celle-ci ainsi qu'un tableau de SDL_Rect représentant 
+ces derniers.</p>
+<p class="subheader">Category: <a href="./category/news.html">News</a>
+
+    Tagged: 
+    <a href="./tag/caracteres.html">caractères </a>
+</p>
+
+
+
+
+</article>
     </div>
     <!-- End Main Content -->
 

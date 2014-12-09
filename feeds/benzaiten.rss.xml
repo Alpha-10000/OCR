@@ -2,4 +2,28 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OCRulus</title><link>/</link><description></description><atom:link href="/feeds/benzaiten.rss.xml" rel="self"></atom:link><lastBuildDate>Fri, 05 Dec 2014 00:00:00 +0100</lastBuildDate><item><title>C'est la fin.</title><link>/last.html</link><description>&lt;p&gt;La soutenance finale approche, et notre OCR est fin prêt.
 Vous pouvez dès à présent récupérer les sources de notre projet
 ainsi que notre rapport.&lt;/p&gt;
-&lt;p&gt;A bientôt pour de nouvelles aventures !&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Benzaiten</dc:creator><pubDate>Fri, 05 Dec 2014 00:00:00 +0100</pubDate><guid>tag:,2014-12-05:last.html</guid><category>final</category><category>episode</category></item></channel></rss>
+&lt;p&gt;A bientôt pour de nouvelles aventures !&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Benzaiten</dc:creator><pubDate>Fri, 05 Dec 2014 00:00:00 +0100</pubDate><guid>tag:,2014-12-05:last.html</guid><category>final</category><category>episode</category></item><item><title>Détection de lignes</title><link>/lignes.html</link><description>&lt;p&gt;Pour que notre O.C.R puisse reconnaître du texte, il faut d'abord situer ce 
+dernier. Dans cette partie, nous travaillons sur une image dite "parfaite", 
+issue du processus pré-traitement. Dans un premier temps, nous devons trouver 
+l'emplacement des différentes lignes du texte.&lt;/p&gt;
+&lt;h3&gt;Histogramme&lt;/h3&gt;
+&lt;p&gt;Afin de trouver nos lignes, nous utilisons ce qu'on appelle un histogramme 
+vertical de l'image. En effet, nous parcourons l'image de haut en bas et pour 
+chaque ligne, nous comptons le nombre de pixels noirs sur cette dernière. 
+Nous obtenons ainsi la répartition du texte de l'image selon l'axe y.&lt;/p&gt;
+&lt;h3&gt;Détection des lignes&lt;/h3&gt;
+&lt;p&gt;Grâce à cet histogramme, nous pouvons aisément distinguer les lignes de texte. 
+Chaque ligne de texte est, en effet, séparée de la suivante par au moins une 
+ligne blanche, c'est à dire sans pixel noir.&lt;/p&gt;
+&lt;h3&gt;Optimisation&lt;/h3&gt;
+&lt;p&gt;Tout d'abord, nous avons commencé par travailler avec un seuil de nombre de 
+pixels noirs, à partir duquel nous considérions une ligne comme faisant 
+partie d'une ligne de texte. Or, notre image étant parfaite, la présence d'un 
+unique pixel noir indique une ligne de texte. Ainsi, nous avons optimisé 
+l'algorithme de l'histogramme afin de passer à la ligne suivant si un pixel 
+noir était détecté.&lt;/p&gt;
+&lt;h3&gt;Mémorisation des composantes d'une ligne&lt;/h3&gt;
+&lt;p&gt;Afin d'avoir toutes les composantes d'une ligne de texte, c'est-à-dire ses 
+coordonnée x et y ainsi que sa largeur et sa hauteur, nous utilisons la 
+structure SDL_Rect de la bibliothèque SDL qui répond parfaitement à nos 
+attentes.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Benzaiten</dc:creator><pubDate>Mon, 06 Oct 2014 00:00:00 +0200</pubDate><guid>tag:,2014-10-06:lignes.html</guid><category>lignes</category></item></channel></rss>
