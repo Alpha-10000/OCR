@@ -4,7 +4,7 @@
     <!-- Set the viewport width to device width for mobile -->
     <meta name="viewport" content="width=device-width" />
 
-    <title>OCRulus - lignes</title>
+    <title>OCRulus - News</title>
 
     <link rel="stylesheet" href="../theme/css/normalize.css" />
     <link rel="stylesheet" href="../theme/css/foundation.min.css" />
@@ -48,40 +48,19 @@
         
 
             <article>
-                <a href="../lignes.html"><h3 class="article-title">Détection de lignes</h3></a>
-<h6 class="subheader" title="2014-10-06T00:00:00">lun. 06 octobre 2014
+                <a href="../last.html"><h3 class="article-title">C'est la fin.</h3></a>
+<h6 class="subheader" title="2014-12-05T00:00:00">ven. 05 décembre 2014
 </h6>
 
 
-<p>Pour que notre O.C.R puisse reconnaître du texte, il faut d'abord situer ce 
-dernier. Dans cette partie, nous travaillons sur une image dite "parfaite", 
-issue du processus pré-traitement. Dans un premier temps, nous devons trouver 
-l'emplacement des différentes lignes du texte.</p>
-<h3>Histogramme</h3>
-<p>Afin de trouver nos lignes, nous utilisons ce qu'on appelle un histogramme 
-vertical de l'image. En effet, nous parcourons l'image de haut en bas et pour 
-chaque ligne, nous comptons le nombre de pixels noirs sur cette dernière. 
-Nous obtenons ainsi la répartition du texte de l'image selon l'axe y.</p>
-<h3>Détection des lignes</h3>
-<p>Grâce à cet histogramme, nous pouvons aisément distinguer les lignes de texte. 
-Chaque ligne de texte est, en effet, séparée de la suivante par au moins une 
-ligne blanche, c'est à dire sans pixel noir.</p>
-<h3>Optimisation</h3>
-<p>Tout d'abord, nous avons commencé par travailler avec un seuil de nombre de 
-pixels noirs, à partir duquel nous considérions une ligne comme faisant 
-partie d'une ligne de texte. Or, notre image étant parfaite, la présence d'un 
-unique pixel noir indique une ligne de texte. Ainsi, nous avons optimisé 
-l'algorithme de l'histogramme afin de passer à la ligne suivant si un pixel 
-noir était détecté.</p>
-<h3>Mémorisation des composantes d'une ligne</h3>
-<p>Afin d'avoir toutes les composantes d'une ligne de texte, c'est-à-dire ses 
-coordonnée x et y ainsi que sa largeur et sa hauteur, nous utilisons la 
-structure SDL_Rect de la bibliothèque SDL qui répond parfaitement à nos 
-attentes.</p><p class="subheader">Category: <a href="../category/accueil.html">Accueil</a>
+<p>La soutenance finale approche, et notre OCR est fin prêt.
+Vous pouvez dès à présent récupérer les sources de notre projet
+ainsi que notre rapport.</p>
+<p>A bientôt pour de nouvelles aventures !</p><p class="subheader">Category: <a href="../category/news.html">News</a>
 
     Tagged: 
-    <a href="../tag/detection.html">detection </a>
-    <a href="../tag/lignes.html">lignes </a>
+    <a href="../tag/final.html">final </a>
+    <a href="../tag/episode.html">episode </a>
 </p>
 
 
@@ -114,7 +93,7 @@ attentes.</p><p class="subheader">Category: <a href="../category/accueil.html">A
 		
         <h5 class="sidebar-title">Categories</h5>
         <ul class="side-nav">
-            <li><a href="../category/accueil.html">Accueil</a></li>
+            <li><a href="../category/news.html">News</a></li>
    
         </ul>
 
